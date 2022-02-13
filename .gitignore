@@ -6,5 +6,3 @@ build/
 .pytest_cache/
 dist/
 dev_log/
-data/
-model/
