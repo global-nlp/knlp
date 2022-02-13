@@ -16,3 +16,9 @@ snownlp==0.12.3
 toml==0.10.2
 typing-extensions==3.7.4.3
 zipp==3.4.0
+
+python-crfsuite==0.9.6
+six==1.12.0
+sklearn-crfsuite==0.3.6
+tabulate==0.8.3
+tqdm==4.31.1
