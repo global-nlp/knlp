@@ -1,9 +1,10 @@
 # -*-coding:utf-8-*-
 import re
-
+import os
 from crf import load_model
-from knlp.common.constant import KNLP_PATH
-CRF_MODEL_PATH = KNLP_PATH+"/knlp/model/crf/crf.pkl"
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "/../.."
+CRF_MODEL_PATH = BASE_DIR + "/knlp/model/crf/crf.pkl"
 
 def spilt_predict(str1):
 

@@ -1,7 +1,8 @@
 # -*-coding:utf-8-*-
+import os
 from crf import crf_train
-from knlp.common.constant import KNLP_PATH
 
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "/../.."
 
 def load_data(data_path):
 
@@ -27,7 +28,7 @@ def load_data(data_path):
 
 if __name__ == "__main__":
 
-    train_data_path = KNLP_PATH + "/knlp/data/pku.txt"
+    train_data_path = BASE_DIR + "/knlp/data/pku.txt"
     train_words, train_tags = load_data(train_data_path)
 
     print("正在训练CRF模型...")

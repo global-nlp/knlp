@@ -1,9 +1,11 @@
 # -*-coding:utf-8-*-
+import os
 import pickle
 
 from codecs import open
 from sklearn_crfsuite import CRF
-from knlp.common.constant import KNLP_PATH
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "/../.."
 
 class CRFModel(object):
 
@@ -43,7 +45,7 @@ def crf_train(train_data):
     train_words, train_tags = train_data
     crf_model = CRFModel()
     crf_model.train(train_words, train_tags)
-    save_model(crf_model, KNLP_PATH+"/knlp/model/crf/crf.pkl")
+    save_model(crf_model, BASE_DIR +"/knlp/model/crf/crf.pkl")
 
 
 # ******** CRF 工具函数*************
