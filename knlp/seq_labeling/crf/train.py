@@ -1,36 +1,65 @@
 # -*-coding:utf-8-*-
 import os
-from crf import crf_train
+import pickle
+
+from __init__ import CRFModel
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "/../.."
 
-def load_data(data_path):
 
-    words = []
-    tags = []
+class Train:
+    """
+    这个类要实现针对不同task的训练语料数据的加载，构建并保存对应模型。
+    """
 
-    with open(data_path, 'r', encoding='utf-8') as f:
-        word_list = []
-        tag_list = []
-        for line in f:
-            if line != '\n':
-                word, tag = line.strip('\n').split()
-                word_list.append(word)
-                tag_list.append(tag)
-            else:
-                words.append(word_list)
-                tags.append(tag_list)
-                word_list = []
-                tag_list = []
+    def __init__(self, data_path):
 
-    return words, tags
+        self.training_data_path = data_path
+        self.training_data = []
+        self.model = CRFModel()
+
+    def load_and_train(self):
+        """
+        读入数据后，存入words和tags两个列表中，传入train进行训练，返回训练后模型。
+        """
+        words = []
+        tags = []
+
+        with open(self.training_data_path, 'r', encoding='utf-8') as f:
+            word_list = []
+            tag_list = []
+            for line in f:
+                if line != '\n':
+                    word, tag = line.strip('\n').split()
+                    word_list.append(word)
+                    tag_list.append(tag)
+                else:
+                    words.append(word_list)
+                    tags.append(tag_list)
+                    word_list = []
+                    tag_list = []
+
+        self.model.train(words, tags)
+
+    def save_model(self, file_name):
+        """用于保存训练模型"""
+        with open(file_name, "wb") as f:
+            pickle.dump(self.model, f)
 
 
 if __name__ == "__main__":
+    # 修改变量task的内容针对训练模型：
+    # 中文分词任务：task = hanzi_segment
+    # 中文NER任务：task = NER
+    # 中文拼音分割：task = pinyin_segment
+    task = "pinyin_segment"
+    train_data_path = BASE_DIR + "/knlp/data/" + task + ".txt"
 
-    train_data_path = BASE_DIR + "/knlp/data/pku.txt"
-    train_words, train_tags = load_data(train_data_path)
+    print("正在读入数据进行" + task + "训练...")
 
-    print("正在训练CRF模型...")
+    CRF_trainer = Train(train_data_path)
+    CRF_trainer.load_and_train()
 
-    crf_pred = crf_train((train_words, train_tags))
+    print("正在保存模型...")
+
+    CRF_trainer.save_model(BASE_DIR + "/knlp/model/crf/" + task + ".pkl")

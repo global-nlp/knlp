@@ -1,17 +1,23 @@
 # -*-coding:utf-8-*-
 import re
 import os
-from crf import load_model
+
+from __init__ import CRFModel
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "/../.."
-CRF_MODEL_PATH = BASE_DIR + "/knlp/model/crf/crf.pkl"
 
-def spilt_predict(str1):
+
+def spilt_predict(in_put, file_path):
+    """
+    将输入序列分割为各个汉字团，依次送入预训练模型中，返回各个汉字团的预测结果。
+    """
+    crf = CRFModel()
 
     re_zh, re_no_zh = re.compile("([\u4E00-\u9FA5]+)"), re.compile("[^a-zA-Z0-9+#\n]")  # 只对汉字做分词
-    processed_sentence = re_zh.split(str1)  # 按照汉字团进行分割
+    processed_sentence = re_zh.split(in_put)  # 按照汉字团进行分割
     out_sent = []
-    crf_model = load_model(CRF_MODEL_PATH)
+    label_prediction = []
+    crf_model = crf.load_model(file_path)
 
     for block in processed_sentence:
         if re_zh.match(block):  # 对汉字进行分词
@@ -19,15 +25,22 @@ def spilt_predict(str1):
             pred = [blocking]
             crf_pred = crf_model.test(pred)  # 预测
             out_sent.extend(cut(pred, crf_pred))
+            crf_pred = sum(crf_pred, [])
+            label_prediction.append(crf_pred)
         else:
-            for char in re_no_zh.split(block):  # 把剩下的分出来
-                if(block):out_sent.append(block)
+            for char in re_no_zh.split(block):  # 把剩下的字符分出来
+                if block:
+                    label_prediction.append(block)
+                    out_sent.append(block)
                 break
 
-    return out_sent
+    return label_prediction, out_sent
+
 
 def cut(sentence1, sentence2):
-
+    """
+    按照BEMS标签做中文分词，切割句子。
+    """
     out_sen = []
     sen1 = sum(sentence1, [])
     sen2 = sum(sentence2, [])
@@ -49,8 +62,17 @@ def cut(sentence1, sentence2):
 
 
 if __name__ == "__main__":
+    # 修改变量task的内容针对加载模型：
+    # 中文分词任务：task = hanzi_segment
+    # 中文NER任务：task = NER
+    # 中文拼音分割：task = pinyin_segment
+    # To do:增加NER部分的最后预测结果处理。
+    task = "hanzi_segment"
 
+    CRF = CRFModel()
+    CRF_MODEL_PATH = BASE_DIR + "/knlp/model/crf/" + task + ".pkl"
     print("读取数据...")
-    to_be_pred = "《美国夫人》是大魔王首度担任主演、执行制片人的美剧。也是鱼叔2020年看过最震撼的剧。它展现了美国 1970 年代第二波女权运动是如何风起云涌，又是如何偃旗息鼓的。"
-    predict = spilt_predict(to_be_pred)
-    print(predict)
+    to_be_pred = "我来自中国，我是炎黄子孙。"
+    predict, result = spilt_predict(to_be_pred, CRF_MODEL_PATH)
+    print("POS结果：" + str(predict))
+    print("模型预测结果：" + str(result))
