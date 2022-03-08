@@ -63,3 +63,5 @@ def test_all():
 
 Clue榜单评估结果
 
+# Contributor
+- DukeEnglish(4ljy@163.com)

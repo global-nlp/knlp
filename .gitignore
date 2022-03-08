@@ -8,3 +8,4 @@ dist/
 dev_log/
 data/
 model/
+.DS_Store
