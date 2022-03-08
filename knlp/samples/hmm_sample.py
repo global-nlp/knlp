@@ -40,13 +40,29 @@ def hmm_train(vocab_set_path, training_data_path, model_save_path):
     )
 
 
-def hmm_inference_init(model_save_path):
+def hmm_inference_load_model(model_save_path):
+    """
+    load model
+    Args:
+        model_save_path: string
+
+    Returns:
+
+    """
     hmm_inferencer.load_mode(state_set_save_path=model_save_path, transition_pro_save_path=model_save_path,
                              emission_pro_save_path=model_save_path,
                              init_state_set_save_path=model_save_path)
 
 
-def test(sentence):
+def test_inference(sentence):
+    """
+    测试推理
+    Args:
+        sentence: string
+
+    Returns:
+
+    """
     return list(hmm_inferencer.cut(sentence))
 
 
@@ -55,5 +71,5 @@ if __name__ == '__main__':
     training_data_path = KNLP_PATH + "/knlp/data/seg_data/train/pku_hmm_training_data_sample.txt"
     model_save_path = KNLP_PATH + "/knlp/model/hmm/"
     hmm_train(vocab_set_path=vocab_set_path, training_data_path=training_data_path, model_save_path=model_save_path)
-    hmm_inference_init(model_save_path=model_save_path)
-    print(test("大家好，我是你们的好朋友"))
+    hmm_inference_load_model(model_save_path=model_save_path)
+    print(test_inference("大家好，我是你们的好朋友"))
