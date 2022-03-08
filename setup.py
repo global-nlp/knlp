@@ -39,7 +39,7 @@ setuptools.setup(
     description='KUAI SU(Quickly use) Python toolkit for Chinese Language Processing.',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    url='https://github.com/DukeEnglish/knlp',
+    url='https://github.com/global-nlp/knlp.git',
     package_data={'': ['*.md', '*.txt', '*.marshal', '*.marshal.3']},
     include_package_data=True,
     packages=setuptools.find_packages(exclude=('test*',)),
