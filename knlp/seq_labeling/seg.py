@@ -103,7 +103,7 @@ class Segmentor(object):
 
         Args:
             sentence: string
-            model:
+            model: 默认会使用自己训练好的model
 
         Returns: list of string
 

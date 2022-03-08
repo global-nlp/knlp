@@ -115,7 +115,8 @@ class Inference:
             yield sentence[next:]
 
     def cut(self, sentence):
-        re_zh, re_no_zh = re.compile("([\u4E00-\u9FA5]+)"), re.compile("[^a-zA-Z0-9+#\n]")  # 只对汉字做分词
+        re_zh, re_no_zh = re.compile("([\u4E00-\u9FA5]+)"), re.compile(
+            '([^a-zA-Z0-9+#\n]+)')  # 只对汉字做分词，英文和数字算作一起，标题符号等单独放在一起
         processed_sentence = re_zh.split(sentence)  # 按照汉字团进行分割
         for block in processed_sentence:
             if re_zh.match(block):  # 对汉字进行分词
@@ -131,6 +132,5 @@ class Inference:
 if __name__ == '__main__':
     test = Inference()
     test_sen = "姚晨和老凌离婚了"
-    test_sen = "本pkg的主体架构参考了snownlp和textblob，因为这种实现方式对于调用方来说最方便。"
-    print((test.cut(test_sen)))
+    test_sen = "本pkg的主体架构参考了snownlp123和textblob，因为这种实现方式对于调用方来说最方便。"
     print(list(test.cut(test_sen)))
