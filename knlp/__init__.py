@@ -28,7 +28,8 @@ class Knlp(object):
         This function return the result cut by seg defined in seq_labeling
 
         Args:
-            function_name: string
+            function_name: string.
+                Candidate: jieba_cut
 
         Returns: list of words
 
@@ -42,6 +43,7 @@ class Knlp(object):
 
         Args:
             function_name: string
+                Candidate: hmm_seg
 
         Returns: list of words
 
@@ -55,6 +57,7 @@ class Knlp(object):
 
         Args:
             function_name:string
+                Candidate: jieba_ner
 
         Returns: list of (word, flag) pair
 

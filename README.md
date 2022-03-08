@@ -37,7 +37,15 @@ def test_all():
 ```
 其他示例使用方法在samples中。所有的训练数据都在data中有示例数据。
 
+# 测试使用
+测试中仅仅包括如何使用现有模型进行inference。由于测试文件中有相对路径存在，所以需要在knlp的项目根目录下运行
+```
+python test/test_all.py
+```
+可以看到测试结果。并且可以直接参考其中的代码直接进行inference。
+
 # sample使用方法
+这里提供的sample方法会详细包括训练到推理，能够使用本工具训练出一个自己的模型。
 1. 序列标注的训练
     
     1.1 首先生成训练数据，序列标注的数据处理方法在knlp/seq_labeling/data_helper.py。数据针对的是人民日报的数据。
@@ -47,7 +55,6 @@ def test_all():
 2. 信息提取（关键词、关键短语、摘要）
     
     2.1 samples/IE_sample.py
-
 
 
 # 参考并致谢
@@ -63,5 +70,3 @@ def test_all():
 
 Clue榜单评估结果
 
-# Contributor
-- [DukeEnglish](dukeenglish.github.io); [e-mail](4ljy@163.com)
