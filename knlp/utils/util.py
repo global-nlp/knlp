@@ -19,9 +19,54 @@ from functools import wraps
 from knlp.common.constant import KNLP_PATH
 
 
+def get_stop_words_train_file():
+    return KNLP_PATH + "/knlp/data/jieba_dict.txt"
+
+
 def get_default_stop_words_file():
     return KNLP_PATH + "/knlp/data/stopwords.txt"
 
+
+class Trie:
+
+    def __init__(self):
+        self.trie = {}
+        self.freq_total = 0
+
+    def insert(self, stop_words, freq):
+        current_node = self.trie
+        for char in stop_words:
+            if char not in current_node:
+                current_node[char] = {}
+            current_node = current_node[char]
+        current_node['freq'] = freq
+
+
+    def find_all_trie(self, words):
+        current_node = self.trie
+        result = set()
+        for i in range(len(words)):
+            if words[i] in current_node:
+                current_node = current_node[words[i]]
+                if 'freq' in current_node:
+                    result.add((words[0:i+1], current_node['freq']))
+                continue
+            break
+        if len(result) == 0:
+            return
+        else:
+            return result
+
+    def get_words_freq(self, words):
+        current_node = self.trie
+        for i in range(len(words)):
+            if words[i] in current_node:
+                current_node = current_node[words[i]]
+            else:
+                return None
+        if 'freq' not in current_node:
+            return None
+        return current_node['freq']
 
 class AttrDict(dict):
     """Dict that can get attribute by dot"""
