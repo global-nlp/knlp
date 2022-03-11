@@ -2,7 +2,7 @@
 import os
 import pickle
 
-from __init__ import CRFModel
+from crf import CRFModel
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "/../.."
 
@@ -48,18 +48,16 @@ class Train:
 
 
 if __name__ == "__main__":
-    # 修改变量task的内容针对训练模型：
-    # 中文分词任务：task = hanzi_segment
-    # 中文NER任务：task = NER
-    # 中文拼音分割：task = pinyin_segment
-    task = "pinyin_segment"
-    train_data_path = BASE_DIR + "/knlp/data/" + task + ".txt"
 
-    print("正在读入数据进行" + task + "训练...")
+    train_data_path = BASE_DIR + "/knlp/data/hanzi_segment.txt"
+
+    print("正在读入数据进行训练...")
 
     CRF_trainer = Train(train_data_path)
     CRF_trainer.load_and_train()
 
     print("正在保存模型...")
 
-    CRF_trainer.save_model(BASE_DIR + "/knlp/model/crf/" + task + ".pkl")
+    CRF_trainer.save_model(BASE_DIR + "/knlp/model/crf/crf.pkl")
+
+    print("训练完成。")

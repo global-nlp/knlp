@@ -2,7 +2,7 @@
 import re
 import os
 
-from __init__ import CRFModel
+from crf import CRFModel
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "/../.."
 
@@ -62,15 +62,9 @@ def cut(sentence1, sentence2):
 
 
 if __name__ == "__main__":
-    # 修改变量task的内容针对加载模型：
-    # 中文分词任务：task = hanzi_segment
-    # 中文NER任务：task = NER
-    # 中文拼音分割：task = pinyin_segment
-    # To do:增加NER部分的最后预测结果处理。
-    task = "hanzi_segment"
 
     CRF = CRFModel()
-    CRF_MODEL_PATH = BASE_DIR + "/knlp/model/crf/" + task + ".pkl"
+    CRF_MODEL_PATH = BASE_DIR + "/knlp/model/crf/crf.pkl"
     print("读取数据...")
     to_be_pred = "我来自中国，我是炎黄子孙。"
     predict, result = spilt_predict(to_be_pred, CRF_MODEL_PATH)

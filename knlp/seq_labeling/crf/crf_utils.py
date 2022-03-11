@@ -20,6 +20,6 @@ def word2features(sent, i):
     return features
 
 
-def sent2features(sent):
+def sentence2features(sentence):
     """抽取序列特征"""
-    return [word2features(sent, i) for i in range(len(sent))]
+    return [word2features(sentence, i) for i in range(len(sentence))]
