@@ -1,6 +1,6 @@
 # KNLP开源贡献指南
 
-欢迎您对KNLP的相关工作感兴趣。本文档作为基本指南来指引您如何向KNLP进行贡献。如果您发现文档中有错误或者又缺失的内容，请及时与我们联系
+欢迎您对KNLP的相关工作感兴趣。本文档作为基本指南来指引您如何向KNLP进行贡献。如果您发现文档中有错误或者有缺失的内容，请及时与我们联系
 
 
 
@@ -8,9 +8,9 @@
 
 ## 从哪里入手？
 
-如果您是初次贡献，可以先从issue或者我们的小任务中开始快速参与社区贡献。
+如果您是初次贡献，可以先从issue或者我们的小任务中开始快速参与贡献。
 
-您可以直接在相应 issue 中回复参与意愿，或者提出您想要做的工作，参照下面的 GitHub 工作流指引解决 issue 并按照规范提交 PR，通过 review 后就会被 merge 到 master 分支。
+您可以直接在相应 issue 中回复参与意愿，或者提出您想要做的工作，参照下面的 GitHub 工作流指引解决 issue 并按照规范提交 PR，通过 review 后就会被 merge 到 main 分支。
 
 
 
@@ -48,7 +48,7 @@
 
 ## 报告安全问题
 
-特别地，若您发现 CLUE 及其生态项目中有任何的安全漏洞（或潜在的安全问题），请第一时间通过邮箱[[chineseGLUE@163.com](mailto:chineseGLUE@163.com)私下联系我们。在对应代码修复之前，**请不要将对应安全问题对外披露，也不鼓励公开提 issue 报告安全问题**。
+特别地，若您发现 KNLP 及其生态项目中有任何的安全漏洞（或潜在的安全问题），请第一时间通过邮箱[[4ljy@163.com ](mailto:4ljy@163.com)私下联系我们。在对应代码修复之前，**请不要将对应安全问题对外披露，也不鼓励公开提 issue 报告安全问题**。
 
 
 
@@ -72,16 +72,14 @@
 
 #### Python coding style
 
-Use `pylint` to check your Python changes. To install `pylint` and check a file with `pylint` against TensorFlow's custom style definition:
-
-We encourage PEP-8.
+We encourage flake8.
 
 ```
-pip install pylint
-pylint myfile.py
+python -m pip install flake8
+flake8 my_project
 ```
 
-Note `pylint `should run from the top level directory.
+Note `flake8 `should run from the top level directory.
 
 #### Running unit tests
 
@@ -93,10 +91,6 @@ We encourage you to send your PR with your test case. Then, the review process w
 
 ### 邮件组
 
-如果您有任何问题与建议，请通过邮箱[chineseGLUE@163.com](mailto:chineseGLUE@163.com)联系我们。
-
-### Gitter
-
-我们的 Gitter room: https://github.com/CLUEbenchmark
+如果您有任何问题与建议，请通过邮箱[4ljy@163.com](mailto:4ljy@163.com)联系我们。
 
 以上贡献者模版参考自：Sentinel and [Tensorflow](https://github.com/tensorflow/tensorflow/blob/master/CONTRIBUTING.md)。感谢他们的智慧。
