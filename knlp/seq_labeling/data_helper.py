@@ -30,9 +30,9 @@ class DataHelper:
         Returns: None
 
         """
-        with open(input_file) as f:
+        with open(input_file, encoding='utf-8') as f:
             data = f.readlines()
-        with open(output_file, "w") as fw:
+        with open(output_file, "w", encoding='utf-8') as fw:
             for line in data:
                 word_list = line.strip().split()
                 for word in word_list:
@@ -59,9 +59,9 @@ class DataHelper:
         Returns: None
 
         """
-        with open(input_file) as f:
+        with open(input_file, encoding='utf-8') as f:
             data = f.readlines()
-        with open(output_file, "w") as fw:
+        with open(output_file, "w", encoding='utf-8') as fw:
             for line in data:
                 word_list = line.strip()
                 for word in word_list:
@@ -83,10 +83,10 @@ class DataHelper:
         Returns: None
 
         """
-        with open(input_file) as f:
+        with open(input_file, encoding='utf-8') as f:
             data = f.readlines()
         vocab_set = set([])
-        with open(output_file, "w") as fw:
+        with open(output_file, "w", encoding='utf-8') as fw:
             for line in data:
                 word_list = line.strip()
                 for word in word_list:

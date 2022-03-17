@@ -17,7 +17,7 @@ TEST_SINGLE_SENTENCE = "KNLP是一个NLP工具包，主要支持中文的各种N
 
 
 def test_knlp():
-    with open("knlp/data/pytest_data.txt") as f:
+    with open("knlp/data/pytest_data.txt", encoding='utf-8') as f:
         text = f.read()
     res = Knlp(text)
     print("seg_result is", res.seg_result)

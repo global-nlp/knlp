@@ -60,8 +60,8 @@ def evaluation_seg_files(gold_file_name, pred_file_name, seg_symbol=" "):
     Returns: precision, recall, f1, all of them are float
 
     """
-    with open(gold_file_name) as g:
+    with open(gold_file_name, encoding='utf-8') as g:
         gold_res_string = seg_symbol.join(g.readlines())
-    with open(pred_file_name) as g:
+    with open(pred_file_name, encoding='utf-8') as g:
         pred_res_string = seg_symbol.join(g.readlines())
     return evaluation_seg(gold_res_string, pred_res_string, seg_symbol)

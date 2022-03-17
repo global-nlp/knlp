@@ -38,7 +38,7 @@ class Segmentor(object):
             for word in self.private_vacab:
                 jieba.add_word(word, freq=None, tag=None)
 
-        with open(stop_words_file, 'r') as f:
+        with open(stop_words_file, 'r', encoding='utf-8') as f:
             for word in f:
                 self.stop_words.add(word.strip())
 

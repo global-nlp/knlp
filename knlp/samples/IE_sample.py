@@ -80,7 +80,7 @@ def get_key_sentences_by_keyword(text):
 
 
 if __name__ == '__main__':
-    with open("knlp/data/pytest_data.txt") as f:
+    with open("knlp/data/pytest_data.txt", encoding='utf-8') as f:
         text = f.read()
     print(get_key_sentences(text))
     print(get_key_sentences_by_keyword(text))
