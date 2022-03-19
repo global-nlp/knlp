@@ -75,7 +75,6 @@ if __name__ == "__main__":
 
     print("读取数据...")
     to_be_pred = "我是炎黄子孙"
-    crf = CRF.load_model(CRF_MODEL_PATH)
 
     test.spilt_predict(to_be_pred, CRF_MODEL_PATH)
     print("POS结果：" + str(test.label_prediction))
