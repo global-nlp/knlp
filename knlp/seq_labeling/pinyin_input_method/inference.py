@@ -3,8 +3,7 @@ import os
 import json
 import math
 from knlp.seq_labeling.crf.crf import CRFModel
-
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "/../.."
+from knlp.common.constant import KNLP_PATH
 
 
 class Inference:
@@ -26,10 +25,10 @@ class Inference:
             with open(file_path) as f:
                 return json.load(f)
 
-        self.pinyin_hanzi = helper(BASE_DIR + r'/knlp/data/pinyin_input_data/pinyin_hanzi.json')
-        self.start_state = helper(BASE_DIR + r'/knlp/data/pinyin_input_data/start_state.json')
-        self.emission_pro = helper(BASE_DIR + r'/knlp/data/pinyin_input_data/emission_pro.json')
-        self.transition_pro = helper(BASE_DIR + r'/knlp/data/pinyin_input_data/transition_pro.json')
+        self.pinyin_hanzi = helper(KNLP_PATH + r'/knlp/data/pinyin_input_data/pinyin_hanzi.json')
+        self.start_state = helper(KNLP_PATH + r'/knlp/data/pinyin_input_data/start_state.json')
+        self.emission_pro = helper(KNLP_PATH + r'/knlp/data/pinyin_input_data/emission_pro.json')
+        self.transition_pro = helper(KNLP_PATH + r'/knlp/data/pinyin_input_data/transition_pro.json')
 
     def init_state_set(self, state):
         """
@@ -46,7 +45,7 @@ class Inference:
 
     def get_emission(self, state, observation):
         """
-        返回发射概率。
+        返回发射概率，同样可处理未登录字。
         """
         data = self.emission_pro['data']
         default = self.emission_pro['default']
@@ -85,11 +84,11 @@ class Inference:
         """
         用于返回拼音下所有可能的汉字，作为维特比迭代时的范围。
         """
-        return [hanzi for hanzi in self.pinyin_hanzi[observation]]
+        return [state for state in self.pinyin_hanzi[observation]]
 
     def viterbi(self, observations, min_prob=3.14e-200):
         viterbi_matrix = [{}]
-        # time_step == 0
+        # 初始状态。
         hidden_state_set = self.get_states(observations[0])
         for hidden_state in hidden_state_set:
             __score = math.log(max(self.init_state_set(hidden_state), min_prob)) + \
@@ -104,23 +103,18 @@ class Inference:
         # t > 0 时刻维特比
         for time_step in range(1, len(observations)):
             cur_obs = observations[time_step]
-
             viterbi_matrix.append({})
             prev_states = hidden_state_set
             hidden_state_set = self.get_states(cur_obs)
             for hidden_state in hidden_state_set:
-
                 viterbi_matrix[1][hidden_state] = []
-
                 for hidden_state0 in prev_states:  # from y0(t-1) to y(t)
                     for item in viterbi_matrix[0][hidden_state0]:
-                        __score = item[0] + math.log(max(self.get_transition(hidden_state0, hidden_state), min_prob)) + \
+                        __score = item[0] + math.log(max(self.get_transition(hidden_state0, hidden_state), min_prob)) +\
                                   math.log(max(self.get_emission(hidden_state, cur_obs), min_prob))
-
                         __path = item[1] + [hidden_state]
-
                         dp = (__score, __path)
-                        viterbi_matrix[1][hidden_state].append(dp)
+                        viterbi_matrix[1][hidden_state].append(dp)  # 将得分与相对应的路径存储在viterbi_matrix中
 
         result = {}
 
@@ -170,7 +164,7 @@ if __name__ == '__main__':
     test = Inference()
 
     CRF = CRFModel()
-    CRF_MODEL_PATH = BASE_DIR + "/knlp/model/crf/pinyin.pkl"
+    CRF_MODEL_PATH = KNLP_PATH + "/knlp/model/crf/pinyin.pkl"
 
     print("读取数据...")
     to_be_pred = "dongtianlailechuntianyejiangdaolai"
@@ -192,4 +186,5 @@ if __name__ == '__main__':
             print(res)
             out.extend(res[0][1])
 
-    print("二字划分后预测结果：" + str(out))
+    print("按照两个字一组划分后的预测结果：" + str(out))
+

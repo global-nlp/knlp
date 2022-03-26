@@ -42,7 +42,7 @@ class Inference:
                   init_state_set_save_path=None, save_format="json"):
         def helper(file_path, save_format="json"):
             if save_format == "json":
-                with open(file_path) as f:
+                with open(file_path, encoding='utf-8') as f:
                     return json.load(f)
 
         state_set = KNLP_PATH + "/knlp/model/hmm/state_set.json" if not state_set_save_path else state_set_save_path + "/state_set.json"
@@ -131,6 +131,5 @@ class Inference:
 
 if __name__ == '__main__':
     test = Inference()
-    test_sen = "姚晨和老凌离婚了"
-    test_sen = "本pkg的主体架构参考了snownlp123和textblob，因为这种实现方式对于调用方来说最方便。"
+    test_sen = "为本单位服务的地震监测台网"
     print(list(test.cut(test_sen)))

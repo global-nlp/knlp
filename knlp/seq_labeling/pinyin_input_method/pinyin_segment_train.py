@@ -3,8 +3,7 @@ import os
 import pickle
 
 from knlp.seq_labeling.crf.crf import CRFModel
-
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "/../.."
+from knlp.common.constant import KNLP_PATH
 
 
 class Train:
@@ -49,7 +48,7 @@ class Train:
 
 if __name__ == "__main__":
 
-    train_data_path = BASE_DIR + "/knlp/data/pinyin_segment.txt"
+    train_data_path = KNLP_PATH + "/knlp/data/pinyin_segment.txt"
 
     print("正在读入数据进行训练...")
 
@@ -58,6 +57,6 @@ if __name__ == "__main__":
 
     print("正在保存模型...")
 
-    CRF_trainer.save_model(BASE_DIR + "/knlp/model/crf/pinyin.pkl")
+    CRF_trainer.save_model(KNLP_PATH + "/knlp/model/crf/pinyin.pkl")
 
     print("训练完成。")

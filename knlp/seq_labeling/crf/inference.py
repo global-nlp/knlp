@@ -1,10 +1,8 @@
 # -*-coding:utf-8-*-
 import re
-import os
 
 from knlp.seq_labeling.crf.crf import CRFModel
-
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "/../.."
+from knlp.common.constant import KNLP_PATH
 
 
 class Inference:
@@ -16,21 +14,18 @@ class Inference:
 
     def spilt_predict(self, in_put, file_path):
         """
-        将输入序列分割为各个汉字团，依次送入预训练模型中，返回各个汉字团的预测结果。
+        将输入序列分割为各个汉字团，依次送入输入的预训练模型中，返回各个汉字团的预测结果。
         """
         crf = CRFModel()
 
         re_zh, re_no_zh = re.compile("([\u4E00-\u9FA5]+)"), re.compile("[^a-zA-Z0-9+#\n]")  # 只对汉字做分词
         processed_sentence = re_zh.split(in_put)  # 按照汉字团进行分割
-        # out_sent = []
-        # label_prediction = []
         crf_model = crf.load_model(file_path)
 
         for block in processed_sentence:
             if re_zh.match(block):  # 对汉字进行分词
                 blocking = list(block)
                 pred = [blocking]
-                print(pred)
                 crf_pred = crf_model.test(pred)  # 预测
                 self.out_sentence.extend(self.cut(pred, crf_pred))
                 crf_pred = sum(crf_pred, [])
@@ -67,14 +62,13 @@ class Inference:
 
 
 if __name__ == "__main__":
-
     test = Inference()
 
     CRF = CRFModel()
-    CRF_MODEL_PATH = BASE_DIR + "/knlp/model/crf/crf.pkl"
+    CRF_MODEL_PATH = KNLP_PATH + "/knlp/model/crf/pinyin_segment.pkl"
 
     print("读取数据...")
-    to_be_pred = "我是炎黄子孙"
+    to_be_pred = "冬天到了，春天还会远吗？"
 
     test.spilt_predict(to_be_pred, CRF_MODEL_PATH)
     print("POS结果：" + str(test.label_prediction))

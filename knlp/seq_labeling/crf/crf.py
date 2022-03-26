@@ -6,13 +6,10 @@
 CRFModel类：
 由sklearn_crfsuite中的CRF类初始化而来。其中包括训练算法、l1正则与l2正则的系数，迭代次数等模型参数。
 """
-import os
 import pickle
 
 from knlp.seq_labeling.crf.crf_utils import sentence2features
 from sklearn_crfsuite import CRF
-
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "/../.."
 
 
 class CRFModel(object):
