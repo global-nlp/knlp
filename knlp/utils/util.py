@@ -19,7 +19,7 @@ from functools import wraps
 from knlp.common.constant import KNLP_PATH
 
 
-def get_stop_words_train_file():
+def get_jieba_dict_file():
     return KNLP_PATH + "/knlp/data/jieba_dict.txt"
 
 
@@ -28,45 +28,66 @@ def get_default_stop_words_file():
 
 
 class Trie:
+    """
+        字典树：将词库构建成字典树，以便快速搜索前缀
+        trie：字典类型、表示整个树
+        freq_total：所有词的词频之和
+
+        应用：创建一个Trie对象，使用insert插入逐条插入字词即可构建字典树
+    """
 
     def __init__(self):
         self.trie = {}
         self.freq_total = 0
 
     def insert(self, stop_words, freq):
+        """
+        向trie中插入词语，将词语的每一个进行插入。如果字存在，则判断词的下一个字是否存在，如果不存在则建立一颗子树
+        :param stop_words: 待插入词
+        :param freq: 词频
+        :return:
+        """
         current_node = self.trie
         for char in stop_words:
             if char not in current_node:
                 current_node[char] = {}
             current_node = current_node[char]
-        current_node['freq'] = freq
+        current_node['freq'] = freq  # 词语结束记录词频，同时作为标记
 
-
-    def find_all_trie(self, words):
+    def find_all_prefix(self, words):
+        """
+        对于输入词，获取该词在词库中存在的所有前缀 （"北京大学" 所有前缀："北"、"北京"、"北京大学"）
+        :param words: 待获取前缀的词语
+        :return:
+        """
         current_node = self.trie
         result = set()
         for i in range(len(words)):
-            if words[i] in current_node:
+            # 判断当前节点下是否存在words[i]对应的字
+            if words[i] not in current_node:
+                break
+            else:
                 current_node = current_node[words[i]]
                 if 'freq' in current_node:
-                    result.add((words[0:i+1], current_node['freq']))
-                continue
-            break
-        if len(result) == 0:
-            return
-        else:
-            return result
+                    result.add((words[0:i + 1], current_node['freq']))
+
+        return result if len(result) != 0 else None
 
     def get_words_freq(self, words):
+        """
+        获取指定词语词频
+        :param words:
+        :return:
+        """
         current_node = self.trie
         for i in range(len(words)):
             if words[i] in current_node:
                 current_node = current_node[words[i]]
             else:
                 return None
-        if 'freq' not in current_node:
-            return None
-        return current_node['freq']
+
+        return current_node['freq'] if 'freq' in current_node else None
+
 
 class AttrDict(dict):
     """Dict that can get attribute by dot"""
