@@ -87,5 +87,6 @@ def test_all():
     test_single_sentence_evaluation()
     test_file_evaluation()
 
+
 if __name__ == '__main__':
     test_all()

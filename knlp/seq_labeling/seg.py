@@ -9,10 +9,11 @@
 # -----------------------------------------------------------------------#
 
 import jieba
-from math import log
+
 from knlp.common.constant import allow_speech_tags
 from knlp.seq_labeling.hmm.inference import Inference
-from knlp.utils.util import get_default_stop_words_file, get_stop_words_train_file, Trie
+from knlp.seq_labeling.trie_seg.inference import TrieInference
+from knlp.utils.util import get_default_stop_words_file
 
 
 class Segmentor(object):
@@ -31,6 +32,7 @@ class Segmentor(object):
             stop_words_file: string, 保存停止词的文件路径，utf8编码，每行一个停止词。若不是str类型，则使用默认的停止词
             allow_speech_tags: list, 词性列表，用于过滤。只保留需要保留的词性
         """
+
         self.stop_words = set()
         self.default_speech_tag_filter = allow_speech_tags
         self.private_vacab = private_vocab
@@ -63,6 +65,7 @@ class Segmentor(object):
         if not seg_method:
             # TODO raise an exception
             return None
+
         word_list = seg_method(text)
 
         if function_name == "jieba_cut":  # 目前只支持jieba的词性标注
@@ -126,84 +129,16 @@ class Segmentor(object):
         pass
 
     @classmethod
-    def trie_seg(cls, sentence, model):
+    def trie_seg(cls, sentence, model=None):
         """
         return result cut by trie
 
         Args:
             sentence: string
-            model: 不同模式，暂时只实现精准模式
+            model:
 
         Returns: list of string
 
         """
-        # 初始化字典
-        trie = Trie()
-        dict_file = get_stop_words_train_file()
-        with open(dict_file, 'r', encoding='utf-8') as f:
-            for word in f:
-                trie.insert(word.split(" ")[0], word.split(" ")[1])
-                trie.freq_total += int(word.split(" ")[1])
-
-        DAG = cls.get_DAG(sentence, trie)
-
-        route = cls.get_route(DAG, sentence, trie)
-
-        return cls.get_cut_result(route, sentence)
-
-    @classmethod
-    def get_cut_result(cls, route, sentence):
-        i = 0
-        result = []
-        while i < len(sentence):
-            stop = route[i][1] + 1
-            result.append(sentence[i:stop])
-            i = stop
-        # print(result)
-        return result
-
-    @classmethod
-    def get_route(cls, DAG, sentence, trie):
-        """
-        求大概率路径思路: 从后往前遍历,求出每一个词到最后一个词的最大概率路径是哪一条并记录以复用
-        :param DAG:
-        :param sentence:
-        :param trie:
-        :return:
-        """
-        N = len(sentence)
-        route = {N: (0, 0)}
-        log_freq_total = log(trie.freq_total)
-        for idx in range(N - 1, -1, -1):
-            temp_list = []
-            for pos in DAG[idx]:
-                words_freq = trie.get_words_freq(sentence[idx:pos + 1])
-                idx_freq = log(int(words_freq) or 1) - log_freq_total + route[pos + 1][0]
-                temp_list.append((idx_freq, pos))
-            route[idx] = max(temp_list)
-        # print(route)
-        return route
-
-    @classmethod
-    def get_DAG(cls, sentence, trie):
-        """
-        查找前缀，构成有向无环图
-        :param sentence:
-        :param trie:
-        :return:
-        """
-        DAG = {}
-        for i in range(len(sentence)):
-            arr = []
-            words = trie.find_all_trie(sentence[i:])
-
-            if not words:
-                # 一个前缀都没有的情况,暂时不处理
-                pass
-            for word in words:
-                arr.append(len(word[0]) - 1 + i)
-            arr.sort()
-            DAG[i] = arr
-            # print(words)
-        # print(DAG)
-        return DAG
+        trie = TrieInference()
+        return trie.knlp_seg(sentence)
