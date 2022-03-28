@@ -1,11 +1,13 @@
+# -*- coding:UTF-8 -*-
+
 import json
 import sys
 from collections import defaultdict
 
 from knlp.common.constant import KNLP_PATH
+from train import Train
 
-
-class Train:
+class pin_Train(Train):
     """
     这个类要实现对以下四个信息的获取：
     状态集合：把所有的拼音记录下来，隐藏状态也是我们自己定义的标签，为拼音对应的汉字
@@ -17,13 +19,13 @@ class Train:
     观测序列：这个是我们在inference的时候会使用到的信息
     """
 
-    def __init__(self, vocab_set_path=None, training_data_path=None, test_data_path=None):
+    def __init__(self, vocab_set_path, training_data_path, test_data_path = None):
 
-        self._state_set = {}
+        super(pin_Train, self).__init__()
         self._transition_pro = {}
-        self._transition_pro_ = {'data': self._transition_pro}
+        self._transition_pro_ = {'data':self._transition_pro}
         self._emission_pro = {}
-        self._emission_pro_={'data':self._emission_pro , 'default':1e-200}
+        self._emission_pro_ = {'data':self._emission_pro, 'default':1e-200}
         self._init_state_set = {}
         self.vocab_set_path = ""
         self.training_data_path = ""
@@ -32,7 +34,6 @@ class Train:
         if vocab_set_path and training_data_path:
             self.init_variable(vocab_set_path=vocab_set_path, training_data_path=training_data_path,
                                test_data_path=test_data_path)
-
 
     def init_variable(self, vocab_set_path=None, training_data_path=None, test_data_path=None):
         self.vocab_set_path = KNLP_PATH + "/knlp/data/seg_data/train/pin_hanzi.txt" if not vocab_set_path else vocab_set_path
@@ -44,25 +45,6 @@ class Train:
         with open(self.training_data_path,encoding='utf-8') as f:
             self.training_data = f.readlines()
 
-    @property
-    def state_set(self):
-        self.set_state()
-        return self._state_set
-
-    @property
-    def transition_pro(self):
-        self.set_transition_pro()
-        return self._transition_pro_
-
-    @property
-    def emission_pro(self):
-        self.set_emission_pro()
-        return self._emission_pro_
-
-    @property
-    def init_state_set(self):
-        self.set_init_state_set()
-        return self._init_state_set
 
     def set_state(self):
         self._state_set["hidden_state"] = []
@@ -78,6 +60,15 @@ class Train:
             if not (line in self._state_set["observation_state"] or line == '\n'):
                 self._state_set["observation_state"].append(line[:-1])
 
+    @property
+    def transition_pro(self):
+        self.set_transition_pro()
+        return self._transition_pro_
+
+    @property
+    def emission_pro(self):
+        self.set_emission_pro()
+        return self._emission_pro_
 
     def set_transition_pro(self):
         """
@@ -124,7 +115,7 @@ class Train:
 
         tot2 = len(self._transition_pro)
         if tot2 != 0:
-            self._transition_pro['default'] = 1e-200
+            self._transition_pro_['default'] = 1e-200
 
 
     def set_emission_pro(self):
@@ -173,6 +164,11 @@ class Train:
             self._init_state_set[start_label] = cnt / cnt_sum
 
     def get_pinyin_dict(self):
+
+
+        "建立拼音字典树"
+
+
         f = open(KNLP_PATH + "/knlp/data/seg_data/train/pin_hanzi.txt", encoding='utf-8')
         # 按行读取
         self.pinyin_to_chinese = {}
@@ -189,12 +185,6 @@ class Train:
                 self.pinyin_to_chinese[line[0]] = line[-1]
 
 
-    @staticmethod
-    def save_model(file_path, data, format="json"):
-        if format == "json":
-            with open(file_path, "w") as f:
-                json.dump(data, f, ensure_ascii=False, indent=2)
-
     def build_model(self, state_set_save_path=None, transition_pro_save_path=None, emission_pro_save_path=None,
                     init_state_set_save_path=None):
         """
@@ -207,11 +197,11 @@ class Train:
         emission_pro = KNLP_PATH + "/knlp/model/hmm/pin_emission_pro.json" if not emission_pro_save_path else emission_pro_save_path + "/pin_emission_pro.json"
         init_state_set = KNLP_PATH + "/knlp/model/hmm/pin_init_state_set.json" if not init_state_set_save_path else init_state_set_save_path + "/pin_init_state_set.json"
         pin_dic = KNLP_PATH + "/knlp/model/hmm/pinyin_dic.json" if not init_state_set_save_path else init_state_set_save_path + "/pinyin_dic.json"
-        self.save_model(file_path=state_set, data=self.state_set)
-        self.save_model(file_path=transition_pro, data=self.transition_pro)
-        self.save_model(file_path=emission_pro, data=self.emission_pro)
-        self.save_model(file_path=init_state_set, data=self.init_state_set)
-        self.save_model(file_path=pin_dic, data=self.pin_dic)
+        Train.save_model(file_path=state_set, data=self.state_set)
+        Train.save_model(file_path=transition_pro, data=self.transition_pro)
+        Train.save_model(file_path=emission_pro, data=self.emission_pro)
+        Train.save_model(file_path=init_state_set, data=self.init_state_set)
+        Train.save_model(file_path=pin_dic, data=self.pin_dic)
 
 
 if __name__ == '__main__':
@@ -225,7 +215,7 @@ if __name__ == '__main__':
         vocab_set_path = args[1]
         training_data_path = args[2]
 
-    a = Train(vocab_set_path=vocab_set_path, training_data_path=training_data_path)
+    a = pin_Train(vocab_set_path=vocab_set_path, training_data_path=training_data_path)
     a.init_variable()
     a.build_model()
     print('训练完成')
