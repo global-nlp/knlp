@@ -1,5 +1,4 @@
 # -*-coding:utf-8-*-
-import os
 import pickle
 
 from knlp.seq_labeling.crf.crf import CRFModel
@@ -9,6 +8,7 @@ from knlp.common.constant import KNLP_PATH
 class Train:
     """
     这个类要实现针对不同task的训练语料数据的加载，构建并保存对应模型。
+    这里的训练主要是训练出能够对输入拼音序列进行分割的模型，因此实现和中文分词相同，只不过读入的语料数据不同。
     """
 
     def __init__(self, data_path):
