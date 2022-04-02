@@ -7,9 +7,10 @@
 # Created Time: 2021-09-04
 # Description:
 # -----------------------------------------------------------------------#
+import torch.nn as nn
 
 
-class BaseNNModel:
+class BaseNNModel(nn.Module):
     """
     This class made a base model, all nn related method will be derived from this class
 
