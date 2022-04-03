@@ -65,7 +65,7 @@ if __name__ == "__main__":
     test = Inference()
 
     CRF = CRFModel()
-    CRF_MODEL_PATH = KNLP_PATH + "/knlp/model/crf/pinyin_segment.pkl"
+    CRF_MODEL_PATH = KNLP_PATH + "/knlp/model/crf/hanzi_segment.pkl"
 
     print("读取数据...")
     to_be_pred = "冬天到了，春天还会远吗？"
