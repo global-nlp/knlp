@@ -1,9 +1,9 @@
 # coding: utf-8
-import os
 import json
 import math
-from knlp.seq_labeling.crf.crf import CRFModel
+
 from knlp.common.constant import KNLP_PATH
+from knlp.seq_labeling.crf.crf import CRFModel
 
 
 class Inference:
@@ -110,7 +110,7 @@ class Inference:
                 viterbi_matrix[1][hidden_state] = []
                 for hidden_state0 in prev_states:  # from y0(t-1) to y(t)
                     for item in viterbi_matrix[0][hidden_state0]:
-                        __score = item[0] + math.log(max(self.get_transition(hidden_state0, hidden_state), min_prob)) +\
+                        __score = item[0] + math.log(max(self.get_transition(hidden_state0, hidden_state), min_prob)) + \
                                   math.log(max(self.get_emission(hidden_state, cur_obs), min_prob))
                         __path = item[1] + [hidden_state]
                         dp = (__score, __path)
@@ -187,4 +187,3 @@ if __name__ == '__main__':
             out.extend(res[0][1])
 
     print("按照两个字一组划分后的预测结果：" + str(out))
-

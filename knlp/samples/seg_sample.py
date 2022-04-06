@@ -22,4 +22,3 @@ if __name__ == '__main__':
     text = "固定词语的搭配测试"
     res = sample_seg(text)
     print(res)
-
