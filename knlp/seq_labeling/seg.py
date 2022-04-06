@@ -30,6 +30,7 @@ class Segmentor(object):
         Args:
             stop_words_file: string, 保存停止词的文件路径，utf8编码，每行一个停止词。若不是str类型，则使用默认的停止词
             allow_speech_tags: list, 词性列表，用于过滤。只保留需要保留的词性
+            private_vocab: 个性化单词，用来保留这些词，防止被切分
         """
         self.stop_words = set()
         self.default_speech_tag_filter = allow_speech_tags
