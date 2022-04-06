@@ -14,7 +14,6 @@ def sample_seg(text):
     segmentor_before = Segmentor()
     res_before = segmentor_before.segment(text=text)
     # 设定固定不能拆分的词语
-    
     segmentor_after = Segmentor(private_vocab=["固定词语", "搭配"])
     res_after = segmentor_after.segment(text=text)
     return res_before, res_after

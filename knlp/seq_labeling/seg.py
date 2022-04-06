@@ -9,10 +9,11 @@
 # -----------------------------------------------------------------------#
 
 import jieba
-
 from knlp.common.constant import allow_speech_tags
+from knlp.seq_labeling.crf.inference import Inference as crf_inference
 from knlp.seq_labeling.hmm.inference import Inference
 from knlp.utils.util import get_default_stop_words_file
+from knlp.common.constant import KNLP_PATH
 
 
 class Segmentor(object):
@@ -113,7 +114,7 @@ class Segmentor(object):
         return list(test.cut(sentence))
 
     @classmethod
-    def crf_seg(cls, sentence, model):
+    def crf_seg(cls, sentence, model=KNLP_PATH + "/knlp/model/crf/hanzi_segment.pkl"):
         """
         return result cut by crf
 
@@ -124,7 +125,10 @@ class Segmentor(object):
         Returns: list of string
 
         """
-        pass
+        test = crf_inference()
+
+        test.spilt_predict(sentence, model)
+        return test.out_sentence
 
     @classmethod
     def trie_seg(cls, sentence, model):
