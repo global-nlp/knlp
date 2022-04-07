@@ -42,7 +42,7 @@ class Inference:
                   init_state_set_save_path=None, save_format="json"):
         def helper(file_path, save_format="json"):
             if save_format == "json":
-                with open(file_path) as f:
+                with open(file_path, encoding='utf-8') as f:
                     return json.load(f)
 
         state_set = KNLP_PATH + "/knlp/model/hmm/state_set.json" if not state_set_save_path else state_set_save_path + "/state_set.json"
