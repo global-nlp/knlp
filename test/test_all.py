@@ -7,8 +7,10 @@
 # Created Time: 2021-01-27
 # Description:
 # -----------------------------------------------------------------------#
+import time
 
 from knlp import Knlp
+from knlp.utils import util
 from knlp.information_extract import get_keyword, get_key_sentences
 from knlp.seq_labeling import seg, ner, evaluation_seg_files, evaluation_seg
 from knlp.seq_sentiment import sentiment
@@ -78,6 +80,12 @@ def test_file_evaluation():
     print(res)
 
 
+def test_check_file():
+    start = time.time()
+    util.check_file("../knlp/data")
+    print(time.time() - start)
+
+
 def test_all():
     test_knlp()
     test_seg()
@@ -86,6 +94,8 @@ def test_all():
     test_get_key_sentences()
     test_single_sentence_evaluation()
     test_file_evaluation()
+    test_check_file()
+
 
 if __name__ == '__main__':
     test_all()
