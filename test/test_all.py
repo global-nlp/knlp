@@ -12,7 +12,7 @@ from knlp import Knlp
 from knlp import get_keyword, get_key_sentences, seg, ner, evaluation_seg_files, evaluation_seg, sentiment
 
 # import time
-# from knlp.utils import util  # 文件check，暂时先不上线
+# from knlp.utils import util
 
 TEST_SINGLE_SENTENCE = "KNLP是一个NLP工具包，主要支持中文的各种NLP基础操作"
 
@@ -93,7 +93,7 @@ def test_all():
     test_get_key_sentences()
     test_single_sentence_evaluation()
     test_file_evaluation()
-    test_check_file()
+    # test_check_file()   # 文件check，暂时先不上线
 
 
 if __name__ == '__main__':
