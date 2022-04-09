@@ -74,3 +74,5 @@ python test/test_all.py
 
 Clue榜单评估结果
 
+# NLP新人入门
+推荐阅读：https://dukecourse.feishu.cn/docs/doccnJF2Xt8xHtGf0P9RSHO3eBb

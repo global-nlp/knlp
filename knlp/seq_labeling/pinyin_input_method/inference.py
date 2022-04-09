@@ -25,10 +25,10 @@ class Inference:
             with open(file_path) as f:
                 return json.load(f)
 
-        self.pinyin_hanzi = helper(KNLP_PATH + r'/knlp/data/pinyin_input_data/pinyin_hanzi.json')
-        self.start_state = helper(KNLP_PATH + r'/knlp/data/pinyin_input_data/start_state.json')
-        self.emission_pro = helper(KNLP_PATH + r'/knlp/data/pinyin_input_data/emission_pro.json')
-        self.transition_pro = helper(KNLP_PATH + r'/knlp/data/pinyin_input_data/transition_pro.json')
+        self.pinyin_hanzi = helper(KNLP_PATH + '/knlp/model/hmm/pinyin_input_data/pinyin_hanzi.json')
+        self.start_state = helper(KNLP_PATH + '/knlp/model/hmm/pinyin_input_data/start_state.json')
+        self.emission_pro = helper(KNLP_PATH + '/knlp/model/hmm/pinyin_input_data/emission_pro.json')
+        self.transition_pro = helper(KNLP_PATH + '/knlp/model/hmm/pinyin_input_data/transition_pro.json')
 
     def init_state_set(self, state):
         """
