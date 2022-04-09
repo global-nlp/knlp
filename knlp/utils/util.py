@@ -33,13 +33,18 @@ def check_file(file_path):
     利用github的zip下载形式，下载到本地，并解压到对应位置。
     暂未实现多个模块下的数据文件检测(也可实现,统一下载，解压后移动到不同模块下即可)
 
-    存在的问题：国内有时候连不上githu，会经常出现连接不上的情况。
+    存在的问题：国内有时候连不上github，会经常出现连接不上的情况。
     数据文件80多M, github项目10M左右，该方式下载网络好的时候就几秒，慢的时候几十秒
-    :param file_path: 检测文件夹路径
-    :return:
+
+    Args:
+        file_path: string, 待检测文件夹路径
+
+    Returns:
+
     """
     if not os.path.exists(file_path):  # "../knlp/data"
-        origin_file_url = "https://github.com/Kevin1906721262/knlp-file/archive/refs/heads/main.zip"
+        origin_file_url = "https://github.com/Kevin1906721262/knlp-file" \
+                          "/archive/refs/heads/main.zip "
         if not os.path.exists("../tmp"):
             os.mkdir("../tmp")
         temp_file_path = "../tmp/main.zip"
