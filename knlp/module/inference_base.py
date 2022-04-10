@@ -20,13 +20,39 @@ class InferenceBaseClass(ABC):
         pass
 
     @abstractmethod
-    def load_mode(self, ):
+    def load_model(self, model_path: str):
+        """
+        This function could load model.
+
+        Args:
+            model_path:
+
+        Returns:
+
+        """
         pass
 
     @abstractmethod
     def predict(self, ):
+        """
+        use model to do predict
+
+        Returns:
+
+        """
         pass
 
     @abstractmethod
-    def predict_file(self, ):
+    def predict_file(self, input_file_path: str, output_file_path: str):
+        """
+        predict a file.
+
+        Args:
+            input_file_path: string
+            output_file_path: string
+
+        Returns:
+
+        """
+
         pass

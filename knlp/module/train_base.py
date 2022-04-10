@@ -23,6 +23,11 @@ class TrainBaseClass(ABC):
 
     @abstractmethod
     def train(self):
+        """
+        General training function
+        Returns:
+
+        """
         pass
 
     @abstractmethod
@@ -35,11 +40,20 @@ class TrainBaseClass(ABC):
         pass
 
     @abstractmethod
-    def save_nodel(self):
+    def save_model(self, model_path: str):
+        """
+        Save the model trained
+
+        Args:
+            model_path:
+
+        Returns:
+
+        """
         pass
 
     @abstractmethod
-    def load_model(self, model_path):
+    def load_model(self, model_path: str):
         """
         This function could load model.
 
