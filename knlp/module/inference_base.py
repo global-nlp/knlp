@@ -7,7 +7,7 @@
 # Created Time: 2022-04-10
 # Description:
 # -----------------------------------------------------------------------#
-from abc import ABC
+from abc import ABC, abstractmethod
 
 
 class InferenceBaseClass(ABC):
@@ -19,11 +19,14 @@ class InferenceBaseClass(ABC):
     def __init__(self):
         pass
 
+    @abstractmethod
     def load_mode(self, ):
         pass
 
+    @abstractmethod
     def predict(self, ):
         pass
 
+    @abstractmethod
     def predict_file(self, ):
         pass

@@ -8,7 +8,7 @@
 # Description:
 # -----------------------------------------------------------------------#
 
-from abc import ABC
+from abc import ABC, abstractmethod
 
 
 class TrainBaseClass(ABC):
@@ -21,23 +21,25 @@ class TrainBaseClass(ABC):
     def __init__(self):
         pass
 
+    @abstractmethod
     def train(self):
         pass
 
+    @abstractmethod
     def eval(self):
+        """
+        General evaluation for the model trained
+        Returns:
+
+        """
         pass
 
-    def test(self):
+    @abstractmethod
+    def save_nodel(self):
         pass
 
-    def train_eval_test(self):
-        pass
-
-    def _save_nodel(self):
-        pass
-
-    @staticmethod
-    def load_model(model_path):
+    @abstractmethod
+    def load_model(self, model_path):
         """
         This function could load model.
 
