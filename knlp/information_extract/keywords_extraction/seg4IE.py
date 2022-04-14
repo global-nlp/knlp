@@ -44,7 +44,7 @@ class WordSegmentation(Segmentor):
 class SentenceSegmentation(object):
     """ 分句 """
 
-    def __init__(self, delimiters="|".join(sentence_delimiters)):
+    def __init__(self, delimiters="".join(sentence_delimiters)):
         """
 
 
@@ -66,7 +66,7 @@ class SentenceSegmentation(object):
         # text is a passage seq is a paragraph
         symbol = "[" + self.delimiters + "]+"
         res = re.split(symbol, text)
-        res = [s.strip() for s in res if len(s.strip()) > 0]
+        res = [s.strip() for s in res if s.strip()]
         return res
 
 

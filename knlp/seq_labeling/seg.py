@@ -74,8 +74,11 @@ class Segmentor(object):
                 word_list = [w.word.strip() for w in word_list if w.flag != 'x']
             else:
                 word_list = [w.word.strip() for w in word_list]
+        else:
+            # 未开发的保证word_list不为None
+            word_list = []
 
-        word_list = [word for word in word_list if len(word) > 0]
+        word_list = [word for word in word_list if word]
 
         if lower:
             word_list = [word.lower() for word in word_list]
