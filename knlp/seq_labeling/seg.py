@@ -9,10 +9,11 @@
 # -----------------------------------------------------------------------#
 
 import jieba
-
 from knlp.common.constant import allow_speech_tags
+from knlp.seq_labeling.crf.inference import Inference as crf_inference
 from knlp.seq_labeling.hmm.inference import Inference
 from knlp.utils.util import get_default_stop_words_file
+from knlp.common.constant import KNLP_PATH
 
 
 class Segmentor(object):
@@ -30,6 +31,7 @@ class Segmentor(object):
         Args:
             stop_words_file: string, 保存停止词的文件路径，utf8编码，每行一个停止词。若不是str类型，则使用默认的停止词
             allow_speech_tags: list, 词性列表，用于过滤。只保留需要保留的词性
+            private_vocab: 个性化单词，用来保留这些词，防止被切分
         """
         self.stop_words = set()
         self.default_speech_tag_filter = allow_speech_tags
@@ -115,7 +117,7 @@ class Segmentor(object):
         return list(test.cut(sentence))
 
     @classmethod
-    def crf_seg(cls, sentence, model):
+    def crf_seg(cls, sentence, model=KNLP_PATH + "/knlp/model/crf/hanzi_segment.pkl"):
         """
         return result cut by crf
 
@@ -126,7 +128,10 @@ class Segmentor(object):
         Returns: list of string
 
         """
-        pass
+        test = crf_inference()
+
+        test.spilt_predict(sentence, model)
+        return test.out_sentence
 
     @classmethod
     def trie_seg(cls, sentence, model):
