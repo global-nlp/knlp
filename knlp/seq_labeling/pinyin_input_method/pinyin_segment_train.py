@@ -1,8 +1,8 @@
 # -*-coding:utf-8-*-
 import pickle
 
-from knlp.seq_labeling.crf.crf import CRFModel
 from knlp.common.constant import KNLP_PATH
+from knlp.seq_labeling.crf.crf import CRFModel
 
 
 class Train:
@@ -47,7 +47,6 @@ class Train:
 
 
 if __name__ == "__main__":
-
     train_data_path = KNLP_PATH + "/knlp/data/pinyin_segment.txt"
 
     print("正在读入数据进行训练...")

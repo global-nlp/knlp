@@ -46,7 +46,6 @@ def load_and_test_inference(model_save_file, sentence):
 
 
 if __name__ == '__main__':
-
     training_data_path = KNLP_PATH + "/knlp/data/hanzi_segment.txt"
     model_save_file = KNLP_PATH + "/knlp/model/crf/hanzi_segment.pkl"
     crf_train(training_data_path=training_data_path, model_save_file=model_save_file)

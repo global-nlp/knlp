@@ -8,7 +8,6 @@ from knlp.common.constant import KNLP_PATH
 class Inference:
 
     def __init__(self):
-
         self.label_prediction = []  # 预测标签序列
         self.out_sentence = []  # 预测结果序列
 
@@ -32,9 +31,9 @@ class Inference:
                 self.label_prediction.append(crf_pred)
             else:
                 for char in re_no_zh.split(block):  # 把剩下的字符分出来
-                    if block:
-                        self.label_prediction.append(block)
-                        self.out_sentence.append(block)
+                    if char:
+                        self.label_prediction.append(char)
+                        self.out_sentence.append(char)
                     break
 
     def cut(self, sentence1, sentence2):
@@ -63,8 +62,6 @@ class Inference:
 
 if __name__ == "__main__":
     test = Inference()
-
-    CRF = CRFModel()
     CRF_MODEL_PATH = KNLP_PATH + "/knlp/model/crf/hanzi_segment.pkl"
 
     print("读取数据...")
