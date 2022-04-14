@@ -16,9 +16,9 @@ class SegInference:
         self.model_infos = {
             "BiLSTM_CRF": {
                 "kwargs": {
-                    "model_path": KNLP_PATH + "/knlp/nn/bilstm_crf/model/bilstm_crf_seg.pkl",
-                    "word2idx_path": KNLP_PATH + "/knlp/nn/bilstm_crf/model/word2idx.json",
-                    "idx2tag_path": KNLP_PATH + "/knlp/nn/bilstm_crf/model/tag2idx.json"
+                    "model_path": KNLP_PATH + "/knlp/nn/bilstm_crf/model_bilstm_crf/bilstm_crf_seg.pkl",
+                    "word2idx_path": KNLP_PATH + "/knlp/nn/bilstm_crf/model_bilstm_crf/word2idx.json",
+                    "idx2tag_path": KNLP_PATH + "/knlp/nn/bilstm_crf/model_bilstm_crf/tag2idx.json"
                 },
                 "Inference": InferenceBiLSTMCRF
             }
