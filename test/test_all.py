@@ -9,14 +9,11 @@
 # -----------------------------------------------------------------------#
 
 from knlp import Knlp
+from knlp.utils.util import Trie
 from knlp import get_keyword, get_key_sentences, seg, ner, evaluation_seg_files, evaluation_seg, sentiment
 
 # import time
 # from knlp.utils import util
-from knlp.information_extract import get_keyword, get_key_sentences
-from knlp.seq_labeling import seg, ner, evaluation_seg_files, evaluation_seg
-from knlp.seq_sentiment import sentiment
-from knlp.utils.util import Trie
 
 TEST_SINGLE_SENTENCE = "KNLP是一个NLP工具包，主要支持中文的各种NLP基础操作"
 
