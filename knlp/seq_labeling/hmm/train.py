@@ -225,10 +225,10 @@ class Train:
 
         Returns:
         """
-        state_set = KNLP_PATH + "/knlp/model/hmm/state_set.json" if not state_set_save_path else state_set_save_path + "/state_set.json"
-        transition_pro = KNLP_PATH + "/knlp/model/hmm/transition_pro.json" if not transition_pro_save_path else transition_pro_save_path + "/transition_pro.json"
-        emission_pro = KNLP_PATH + "/knlp/model/hmm/emission_pro.json" if not emission_pro_save_path else emission_pro_save_path + "/emission_pro.json"
-        init_state_set = KNLP_PATH + "/knlp/model/hmm/init_state_set.json" if not init_state_set_save_path else init_state_set_save_path + "/init_state_set.json"
+        state_set = KNLP_PATH + "/knlp/model/hmm/seg/state_set.json" if not state_set_save_path else state_set_save_path + "/state_set.json"
+        transition_pro = KNLP_PATH + "/knlp/model/hmm/seg/transition_pro.json" if not transition_pro_save_path else transition_pro_save_path + "/transition_pro.json"
+        emission_pro = KNLP_PATH + "/knlp/model/hmm/seg/emission_pro.json" if not emission_pro_save_path else emission_pro_save_path + "/emission_pro.json"
+        init_state_set = KNLP_PATH + "/knlp/model/hmm/seg/init_state_set.json" if not init_state_set_save_path else init_state_set_save_path + "/init_state_set.json"
         self.save_model(file_path=state_set, data=self.state_set)
         self.save_model(file_path=transition_pro, data=self.transition_pro)
         self.save_model(file_path=emission_pro, data=self.emission_pro)

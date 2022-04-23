@@ -11,9 +11,12 @@
 # 2. 函数运行进度条
 # 3. 计算函数运行时间的装饰器
 # -----------------------------------------------------------------------#
-
+import os
 import sys
 import time
+import shutil
+import zipfile
+import requests
 from functools import wraps
 
 from knlp.common.constant import KNLP_PATH
@@ -100,6 +103,44 @@ class Trie:
                 return None
 
         return current_node['freq'] if 'freq' in current_node else None
+
+
+def check_file(file_path):
+    """
+    检测数据文件是否存在，不存在则进行下载。
+    目前用于测试，将knlp/data数据文件上传到 https://github.com/Kevin1906721262/knlp-file ，
+    利用github的zip下载形式，下载到本地，并解压到对应位置。
+    暂未实现多个模块下的数据文件检测(也可实现,统一下载，解压后移动到不同模块下即可)
+
+    存在的问题：国内有时候连不上github，会经常出现连接不上的情况。
+    数据文件80多M, github项目10M左右，该方式下载网络好的时候就几秒，慢的时候几十秒
+
+    Args:
+        file_path: string, 待检测文件夹路径
+
+    Returns:
+
+    """
+    if not os.path.exists(file_path):  # "../knlp/data"
+        origin_file_url = "https://github.com/Kevin1906721262/knlp-file" \
+                          "/archive/refs/heads/main.zip "
+        if not os.path.exists("../tmp"):
+            os.mkdir("../tmp")
+        temp_file_path = "../tmp/main.zip"
+        try:
+            f = requests.get(origin_file_url)
+        except Exception as e:
+            print(e)
+            print("网络异常，数据文件下载失败")
+        else:
+            with open(temp_file_path, "wb") as code:
+                code.write(f.content)
+            z = zipfile.ZipFile(temp_file_path, 'r')
+            z.extractall(path="../tmp/")
+            z.close()
+
+            shutil.move("../tmp/knlp-file-main/data", "../knlp/data")
+            shutil.rmtree("../tmp")
 
 
 class AttrDict(dict):

@@ -9,6 +9,10 @@
 # -----------------------------------------------------------------------#
 
 from knlp import Knlp
+from knlp import get_keyword, get_key_sentences, seg, ner, evaluation_seg_files, evaluation_seg, sentiment
+
+# import time
+# from knlp.utils import util
 from knlp.information_extract import get_keyword, get_key_sentences
 from knlp.seq_labeling import seg, ner, evaluation_seg_files, evaluation_seg
 from knlp.seq_sentiment import sentiment
@@ -79,6 +83,12 @@ def test_file_evaluation():
     print(res)
 
 
+# def test_check_file():
+#     start = time.time()
+#     util.check_file("../knlp/data")
+#     print(time.time() - start)
+
+
 def test_Trie():
     """
         trie树获插入、获取前缀、获取词频测试
@@ -105,6 +115,7 @@ def test_all():
     test_single_sentence_evaluation()
     test_file_evaluation()
     test_Trie()
+    # test_check_file()   # 文件check，暂时先不上线
 
 
 if __name__ == '__main__':
