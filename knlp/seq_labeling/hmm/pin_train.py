@@ -7,7 +7,7 @@ from collections import defaultdict
 from knlp.common.constant import KNLP_PATH
 from train import Train
 
-class pin_Train(Train):
+class PinYinTrain(Train):
     """
     这个类要实现对以下四个信息的获取：
     状态集合：把所有的拼音记录下来，隐藏状态也是我们自己定义的标签，为拼音对应的汉字
@@ -19,25 +19,26 @@ class pin_Train(Train):
     观测序列：这个是我们在inference的时候会使用到的信息
     """
 
-    def __init__(self, vocab_set_path, training_data_path, test_data_path = None):
+    def __init__(self, vocab_set_path = None, training_data_path = None, test_data_path = None):
 
-        super(pin_Train, self).__init__()
+        super(PinYinTrain, self).__init__()
         self._transition_pro = {}
-        self._transition_pro_ = {'data':self._transition_pro}
+        self._transition_pro_final = {'data':self._transition_pro}
         self._emission_pro = {}
-        self._emission_pro_ = {'data':self._emission_pro, 'default':1e-200}
+        self._emission_pro_final = {'data':self._emission_pro, 'default':1e-200}
         self._init_state_set = {}
         self.vocab_set_path = ""
         self.training_data_path = ""
         self.vocab_data = []
         self.training_data = []
+        self.pin_dic = {}
         if vocab_set_path and training_data_path:
             self.init_variable(vocab_set_path=vocab_set_path, training_data_path=training_data_path,
                                test_data_path=test_data_path)
 
     def init_variable(self, vocab_set_path=None, training_data_path=None, test_data_path=None):
         self.vocab_set_path = KNLP_PATH + "/knlp/data/seg_data/train/pin_hanzi.txt" if not vocab_set_path else vocab_set_path
-        self.training_data_path = KNLP_PATH + "/knlp/data/seg_data/train/pku_hmm_training_data_sample.txt" if not training_data_path else training_data_path
+        self.training_data_path = KNLP_PATH + "/knlp/data/seg_data/train/pin_hanzi.txt" if not training_data_path else training_data_path
         # self.test_data_path = KNLP_PATH + "/knlp/data/seg_data/train/pku_hmm_test_data.txt" if not test_data_path else test_data_path
         with open(self.vocab_set_path,encoding='utf-8') as f:
             self.vocab_data = f.readlines()
@@ -63,12 +64,16 @@ class pin_Train(Train):
     @property
     def transition_pro(self):
         self.set_transition_pro()
-        return self._transition_pro_
+        return self._transition_pro_final
 
     @property
     def emission_pro(self):
         self.set_emission_pro()
-        return self._emission_pro_
+        return self._emission_pro_final
+
+    def pin_dic(self):
+        self.set_pin_dic()
+        return self.pin_dic
 
     def set_transition_pro(self):
         """
@@ -115,7 +120,7 @@ class pin_Train(Train):
 
         tot2 = len(self._transition_pro)
         if tot2 != 0:
-            self._transition_pro_['default'] = 1e-200
+            self._transition_pro_final['default'] = 1e-200
 
 
     def set_emission_pro(self):
@@ -163,7 +168,7 @@ class pin_Train(Train):
         for start_label, cnt in count_dict.items():
             self._init_state_set[start_label] = cnt / cnt_sum
 
-    def get_pinyin_dict(self):
+    def set_pin_dic(self):
 
 
         "建立拼音字典树"
@@ -215,7 +220,7 @@ if __name__ == '__main__':
         vocab_set_path = args[1]
         training_data_path = args[2]
 
-    a = pin_Train(vocab_set_path=vocab_set_path, training_data_path=training_data_path)
+    a = PinYinTrain(vocab_set_path=vocab_set_path, training_data_path=training_data_path)
     a.init_variable()
     a.build_model()
     print('训练完成')
