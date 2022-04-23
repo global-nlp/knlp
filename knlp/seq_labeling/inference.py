@@ -7,12 +7,14 @@
 # Created Time: 2021-01-27
 # Description:
 # -----------------------------------------------------------------------#
-
+import sys
 import time
+import jieba
 from threading import Thread
 
 from knlp.seq_labeling.ner import NER
 from knlp.seq_labeling.seg import Segmentor
+from knlp.seq_labeling.trie_seg.inference import TrieInference
 from knlp.utils.util import get_wait_to_cut_file
 
 
@@ -133,11 +135,7 @@ def jieba_cut(text):
         knlp_file.write(str(result_jieba))
 
 
-if __name__ == '__main__':
-    wait_file = get_wait_to_cut_file()
-    with open(wait_file, "r", encoding="utf-8") as f:
-        txt_data = f.read()
-
+def compare_knlp_jieba_cut(txt_data):
     jieba_cut(txt_data)
     knlp_cut(txt_data)
 
@@ -146,3 +144,33 @@ if __name__ == '__main__':
     t2 = Thread(target=jieba_cut, args=(txt_data,))
     t2.start()
     t1.start()
+
+
+def compare_knlp_jieba_init():
+    """
+    从字典树构建上评估一下两种结果的效果
+    Returns:
+
+    """
+    print("knlp分词字典树构建测试：")
+    start = time.time()
+    L = TrieInference()
+    print(round(time.time() - start, 2), "s")
+    memory_size = round(sys.getsizeof(L._trie.trie) / 1024 / 1024, 2)
+    print(memory_size, "M")
+
+    print("jieba分词字典树构建测试：")
+    start = time.time()
+    f = open("../data/jieba_dict.txt", 'rb')
+    L, S = jieba.Tokenizer.gen_pfdict(f)
+    print(round(time.time() - start, 2), "s")
+    memory_size = round(sys.getsizeof(L) / 1024 / 1024, 2)
+    print(memory_size, "M")
+
+
+if __name__ == '__main__':
+    with open(get_wait_to_cut_file(), "r", encoding="utf-8") as f:
+        txt_data = f.read()
+    # txt_data = "测试分词的结果是否符合预期"
+    compare_knlp_jieba_cut(txt_data)
+    compare_knlp_jieba_init()
