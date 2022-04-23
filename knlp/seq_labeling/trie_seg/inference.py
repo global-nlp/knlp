@@ -7,17 +7,18 @@
 # Created Time: 2022-03-27
 # Description: 用于trie分词的实现
 # -----------------------------------------------------------------------#
+from math import log
 
 from knlp.utils.util import get_jieba_dict_file, Trie
-from math import log
 
 
 class TrieInference:
 
     def __init__(self, dict_file=get_jieba_dict_file()):
         """
-        初始化字典树
-        :param dict_file:
+            初始化字典树
+        Args:
+            dict_file: 词库文件位置
         """
         self._trie = Trie()
         with open(dict_file, 'r', encoding='utf-8') as f:
@@ -41,21 +42,26 @@ class TrieInference:
 
 def get_DAG(sentence, trie):
     """
-    遍历获取sentence[idx:-1]所有前缀，构成有向无环图
-    :param sentence: 待分词的句子
-    :param trie: 构建好的字典树
-    :return:
+    遍历句子的每一个字，获取sentence[idx:-1]所有前缀，构成有向无环图
+    Args:
+        sentence: 待分词的句子或文本
+        trie: 构建好的字典树
+
+    Returns: 得到的有向无环图
+
     """
     DAG = {}
     for i in range(len(sentence)):
         arr = []
-        words = trie.find_all_prefix(sentence[i:])
+        all_prefix_words = trie.find_all_prefix(sentence[i:])
 
-        if not words:
-            # TODO 一个前缀都没有的情况,暂不处理
-            pass
-        for word in words:
-            arr.append(len(word[0]) - 1 + i)  # word[0] 前缀词，word[1] 词频
+        if all_prefix_words is None:
+            # sentence[i:] 在词库中获取不到前缀时，i位置的路径就是i
+            arr.append(i)
+        else:
+            # 把每一个前缀词的结束位置添加到数组 例：DAG[200] = [200,202,204]  说明200这个位置有三条路径可选
+            for words in all_prefix_words:
+                arr.append(len(words[0]) - 1 + i)  # word[0] 前缀词，word[1] 词频
         DAG[i] = arr
     return DAG
 
@@ -64,10 +70,13 @@ def get_route(DAG, sentence, trie):
     """
     求大概率路径思路: 从后往前遍历,求出sentence[idx:-1]的最大概率路径及概率
     P(idx) = max(P(sentence[idx:x]) + P(sentence[x:-1])) , x in DAG[idx]
-    :param DAG:
-    :param sentence:
-    :param trie:
-    :return:
+    Args:
+        DAG: 待分句子获取文本构成的有向无环图
+        sentence: 待分句子或文本
+        trie: 构建好的字典树
+
+    Returns: 计算得到的最大概率路径
+
     """
     N = len(sentence)
     route = {N: (0, 0)}  # route 存储idx位置 最大概率及对应路径
@@ -77,18 +86,14 @@ def get_route(DAG, sentence, trie):
         for x in DAG[idx]:
             words_freq = trie.get_words_freq(sentence[idx:x + 1])
             # [idx:-1] 的概率 由两部分组成，后一部分已计算过
-            idx_freq = log(int(words_freq) or 1) - log_freq_total + route[x + 1][0]
+            freq = 1 if words_freq is None else int(words_freq)
+            idx_freq = log(freq) - log_freq_total + route[x + 1][0]
             temp_list.append((idx_freq, x))
         route[idx] = max(temp_list)
     return route
 
 
 if __name__ == '__main__':
-    test_trie = Trie()
-    test_trie.insert("北", 20)
-    test_trie.insert("南", 20)
-    test_trie.insert("北京", 10)
-    test_trie.insert("北京大学", 50)
-    print(test_trie.trie)
-    print(test_trie.find_all_prefix("北京大学"))
-    print(test_trie.get_words_freq("北大"))
+    trieTest = TrieInference()
+    print(get_DAG("测试分词的结果是否符合预期", trieTest._trie))
+    print(trieTest.knlp_seg("测试分词的结果是否符合预期"))

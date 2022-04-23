@@ -12,6 +12,7 @@ from knlp import Knlp
 from knlp.information_extract import get_keyword, get_key_sentences
 from knlp.seq_labeling import seg, ner, evaluation_seg_files, evaluation_seg
 from knlp.seq_sentiment import sentiment
+from knlp.utils.util import Trie
 
 TEST_SINGLE_SENTENCE = "KNLP是一个NLP工具包，主要支持中文的各种NLP基础操作"
 
@@ -78,6 +79,23 @@ def test_file_evaluation():
     print(res)
 
 
+def test_Trie():
+    """
+        trie树获插入、获取前缀、获取词频测试
+    Returns:
+
+    """
+    test_trie = Trie()
+    test_trie.insert("北", 20)
+    test_trie.insert("南", 20)
+    test_trie.insert("北京", 10)
+    test_trie.insert("北京大学", 50)
+    print(test_trie.trie)
+    print(test_trie.find_all_prefix("北京大学"))
+    print(test_trie.get_words_freq("北京"))
+    print(test_trie.get_words_freq("北大"))
+
+
 def test_all():
     test_knlp()
     test_seg()
@@ -86,6 +104,7 @@ def test_all():
     test_get_key_sentences()
     test_single_sentence_evaluation()
     test_file_evaluation()
+    test_Trie()
 
 
 if __name__ == '__main__':

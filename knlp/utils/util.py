@@ -23,6 +23,10 @@ def get_jieba_dict_file():
     return KNLP_PATH + "/knlp/data/jieba_dict.txt"
 
 
+def get_wait_to_cut_file():
+    return KNLP_PATH + "/knlp/data/wait_to_cut.txt"
+
+
 def get_default_stop_words_file():
     return KNLP_PATH + "/knlp/data/stopwords.txt"
 
