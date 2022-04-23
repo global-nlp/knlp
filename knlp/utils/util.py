@@ -44,15 +44,18 @@ class Trie:
         self.trie = {}
         self.freq_total = 0
 
-    def insert(self, stop_words, freq):
+    def insert(self, dict_words, freq):
         """
-        向trie中插入词语，将词语的每一个进行插入。如果字存在，则判断词的下一个字是否存在，如果不存在则建立一颗子树
-        :param stop_words: 待插入词
-        :param freq: 词频
-        :return:
+            向trie中插入词语，将词语的每一个进行插入。如果字存在，则判断词的下一个字是否存在，如果不存在则建立一颗子树
+        Args:
+            dict_words: 词库中的词
+            freq:  词频
+
+        Returns:
+
         """
         current_node = self.trie
-        for char in stop_words:
+        for char in dict_words:
             if char not in current_node:
                 current_node[char] = {}
             current_node = current_node[char]
@@ -60,9 +63,12 @@ class Trie:
 
     def find_all_prefix(self, words):
         """
-        对于输入词，获取该词在词库中存在的所有前缀 （"北京大学" 所有前缀："北"、"北京"、"北京大学"）
-        :param words: 待获取前缀的词语
-        :return:
+            对于输入词，获取该词在词库中存在的所有前缀 （"北京大学" 所有前缀："北"、"北京"、"北京大学"）
+        Args:
+            words: 待获取前缀的词语
+
+        Returns:
+
         """
         current_node = self.trie
         result = set()
@@ -79,9 +85,12 @@ class Trie:
 
     def get_words_freq(self, words):
         """
-        获取指定词语词频
-        :param words:
-        :return:
+            获取指定词语words的词频
+        Args:
+            words:
+
+        Returns:
+
         """
         current_node = self.trie
         for i in range(len(words)):

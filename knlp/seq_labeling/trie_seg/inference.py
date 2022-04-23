@@ -22,6 +22,8 @@ class TrieInference:
         """
         self._trie = Trie()
         with open(dict_file, 'r', encoding='utf-8') as f:
+            # knlp/data/jieba_dict.txt 词库文件,获取的word为文件一行。每一行三个元素分别为(词，词频，词性) 其中 词性对照 n-名词 z-状态词 nz-状态词 v-动词 m-数量词
+            # r-代词 t-时间词 等等。词性类型较多 详见：jieba分词词性对照表 https://blog.csdn.net/u013317445/article/details/117925312
             for word in f:
                 self._trie.insert(word.split(" ")[0], word.split(" ")[1])
                 self._trie.freq_total += int(word.split(" ")[1])
