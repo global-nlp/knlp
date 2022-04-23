@@ -35,6 +35,50 @@ def seg(sentence, function_name="jieba_cut"):
     return words
 
 
+def seg_hmm(sentence):
+    """
+        This function could call different function to cut sentence
+
+    Args:
+        sentence: string
+
+    Returns: list of word
+
+    """
+    words = []
+    seg = Segmentor()
+    word_list = seg.segment(text=sentence, function_name="hmm_seg")
+
+    for word in word_list:
+        word = word.strip()
+        if not word:
+            continue
+        words.append(word)
+    return words
+
+
+def seg_crf(sentence):
+    """
+        This function could call different function to cut sentence
+
+    Args:
+        sentence: string
+
+    Returns: list of word
+
+    """
+    words = []
+    seg = Segmentor()
+    word_list = seg.segment(text=sentence, function_name="crf_seg")
+
+    for word in word_list:
+        word = word.strip()
+        if not word:
+            continue
+        words.append(word)
+    return words
+
+
 def ner(sentence, function_name="jieba_ner"):
     """
     This function could return the ner res of sentence via different function
