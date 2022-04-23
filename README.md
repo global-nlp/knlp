@@ -1,17 +1,28 @@
 # knlp
 
-这是一个工具包，主要实现对中文的NLP基础操作，本pkg的主体架构参考了snownlp和textblob，因为个人认为这种实现方式对于调用方来说最方便。
-
-这个pkg提供各种能力，也提供基础算法的训练和推理的脚本，还提供了很多现成的对各种nlp任务的评估方法以及相应的评估数据集（或者地址），提供深度学习并且面向中文开发，且功能很基础，适合于based on这个进行二次改造。
+本工具包定位为中文NLP工具包。目标用户分为两类：
+1. 无需二次开发：直接使用者
+    1. 直接利用工具包提供的模型进行推理
+    2. 调用工具包进行模型性能的评估
+2. 有二次开发需求：框架利用者
+    1. 评估自己训练的模型
+    2. 利用自己的数据训练并进行调用
 
 欢迎提出issue或者私信交流
 
 # 安装方式
 ```
+# 直接使用
 pip install knlp
 
 # FROM GITHUB SOURCE CODE
 pip install git+https://github.com/DukeEnglish/knlp.git
+
+# 本地开发使用
+下载好后，在本地目录下使用以下命令：
+pip install -e .
+这个命令是开发者模式，将会build一个soft link到python包路径下，此时在这个路径下的各种改动可以直接影响到python中安装的包
+
 ```
 # 示例方法
 ```python
@@ -46,15 +57,13 @@ python test/test_all.py
 
 # sample使用方法
 这里提供的sample方法会详细包括训练到推理，能够使用本工具训练出一个自己的模型。
-1. 序列标注的训练
-    
-    1.1 首先生成训练数据，序列标注的数据处理方法在knlp/seq_labeling/data_helper.py。数据针对的是人民日报的数据。
-    
-    1.2 借助knlp使用hmm进行分词训练，生成自己的分词器，并调用自己的分词器：samples/hmm_sample.py，进行hmm的训练：https://zhuanlan.zhihu.com/p/358825066
+- 序列标注的训练
+    - 首先生成训练数据，序列标注的数据处理方法在knlp/seq_labeling/data_helper.py。数据针对的是人民日报的数据。
+    - 借助knlp使用hmm进行分词训练，生成自己的分词器，并调用自己的分词器：samples/hmm_sample.py，进行hmm的训练：https://zhuanlan.zhihu.com/p/358825066
+    - 借助knlp使用crf进行分词训练，存储自己的分词模型：samples/hmm_sample.py，进行crf的训练：https://zhuanlan.zhihu.com/p/489288397
 
-2. 信息提取（关键词、关键短语、摘要）
-    
-    2.1 samples/IE_sample.py
+- 信息提取（关键词、关键短语、摘要）
+    - samples/IE_sample.py
 
 
 # 参考并致谢
@@ -63,10 +72,13 @@ python test/test_all.py
 - snownlp
 - jieba
 - textblob
+- sklearn-crfsuite
 - https://www.letiantian.me/2014-06-10-pagerank/
 
 # 评估结果
 离线评估
 
-Clue榜单评估结果
+CLUE榜单评估结果
 
+# NLP新人入门
+推荐阅读：https://dukecourse.feishu.cn/docs/doccnJF2Xt8xHtGf0P9RSHO3eBb
