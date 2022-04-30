@@ -30,9 +30,6 @@ def seg(sentence, function_name="jieba_cut"):
 
     """
 
-    if "knlp_cut".__eq__(function_name):
-        return Segmentor.trie_seg(sentence=sentence, model="test")
-
     words = []
     seg = Segmentor()
     word_list = seg.segment(text=sentence, function_name=function_name)
@@ -118,10 +115,11 @@ def knlp_cut(text):
         knlp 分词测试
     """
     start_time = time.time()
-    result_knlp = seg(txt_data, "knlp_cut")
+    result_knlp = seg(txt_data, "trie_seg")
     print("knlp分词耗时：", int(round(time.time() * 1000)) - int(round(start_time * 1000)))
     with open("../data/result_knlp.txt", "w", encoding="utf-8") as knlp_file:
         knlp_file.write(str(result_knlp))
+    return result_knlp
 
 
 def jieba_cut(text):
@@ -169,8 +167,17 @@ def compare_knlp_jieba_init():
 
 
 if __name__ == '__main__':
-    with open(get_wait_to_cut_file(), "r", encoding="utf-8") as f:
-        txt_data = f.read()
-    # txt_data = "测试分词的结果是否符合预期"
-    compare_knlp_jieba_cut(txt_data)
-    compare_knlp_jieba_init()
+    # 通过句子测试分词
+    txt_data = "测试分词的结果是否符合预期"
+    print(knlp_cut(txt_data))
+
+    # 通过文本测试分词
+    # with open(get_wait_to_cut_file(), "r", encoding="utf-8") as f:
+    #     txt_data = f.read()
+    # knlp_cut(txt_data)
+
+    # 比较两种分词结果和耗时
+    # compare_knlp_jieba_cut(txt_data)
+
+    # 比较初始化空间和时间占用
+    # compare_knlp_jieba_init()

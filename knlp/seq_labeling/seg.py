@@ -133,7 +133,7 @@ class Segmentor(object):
         return test.out_sentence
 
     @classmethod
-    def trie_seg(cls, sentence, model):
+    def trie_seg(cls, sentence, model=None):
         """
         return result cut by trie
 
