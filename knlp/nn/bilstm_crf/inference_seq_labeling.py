@@ -20,7 +20,7 @@ class InferenceSeqLabel(InferenceNN):
     """
 
     def __init__(self, model_path: str = "", model: torch.nn.Module = None, word2idx_path: str = "",
-                 idx2tag_path: str = "", device: str = "cpu"):
+                 tag2idx_path: str = "", device: str = "cpu"):
         """
 
         Args:
@@ -30,9 +30,9 @@ class InferenceSeqLabel(InferenceNN):
             idx2tag_path: id2tag路径
             device: 设备
         """
-        assert word2idx_path and idx2tag_path
+        assert word2idx_path and tag2idx_path
         self.load_word2idx(word2idx_path)
-        self.load_idx2tag(idx2tag_path)
+        self.load_idx2tag(tag2idx_path)
         super().__init__(model_path=model_path, model=model, device=device)
 
     def load_word2idx(self, word2idx_path: str):

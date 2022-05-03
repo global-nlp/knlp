@@ -16,19 +16,20 @@ class InferenceBiLSTMCRF(InferenceSeqLabel):
     """
     用于BiLSTMCRF推理
     """
+
     def __init__(self, model_path: str = "", model: torch.nn.Module = None, word2idx_path: str = "",
-                 idx2tag_path: str = "", device: str = "cpu"):
+                 tag2idx_path: str = "", device: str = "cpu"):
         """
 
         Args:
             model_path:
             model:
             word2idx_path:
-            idx2tag_path:
+            tag2idx_path:
             device:
         """
         super().__init__(model_path=model_path, model=model, word2idx_path=word2idx_path,
-                         idx2tag_path=idx2tag_path, device=device)
+                         tag2idx_path=tag2idx_path, device=device)
 
 
 if __name__ == "__main__":
@@ -37,7 +38,7 @@ if __name__ == "__main__":
     kwargs = {
         "model_path": KNLP_PATH + "/knlp/nn/bilstm_crf/model_bilstm_crf/bilstm_crf_seg.pkl",
         "word2idx_path": KNLP_PATH + "/knlp/nn/bilstm_crf/model_bilstm_crf/word2idx.json",
-        "idx2tag_path": KNLP_PATH + "/knlp/nn/bilstm_crf/model_bilstm_crf/tag2idx.json"
+        "tag2idx_path": KNLP_PATH + "/knlp/nn/bilstm_crf/model_bilstm_crf/tag2idx.json"
     }
     inference = InferenceBiLSTMCRF(**kwargs)
 

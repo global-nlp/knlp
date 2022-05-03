@@ -1,7 +1,7 @@
 # !/usr/bin/python
 # -*- coding:UTF-8 -*-
 # -----------------------------------------------------------------------#
-# File Name: load_data_seqlabeling
+# File Name: dataset_seq_labeling
 # Author: Gong Chen
 # Mail: cgg_1996@163.com
 # Created Time: 2022-03-29
@@ -18,16 +18,17 @@ class SeqLabelDataset(Dataset):
     """
     序列标注任务Dataset
     """
+
     def __init__(self, vocab_set_path: str = None, training_data_path: str = None, eval_data_path: str = None,
                  test_data_path: str = None, mode: str = "train", word2idx: dict = None, tag2idx: dict = None):
         """
-        初始化 SeqLabelDataLoader
+        初始化 SeqLabelDataset
         Args:
-            vocab_set_path: 词典路径，当mode=="train"时为必要参数。其他mode不影响
+            vocab_set_path: 词典路径，当mode=="train"时有效。其他mode不影响
             training_data_path: 训练集路径，当mode=="train"时为必要参数。其他mode不影响
             eval_data_path: 验证集路径，当mode=="eval"时为必要参数。其他mode不影响
             test_data_path: 测试集路径，当mode=="test"时为必要参数。其他mode不影响
-            mode: DataLoader的类型,有"train"、"eval"、"test"三类
+            mode: Dataset的类型,有"train"、"eval"、"test"三类
             word2idx: 词的索引表，当mode=="eval"或mode=="test"时为必要参数。当mode=="train"时不影响
             tag2idx: 标签索引表，当mode=="eval"时为必要参数。其他mode不影响
         """
@@ -35,7 +36,7 @@ class SeqLabelDataset(Dataset):
         self.word2idx = word2idx
         self.tag2idx = tag2idx
         # 判断参数是否齐全
-        assert (mode == "train" and vocab_set_path and training_data_path) or \
+        assert (mode == "train" and training_data_path) or \
                (mode == "eval" and eval_data_path and word2idx and tag2idx) or \
                (mode == "test" and test_data_path and word2idx)
         if mode == "train":
@@ -80,7 +81,7 @@ class SeqLabelDataset(Dataset):
                 tag = []
         return seqs, tags
 
-    def _get_word2idx(self, vocab_data: list):
+    def _get_word2idx_from_vacab_data(self, vocab_data: list):
         """
         根据词典构建索引表
         Args:
@@ -94,6 +95,22 @@ class SeqLabelDataset(Dataset):
             word = word.strip()
             if word not in word2idx:
                 word2idx[word] = len(word2idx)
+        return word2idx
+
+    def _get_word2idx_from_seqs(self, seqs: list):
+        """
+        根据seqs构建索引表
+        Args:
+            seqs:
+
+        Returns:
+
+        """
+        word2idx = {UNK: 0}
+        for seq in seqs:
+            for word in seq:
+                if word not in word2idx:
+                    word2idx[word] = len(word2idx)
         return word2idx
 
     def _get_tag2idx(self, tags: list):
@@ -130,6 +147,8 @@ class SeqLabelDataset(Dataset):
         将字词列表转换为索引列表
         Args:
             seqs:
+            word2idx:
+            to_tensor:
 
         Returns:
 
@@ -145,6 +164,8 @@ class SeqLabelDataset(Dataset):
         将标签列表转换为索引列表
         Args:
             tags:
+            tag2idx:
+            to_tensor:
 
         Returns:
 
@@ -218,14 +239,19 @@ class SeqLabelDataset(Dataset):
         Returns:
 
         """
-        # 读字典文件
-        vocab_data = self._read_file(vocab_set_path)
+
         # 读训练集文件
         training_data = self._read_file(training_data_path)
         # 将训练集分句
         seqs, tags = self._split_data(training_data)
-        # 获取word2idx，tag2idx
-        self.word2idx = self._get_word2idx(vocab_data)
+        # 获取word2idx
+        if vocab_set_path:
+            # 读字典文件
+            vocab_data = self._read_file(vocab_set_path)
+            self.word2idx = self._get_word2idx_from_vacab_data(vocab_data)
+        else:
+            self.word2idx = self._get_word2idx_from_seqs(seqs)
+        # 获取tag2idx
         self.tag2idx = self._get_tag2idx(tags)
         self.seqs_idx = SeqLabelDataset.seq2idx_function(seqs, self.word2idx, to_tensor=True)
         self.tags_idx = SeqLabelDataset.tag2idx_function(tags, self.tag2idx, to_tensor=True)

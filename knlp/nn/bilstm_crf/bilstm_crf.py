@@ -31,7 +31,7 @@ class BiLSTM_CRF(BaseNNModel):
             device: 计算设备
         """
         super().__init__(seed=seed, device=device)
-        # embedding层,将one-hot转换为词向量的层。
+        # embedding层,将索引转换为词向量的层。
         self.word_embeds = nn.Embedding(vocab_size, embedding_dim)
         # BiLSTM层，输入维度为embedding_dim，一个方向的隐藏层维度为hidden_dim // 2
         self.lstm = nn.LSTM(embedding_dim, hidden_dim // 2, num_layers=num_layers, bidirectional=True)
@@ -52,38 +52,38 @@ class BiLSTM_CRF(BaseNNModel):
         """
         # batch_size > 1时
         if len(sentences) > 1:
-            # sentences: batch_size * sentence_size
+            # sentences: [batch_size, sentence_size]
 
             embeds = self.word_embeds(sentences)
-            # embeds: batch_size * sentence_size * embedding_dim
+            # embeds: [batch_size, sentence_size, embedding_dim]
 
             embeds = pack_padded_sequence(embeds, lengths=lengths, batch_first=True)
             # embeds: packed格式
-            # embeds[0]: sum(lengths) * embedding_dim
-            # embeds[1]: sentence_size  存储lengths信息
+            # embeds[0]: [sum(lengths), embedding_dim]
+            # embeds[1]: [sentence_size]  存储lengths信息
 
             lstm_out, _ = self.lstm(embeds)
             # lstm_out: packed格式
-            # lstm_out[0]: sum(lengths) * hidden_dim // 2 * direction_num
-            # lstm_out[0]: sum(lengths) * hidden_dim
-            # lstm_out[1]: sentence_size  存储lengths信息 lstm_out[1] == embeds[1]
+            # lstm_out[0]: [sum(lengths), hidden_dim // 2, direction_num]
+            # lstm_out[0]: [sum(lengths), hidden_dim]
+            # lstm_out[1]: [sentence_size]  存储lengths信息 lstm_out[1] == embeds[1]
 
             lstm_out = pad_packed_sequence(lstm_out, batch_first=True)[0]
-            # lstm_out: batch_size * sentence_size * hidden_dim
+            # lstm_out: [batch_size, sentence_size, hidden_dim]
 
         # batch_size == 1时,主要为了推理的加速,减少不必要的环节。
         else:
-            # sentences: 1 * sentence_size
+            # sentences: [1, sentence_size]
 
             embeds = self.word_embeds(sentences).view(sentences.size()[1], 1, -1)
-            # self.word_embeds(sentences): 1 * sentence_size * embedding_dim 其中1为batch_size
-            # embeds: sentence_size * 1 * embedding_dim  其中1为batch_size
+            # self.word_embeds(sentences): [1, sentence_size, embedding_dim] 其中1为batch_size
+            # embeds: [sentence_size, 1, embedding_dim]  其中1为batch_size
 
             lstm_out, _ = self.lstm(embeds)  # embeds的输入维度为 sentence_size * batch_size * embedding_dim
-            # lstm_out: sentence_size * 1 * hidden_dim  其中1为batch_size
+            # lstm_out: [sentence_size, 1, hidden_dim]  其中1为batch_size
 
             lstm_out = lstm_out.view(sentences.size()[1], -1).unsqueeze(0)
-            # lstm_out: 1 * sentence_size * hidden_dim 其中1为batch_size
+            # lstm_out: [1, sentence_size, hidden_dim] 其中1为batch_size
 
         return lstm_out
 
@@ -103,7 +103,7 @@ class BiLSTM_CRF(BaseNNModel):
          [1,1,0,0],
          [1,0,0,0]]
         """
-        # 初始化mask: batch_size * max_sentence_size
+        # 初始化mask: [batch_size, max_sentence_size]
         # lengths[0]=max(lengths)
         mask = torch.zeros(len(lengths), lengths[0])
         for i, length in enumerate(lengths):
@@ -114,23 +114,23 @@ class BiLSTM_CRF(BaseNNModel):
         """
         根据sentences和lengths 计算得到标注序列
         Args:
-            sentences: 存储词在词典中的索引，按长度降序排列。batch_size * sentence_size
+            sentences: 存储词在词典中的索引，按长度降序排列。[batch_size, sentence_size]
             lengths: sentences对应的长度值，降序排列。
 
         Returns:sentences对应的标注序列
 
         """
         sentences = sentences.to(self.device)
-        # sentences: batch_size * sentence_size
+        # sentences: [batch_size, sentence_size]
 
         lstm_out = self._get_lstm_out(sentences, lengths)
-        # lstm_out: batch_size * sentence_size * hidden_dim
+        # lstm_out: [batch_size, sentence_size, hidden_dim]
 
         emission = self.hidden2tag(lstm_out)
-        # lstm_feats: batch_size * sentence_size * tagset_size
+        # lstm_feats: [batch_size, sentence_size, tagset_size]
 
         mask = self._mask_matrix(lengths)
-        # mask: batch_size * sentence_size
+        # mask: [batch_size, sentence_size]
 
         tag_seq = self.crf.viterbi_decode(emission, mask)
 
@@ -148,16 +148,19 @@ class BiLSTM_CRF(BaseNNModel):
 
         """
         sentences = sentences.to(self.device)
-        # sentences: batch_size * sentence_size
+        # sentences: [batch_size, sentence_size]
+
+        tags = tags.to(self.device)
+        # tags: [batch_size, sentence_size]
 
         lstm_out = self._get_lstm_out(sentences, lengths)
-        # lstm_out: batch_size * sentence_size * hidden_dim
+        # lstm_out: [batch_size, sentence_size, hidden_dim]
 
         emission = self.hidden2tag(lstm_out)
-        # lstm_feats: batch_size * sentence_size * tagset_size
+        # lstm_feats: [batch_size, sentence_size, tagset_size]
 
         mask = self._mask_matrix(lengths)
-        # mask: batch_size * sentence_size
+        # mask: [batch_size, sentence_size]
 
         loss = -torch.mean(self.crf.forward(emission, tags, mask))
 

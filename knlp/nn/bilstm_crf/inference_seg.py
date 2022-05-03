@@ -1,3 +1,13 @@
+# !/usr/bin/python
+# -*- coding:UTF-8 -*-
+# -----------------------------------------------------------------------#
+# File Name: inference_seg
+# Author: Gong Chen
+# Mail: cgg_1996@163.com
+# Created Time: 2022-04-08
+# Description:
+# -----------------------------------------------------------------------#
+
 from knlp.common.constant import KNLP_PATH
 from knlp.nn.bilstm_crf.inference_bilstm_crf import InferenceBiLSTMCRF
 
@@ -18,7 +28,7 @@ class SegInference:
                 "kwargs": {
                     "model_path": KNLP_PATH + "/knlp/nn/bilstm_crf/model_bilstm_crf/bilstm_crf_seg.pkl",
                     "word2idx_path": KNLP_PATH + "/knlp/nn/bilstm_crf/model_bilstm_crf/word2idx.json",
-                    "idx2tag_path": KNLP_PATH + "/knlp/nn/bilstm_crf/model_bilstm_crf/tag2idx.json"
+                    "tag2idx_path": KNLP_PATH + "/knlp/nn/bilstm_crf/model_bilstm_crf/tag2idx.json"
                 },
                 "Inference": InferenceBiLSTMCRF
             }
@@ -73,8 +83,11 @@ class SegInference:
         Returns:
 
         """
-        tags_idx = self.inference(seqs)
-        return [self.cut(seq, idx) for seq, idx in zip(seqs, tags_idx)]
+        if isinstance(seqs, str):
+            return self.cut(seqs, self.inference([seqs])[0])
+        else:
+            tags_idx = self.inference(seqs)
+            return [self.cut(seq, idx) for seq, idx in zip(seqs, tags_idx)]
 
     def __call__(self, *args, **kwargs):
         return self.forward(*args, **kwargs)
@@ -82,5 +95,6 @@ class SegInference:
 
 if __name__ == "__main__":
     inference = SegInference()
+    print(inference("你好，吃晚饭了吗"))
     print(inference(["冬天到了，春天还会远吗？", "天安门前太阳升"]))
     print(inference(["冬天到了，春天还会远吗？", "今天晚上我们一起去吃大餐好不好？", "你好，吃晚饭了吗"]))

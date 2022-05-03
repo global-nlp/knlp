@@ -31,6 +31,7 @@ class InferenceNN:
         else:
             self._load_model(model_path)
         self.model = self.model.to(self.device)
+        self.model.eval()
 
     def _load_model(self, model_path: str):
         """
@@ -50,9 +51,6 @@ class InferenceNN:
         :return:
         """
         self.device = torch.device("cuda") if device == "cuda" and torch.cuda.is_available() else torch.device("cpu")
-
-    def forward(self, datas):
-        pass
 
     @staticmethod
     def restore_sort(datas: list, restore_indexs: list):
