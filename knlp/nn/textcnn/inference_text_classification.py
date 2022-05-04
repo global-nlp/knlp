@@ -29,7 +29,7 @@ class InferenceTextClassification(InferenceNN):
             model_path: 模型路径
             model: 模型
             word2idx_path: word2idx路径
-            idx2tag_path: id2tag路径
+            label2idx_path: label2idx路径
             max_length: token长度
             tokenizer: 分词器
             preprocess_fn: 文本预处理方法
@@ -61,9 +61,9 @@ class InferenceTextClassification(InferenceNN):
 
     def load_idx2label(self, label2idx_path: str):
         """
-        加载id2tag
+        加载id2label
         Args:
-            tag2idx_path:
+            label2idx_path:
 
         Returns:
 
@@ -73,23 +73,23 @@ class InferenceTextClassification(InferenceNN):
             self.idx2label = {value: key for key, value in label2idx.items()}
 
     @staticmethod
-    def idx2label_function(labels_idx, idx2label):
+    def idx2label_function(labels_idx: list, idx2label: dict):
         """
         idx映射为标签
         Args:
-            tags_idx:
-            idx2tag:
+            labels_idx:
+            idx2label:
 
         Returns:
 
         """
         return [idx2label[label_idx] for label_idx in labels_idx]
 
-    def forward(self, seqs, return_label=False):
+    def forward(self, seqs: list, return_label: bool = False):
         """
         序列标注推理运算
         Args:
-            input:
+            seqs:
             return_prob:
 
         Returns:

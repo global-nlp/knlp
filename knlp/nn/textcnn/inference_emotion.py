@@ -51,7 +51,7 @@ class EmotionInference:
         kwargs = self.model_infos[model]["kwargs"]
         self.inference = ModelInference(**kwargs)
 
-    def forward(self, seqs, return_label=True):
+    def forward(self, seqs, return_label: bool = True):
         """
         推理运算
         Args:

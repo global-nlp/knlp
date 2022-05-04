@@ -16,25 +16,26 @@ import torch.nn.functional as F
 
 class TextCNN(BaseNNModel):
 
-    def __init__(self, vocab_size: int, label_size: int, n_filters: int, filter_sizes: list,
-                 dropout: float = 0.5, embedding_dim: int = None, pad_idx: int = None, static_pad_idx: int = None,
-                 non_static_pad_idx: int = None, static_vectors: torch.tensor = None,
-                 non_static_vectors: torch.tensor = None, seed: int = 2022, device=torch.device("cpu")):
+    def __init__(self, vocab_size: int, label_size: int, n_filters: int, filter_sizes: list, embedding_dim: int = None,
+                 pad_idx: int = None, static_pad_idx: int = None, non_static_pad_idx: int = None,
+                 static_vectors: torch.tensor = None, non_static_vectors: torch.tensor = None, dropout: float = 0.5,
+                 seed: int = 2022, device=torch.device("cpu")):
         """
         初始化TextCNN模型
         Args:
             vocab_size: 词典的维度
             label_size: 类别的维度
-            embedding_dim: 词向量的维度
-            pad_idx: embedding中PAD的索引
             n_filters: 卷积输出的通道数
             filter_sizes: 卷积核尺寸list
+            embedding_dim: 词向量的维度，没有预训练词向量时必填
+            pad_idx: embedding中PAD的索引，没有预训练词向量时必填
+            static_pad_idx: static预训练词向量中PAD的索引
+            non_static_pad_idx: non_static预训练词向量中PAD的索引
+            static_vectors: static预训练词向量
+            non_static_vectors: non_static预训练词向量
             dropout: softmax前全连接的dropout比例
-            pre_train_embedding: 预训练词向量
-            fine_tune: 预训练词向量是否微调，pre_train_embedding!=None时有效
             seed: 随机数种子
             device: 计算设备
-
         """
         super().__init__(seed=seed, device=device)
         assert (static_vectors != None and static_pad_idx) or \

@@ -32,6 +32,7 @@ class TrainTextClassification(TrainNN):
             batch_size:
             shuffle:
             tokenizer:
+            max_length:
             device:
         """
         super().__init__(device=device)
@@ -52,11 +53,12 @@ class TrainTextClassification(TrainNN):
 
     def train(self, epoch, print_per=10, eval_per=1000, eval_per_epoch=True):
         """
-        训练
+
         Args:
             epoch:
             print_per: 训练多少个batch打印一次训练集损失
             eval_per: 训练多少个batch打印一次验证集损失
+            eval_per_epoch:
 
         Returns:
 

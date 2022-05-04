@@ -109,11 +109,11 @@ class TextClassificationDataset(Dataset):
         return seq
 
     @staticmethod
-    def padding(seq, max_length):
+    def padding(seq: list, max_length: int):
         """
         对token进行截断和padding
         Args:
-            seq:
+            seq:分词后的seq
             max_length:
 
         Returns:

@@ -77,7 +77,7 @@ class TrainTextCNN(TrainTextClassification):
         Args:
             model_path:
             word2idx_path:
-            tag2idx_path:
+            label2idx_path:
 
         Returns:
 
