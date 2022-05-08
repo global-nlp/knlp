@@ -29,7 +29,7 @@ pip install -e .
 from knlp import Knlp
 
 def test_all():
-    with open("knlp/data/pytest_data.txt") as f:
+    with open("knlp/data/pytest_data.txt", encoding='utf-8') as f:
         text = f.read()
     res = Knlp(text)
     print("seg_result is", res.seg_result)

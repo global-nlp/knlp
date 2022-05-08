@@ -12,6 +12,7 @@ import jieba
 from knlp.common.constant import allow_speech_tags
 from knlp.seq_labeling.crf.inference import Inference as crf_inference
 from knlp.seq_labeling.hmm.inference import Inference
+from knlp.seq_labeling.trie_seg.inference import TrieInference
 from knlp.utils.util import get_default_stop_words_file
 from knlp.common.constant import KNLP_PATH
 
@@ -40,7 +41,7 @@ class Segmentor(object):
             for word in self.private_vacab:
                 jieba.add_word(word, freq=None, tag=None)
 
-        with open(stop_words_file, 'r') as f:
+        with open(stop_words_file, 'r', encoding='utf-8') as f:
             for word in f:
                 self.stop_words.add(word.strip())
 
@@ -65,6 +66,7 @@ class Segmentor(object):
         if not seg_method:
             # TODO raise an exception
             return None
+
         word_list = seg_method(text)
 
         if function_name == "jieba_cut":  # 目前只支持jieba的词性标注
@@ -131,7 +133,7 @@ class Segmentor(object):
         return test.out_sentence
 
     @classmethod
-    def trie_seg(cls, sentence, model):
+    def trie_seg(cls, sentence, model=None):
         """
         return result cut by trie
 
@@ -142,4 +144,5 @@ class Segmentor(object):
         Returns: list of string
 
         """
-        pass
+        trie = TrieInference()
+        return trie.knlp_seg(sentence)
