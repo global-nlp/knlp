@@ -1,0 +1,38 @@
+name: KNLP
+
+# on 表示触发CI的动作，可以为[push, pull_request]
+on: [push]
+
+# 一次CI需要做哪些事情，jobs表示可以有多个任务
+jobs:
+  build:
+    # github 可用的运行环境 windows-2019、ubuntu-20.04、macos-10.15
+    runs-on: ubuntu-latest
+
+    # 每个job 可由多个step组成
+    steps:
+    # https://github.com/actions/checkout 使用指定的版本来检测
+    - uses: actions/checkout@v3
+    # name表示一个步骤的名称
+    - name: Set up Python 3.7
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.7"
+    - name: Install dependencies
+      # 通过run来运行命令 在ubuntu-latest上执行命令
+      run: |
+        python -m pip install --upgrade pip
+        pip install flake8
+
+    - name: Lint with flake8
+      # flake8检测代码风格 --count 打印错误总数
+      run: |
+        flake8 . --count
+
+    - name: Setup
+      run: |
+        sudo python setup.py install
+
+    - name: run test_all
+      run: |
+        sudo python test/test_all.py

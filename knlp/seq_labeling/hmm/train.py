@@ -102,10 +102,10 @@ class Train:
         self.vocab_set_path = KNLP_PATH + "/knlp/data/seg_data/train/pku_vocab.txt" if not vocab_set_path else vocab_set_path
         self.training_data_path = KNLP_PATH + "/knlp/data/seg_data/train/pku_hmm_training_data.txt" if not training_data_path else training_data_path
         # self.test_data_path = KNLP_PATH + "/knlp/data/seg_data/train/pku_hmm_test_data.txt" if not test_data_path else test_data_path
-        with open(self.vocab_set_path) as f:
+        with open(self.vocab_set_path, encoding='utf-8') as f:
             self.vocab_data = f.readlines()
 
-        with open(self.training_data_path) as f:
+        with open(self.training_data_path, encoding='utf-8') as f:
             self.training_data = f.readlines()
 
     @property
@@ -215,7 +215,7 @@ class Train:
     @staticmethod
     def save_model(file_path, data, format="json"):
         if format == "json":
-            with open(file_path, "w") as f:
+            with open(file_path, "w", encoding='utf-8') as f:
                 json.dump(data, f, ensure_ascii=False, indent=2)
 
     def build_model(self, state_set_save_path=None, transition_pro_save_path=None, emission_pro_save_path=None,
