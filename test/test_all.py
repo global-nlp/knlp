@@ -12,6 +12,9 @@ from knlp import Knlp
 from knlp.utils.util import Trie
 from knlp import get_keyword, get_key_sentences, seg, ner, evaluation_seg_files, evaluation_seg, sentiment
 from knlp.seq_labeling.trie_seg.inference import TrieInference
+from knlp.seq_labeling.pinyin_input_method import inference
+from knlp.common.constant import KNLP_PATH
+from knlp.seq_labeling.crf.crf import CRFModel
 
 # import time
 # from knlp.utils import util
@@ -109,6 +112,32 @@ def test_cut_by_knlp():
     print(trieTest.knlp_seg("测试分词的结果是否符合预期"))
 
 
+def test_pinyin_inference():
+    """
+           对于拼音输入法inference的全部进行测试
+
+       """
+    test = inference.Inference()
+    CRF = CRFModel()
+    CRF_MODEL_PATH = KNLP_PATH + "/knlp/model/crf/pinyin.pkl"
+    to_be_pred = "dongtianlailechuntianyejiangdaolai"
+    test.spilt_predict(to_be_pred, CRF_MODEL_PATH)
+    print("POS结果：" + str(test.label_prediction))
+    print("拼音分割结果：" + str(test.out_sentence))
+    observe = test.out_sentence
+    out = []
+    for idx in range(0, len(observe), 2):
+        if idx + 1 < len(observe):
+            res = test.viterbi(observations=observe[idx:idx + 2])
+            print(res)
+            out.extend(res[0][1])
+        else:
+            res = test.viterbi(observations=observe[idx:idx + 1])
+            print(res)
+            out.extend(res[0][1])
+    print("按照两个字一组划分后的预测结果：" + str(out))
+
+
 def test_all():
     test_knlp()
     test_seg()
@@ -119,6 +148,7 @@ def test_all():
     test_file_evaluation()
     test_Trie()
     test_cut_by_knlp()
+    test_pinyin_inference()
     # test_check_file()   # 文件check，暂时先不上线
 
 
