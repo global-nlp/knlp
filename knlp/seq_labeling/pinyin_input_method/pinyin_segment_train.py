@@ -3,6 +3,7 @@ import pickle
 
 from knlp.common.constant import KNLP_PATH
 from knlp.seq_labeling.crf.crf import CRFModel
+from knlp.utils.util import get_model_crf_pinyin_file
 
 
 class Train:
@@ -56,6 +57,6 @@ if __name__ == "__main__":
 
     print("正在保存模型...")
 
-    CRF_trainer.save_model(KNLP_PATH + "/knlp/model/crf/pinyin.pkl")
+    CRF_trainer.save_model(get_model_crf_pinyin_file())
 
     print("训练完成。")

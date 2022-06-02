@@ -4,6 +4,7 @@ import math
 
 from knlp.common.constant import KNLP_PATH
 from knlp.seq_labeling.crf.crf import CRFModel
+from knlp.utils.util import get_model_crf_pinyin_file
 
 
 class Inference:
@@ -164,12 +165,11 @@ if __name__ == '__main__':
     test = Inference()
 
     CRF = CRFModel()
-    CRF_MODEL_PATH = KNLP_PATH + "/knlp/model/crf/pinyin.pkl"
 
     print("读取数据...")
     to_be_pred = "dongtianlailechuntianyejiangdaolai"
 
-    test.spilt_predict(to_be_pred, CRF_MODEL_PATH)
+    test.spilt_predict(to_be_pred, get_model_crf_pinyin_file())
     print("POS结果：" + str(test.label_prediction))
     print("拼音分割结果：" + str(test.out_sentence))
 

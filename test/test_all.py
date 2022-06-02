@@ -9,21 +9,21 @@
 # -----------------------------------------------------------------------#
 
 from knlp import Knlp
-from knlp.utils.util import Trie
+from knlp.utils.util import Trie, get_pytest_data_file, get_model_crf_pinyin_file
 from knlp import get_keyword, get_key_sentences, seg, ner, evaluation_seg_files, evaluation_seg, sentiment
 from knlp.seq_labeling.trie_seg.inference import TrieInference
 from knlp.seq_labeling.pinyin_input_method import inference
 from knlp.common.constant import KNLP_PATH
 from knlp.seq_labeling.crf.crf import CRFModel
 
-# import time
-# from knlp.utils import util
+import time
+from knlp.utils import util
 
 TEST_SINGLE_SENTENCE = "KNLP是一个NLP工具包，主要支持中文的各种NLP基础操作"
 
 
 def test_knlp():
-    with open("knlp/data/pytest_data.txt", encoding='utf-8') as f:
+    with open(get_pytest_data_file(), encoding='utf-8') as f:
         text = f.read()
     res = Knlp(text)
     print("seg_result is", res.seg_result)
@@ -84,10 +84,10 @@ def test_file_evaluation():
     print(res)
 
 
-# def test_check_file():
-#     start = time.time()
-#     util.check_file("../knlp/data")
-#     print(time.time() - start)
+def test_check_file():
+    start = time.time()
+    util.check_file("../knlp/data")
+    print(time.time() - start)
 
 
 def test_Trie():
@@ -118,10 +118,9 @@ def test_pinyin_inference():
 
        """
     test = inference.Inference()
-    CRF = CRFModel()
-    CRF_MODEL_PATH = KNLP_PATH + "/knlp/model/crf/pinyin.pkl"
+    CRFModel()
     to_be_pred = "dongtianlailechuntianyejiangdaolai"
-    test.spilt_predict(to_be_pred, CRF_MODEL_PATH)
+    test.spilt_predict(to_be_pred, get_model_crf_pinyin_file())
     print("POS结果：" + str(test.label_prediction))
     print("拼音分割结果：" + str(test.out_sentence))
     observe = test.out_sentence
@@ -149,7 +148,7 @@ def test_all():
     test_Trie()
     test_cut_by_knlp()
     test_pinyin_inference()
-    # test_check_file()   # 文件check，暂时先不上线
+    test_check_file()   # 文件check，暂时先不上线
 
 
 if __name__ == '__main__':

@@ -1,11 +1,11 @@
 # -*- coding:UTF-8 -*-
 
-import json
 import sys
 from collections import defaultdict
+from knlp.common.constant import KNLP_PATH, MODEL_DIR
+from knlp.seq_labeling.crf.train import Train
+from knlp.utils.util import get_pku_hmm_train_file, check_file
 
-from knlp.common.constant import KNLP_PATH
-from train import Train
 
 class PinYinTrain(Train):
     """
@@ -19,13 +19,13 @@ class PinYinTrain(Train):
     观测序列：这个是我们在inference的时候会使用到的信息
     """
 
-    def __init__(self, vocab_set_path, training_data_path, test_data_path = None):
+    def __init__(self, vocab_set_path, training_data_path, test_data_path=None):
 
         super(pin_Train, self).__init__()
         self._transition_pro = {}
-        self._transition_pro_final = {'data':self._transition_pro}
+        self._transition_pro_final = {'data': self._transition_pro}
         self._emission_pro = {}
-        self._emission_pro_final = {'data':self._emission_pro, 'default':1e-200}
+        self._emission_pro_final = {'data': self._emission_pro, 'default': 1e-200}
         self._init_state_set = {}
         self.vocab_set_path = ""
         self.training_data_path = ""
@@ -37,14 +37,13 @@ class PinYinTrain(Train):
 
     def init_variable(self, vocab_set_path=None, training_data_path=None, test_data_path=None):
         self.vocab_set_path = KNLP_PATH + "/knlp/data/seg_data/train/pin_hanzi.txt" if not vocab_set_path else vocab_set_path
-        self.training_data_path = KNLP_PATH + "/knlp/data/seg_data/train/pku_hmm_training_data_sample.txt" if not training_data_path else training_data_path
+        self.training_data_path = get_pku_hmm_train_file() if not training_data_path else training_data_path
         # self.test_data_path = KNLP_PATH + "/knlp/data/seg_data/train/pku_hmm_test_data.txt" if not test_data_path else test_data_path
-        with open(self.vocab_set_path,encoding='utf-8') as f:
+        with open(self.vocab_set_path, encoding='utf-8') as f:
             self.vocab_data = f.readlines()
 
-        with open(self.training_data_path,encoding='utf-8') as f:
+        with open(self.training_data_path, encoding='utf-8') as f:
             self.training_data = f.readlines()
-
 
     def set_state(self):
         self._state_set["hidden_state"] = []
@@ -52,7 +51,6 @@ class PinYinTrain(Train):
         for line in file.readlines():
             if not (line in self._state_set["hidden_state"] or line == '\n'):
                 self._state_set["hidden_state"].append(line[0])
-
 
         self._state_set["observation_state"] = []
         file = open(KNLP_PATH + "/knlp/data/seg_data/train/out3.txt", encoding='utf-8')
@@ -78,12 +76,10 @@ class PinYinTrain(Train):
 
         """
 
-
         count_dict = {}
         file = open(KNLP_PATH + "/knlp/data/seg_data/train/tag.txt", encoding='utf-8')
         for line in file.readlines():
             count_dict[line[0]] = defaultdict(int)
-
 
         for idx, line in enumerate(self.training_data):
             line = line.strip()
@@ -116,7 +112,6 @@ class PinYinTrain(Train):
         tot2 = len(self._transition_pro)
         if tot2 != 0:
             self._transition_pro_final['default'] = 1e-200
-
 
     def set_emission_pro(self):
         """
@@ -165,9 +160,7 @@ class PinYinTrain(Train):
 
     def get_pinyin_dict(self):
 
-
         "建立拼音字典树"
-
 
         f = open(KNLP_PATH + "/knlp/data/seg_data/train/pin_hanzi.txt", encoding='utf-8')
         # 按行读取
@@ -184,7 +177,6 @@ class PinYinTrain(Train):
             else:
                 self.pinyin_to_chinese[line[0]] = line[-1]
 
-
     def build_model(self, state_set_save_path=None, transition_pro_save_path=None, emission_pro_save_path=None,
                     init_state_set_save_path=None):
         """
@@ -192,6 +184,7 @@ class PinYinTrain(Train):
 
         Returns:
         """
+        check_file(KNLP_PATH + "/knlp/model/hmm", MODEL_DIR)
         state_set = KNLP_PATH + "/knlp/model/hmm/pin_state_set.json" if not state_set_save_path else state_set_save_path + "/pin_state_set.json"
         transition_pro = KNLP_PATH + "/knlp/model/hmm/pin_transition_pro.json" if not transition_pro_save_path else transition_pro_save_path + "/pin_transition_pro.json"
         emission_pro = KNLP_PATH + "/knlp/model/hmm/pin_emission_pro.json" if not emission_pro_save_path else emission_pro_save_path + "/pin_emission_pro.json"
