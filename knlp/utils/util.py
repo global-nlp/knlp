@@ -36,6 +36,36 @@ def get_model_crf_pinyin_file():
     return file_name
 
 
+def get_data_pinyin_segment_file():
+    file_name = KNLP_PATH + "/knlp/data/pinyin_segment.txt"
+    util.check_file(file_name, DATA_DIR)
+    return file_name
+
+
+def get_data_hanzi_segment_file():
+    file_name = KNLP_PATH + "/knlp/data/hanzi_segment.txt"
+    util.check_file(file_name, DATA_DIR)
+    return file_name
+
+
+def get_train_out_file():
+    file_name = KNLP_PATH + "/knlp/data/seg_data/train/out3.txt"
+    util.check_file(file_name, DATA_DIR)
+    return file_name
+
+
+def get_train_pin_hanzi_file():
+    file_name = KNLP_PATH + "/knlp/data/seg_data/train/pin_hanzi.txt"
+    util.check_file(file_name, DATA_DIR)
+    return file_name
+
+
+def get_train_tag_file():
+    file_name = KNLP_PATH + "/knlp/data/seg_data/train/tag.txt"
+    util.check_file(file_name, DATA_DIR)
+    return file_name
+
+
 def get_pku_hmm_train_file():
     file_name = KNLP_PATH + "/knlp/data/seg_data/train/pku_hmm_training_data_sample.txt"
     util.check_file(file_name, DATA_DIR)

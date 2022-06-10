@@ -4,7 +4,8 @@ import sys
 from collections import defaultdict
 from knlp.common.constant import KNLP_PATH, MODEL_DIR
 from knlp.seq_labeling.crf.train import Train
-from knlp.utils.util import get_pku_hmm_train_file, check_file
+from knlp.utils.util import get_pku_hmm_train_file, check_file, get_train_tag_file, get_train_out_file, \
+    get_train_pin_hanzi_file
 
 
 class PinYinTrain(Train):
@@ -36,7 +37,7 @@ class PinYinTrain(Train):
                                test_data_path=test_data_path)
 
     def init_variable(self, vocab_set_path=None, training_data_path=None, test_data_path=None):
-        self.vocab_set_path = KNLP_PATH + "/knlp/data/seg_data/train/pin_hanzi.txt" if not vocab_set_path else vocab_set_path
+        self.vocab_set_path = get_train_pin_hanzi_file() if not vocab_set_path else vocab_set_path
         self.training_data_path = get_pku_hmm_train_file() if not training_data_path else training_data_path
         # self.test_data_path = KNLP_PATH + "/knlp/data/seg_data/train/pku_hmm_test_data.txt" if not test_data_path else test_data_path
         with open(self.vocab_set_path, encoding='utf-8') as f:
@@ -47,13 +48,13 @@ class PinYinTrain(Train):
 
     def set_state(self):
         self._state_set["hidden_state"] = []
-        file = open(KNLP_PATH + "/knlp/data/seg_data/train/tag.txt", encoding='utf-8')
+        file = open(get_train_tag_file(), encoding='utf-8')
         for line in file.readlines():
             if not (line in self._state_set["hidden_state"] or line == '\n'):
                 self._state_set["hidden_state"].append(line[0])
 
         self._state_set["observation_state"] = []
-        file = open(KNLP_PATH + "/knlp/data/seg_data/train/out3.txt", encoding='utf-8')
+        file = open(get_train_out_file(), encoding='utf-8')
         for line in file.readlines():
             if not (line in self._state_set["observation_state"] or line == '\n'):
                 self._state_set["observation_state"].append(line[:-1])
@@ -77,7 +78,7 @@ class PinYinTrain(Train):
         """
 
         count_dict = {}
-        file = open(KNLP_PATH + "/knlp/data/seg_data/train/tag.txt", encoding='utf-8')
+        file = open(get_train_tag_file(), encoding='utf-8')
         for line in file.readlines():
             count_dict[line[0]] = defaultdict(int)
 
@@ -121,7 +122,7 @@ class PinYinTrain(Train):
 
         """
         count_dict = {}
-        file = open(KNLP_PATH + "/knlp/data/seg_data/train/tag.txt", encoding='utf-8')
+        file = open(get_train_tag_file(), encoding='utf-8')
         for line in file.readlines():
             count_dict[line[0]] = defaultdict(int)
 
@@ -145,7 +146,7 @@ class PinYinTrain(Train):
 
         """
         count_dict = {}
-        file = open(KNLP_PATH + "/knlp/data/seg_data/train/tag.txt", encoding='utf-8')
+        file = open(get_train_tag_file(), encoding='utf-8')
         for line in file.readlines():
             count_dict[line[0]] = 0
 
@@ -162,7 +163,7 @@ class PinYinTrain(Train):
 
         "建立拼音字典树"
 
-        f = open(KNLP_PATH + "/knlp/data/seg_data/train/pin_hanzi.txt", encoding='utf-8')
+        f = open(get_train_pin_hanzi_file(), encoding='utf-8')
         # 按行读取
         self.pinyin_to_chinese = {}
         for line in f.readlines():

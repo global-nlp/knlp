@@ -3,8 +3,7 @@ import pickle
 import sys
 
 from knlp.seq_labeling.crf.crf import CRFModel
-from knlp.common.constant import KNLP_PATH
-from knlp.utils.util import get_model_crf_hanzi_file
+from knlp.utils.util import get_model_crf_hanzi_file, get_data_hanzi_segment_file
 
 
 class Train:
@@ -25,7 +24,7 @@ class Train:
             self.init_variable(training_data_path=data_path)
 
     def init_variable(self, training_data_path=None):
-        self.training_data_path = KNLP_PATH + "/knlp/data/hanzi_segment.txt" if not training_data_path else training_data_path
+        self.training_data_path = get_data_hanzi_segment_file() if not training_data_path else training_data_path
 
         with open(self.training_data_path, encoding='utf-8') as f:
             self.training_data = f.readlines()
@@ -66,7 +65,7 @@ class Train:
 if __name__ == "__main__":
 
     args = sys.argv
-    train_data_path = KNLP_PATH + "/knlp/data/hanzi_segment.txt"
+    train_data_path = get_data_hanzi_segment_file()
 
     if len(args) > 1:
         train_data_path = args[1]

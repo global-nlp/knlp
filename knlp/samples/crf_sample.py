@@ -1,9 +1,8 @@
 # !/usr/bin/python
 # -*- coding:UTF-8 -*-
-from knlp.common.constant import KNLP_PATH
 from knlp.seq_labeling.crf.inference import Inference
 from knlp.seq_labeling.crf.train import Train
-from knlp.utils.util import get_model_crf_hanzi_file
+from knlp.utils.util import get_model_crf_hanzi_file, get_data_hanzi_segment_file
 
 # init trainer and inferencer
 crf_inferencer = Inference()
@@ -47,9 +46,8 @@ def load_and_test_inference(model_save_file, sentence):
 
 
 if __name__ == '__main__':
-    training_data_path = KNLP_PATH + "/knlp/data/hanzi_segment.txt"
     model_save_file = get_model_crf_hanzi_file()
-    crf_train(training_data_path=training_data_path, model_save_file=model_save_file)
+    crf_train(training_data_path=get_data_hanzi_segment_file(), model_save_file=model_save_file)
 
     sentence = "从明天起，做一个幸福的人，关心粮食与蔬菜。"
     load_and_test_inference(model_save_file=model_save_file, sentence=sentence)
