@@ -9,7 +9,7 @@
 # -----------------------------------------------------------------------#
 
 import torch
-import torch.nn as nn
+import torch.nn.functional as F
 import json
 from knlp.nn.textcnn.dataset_text_classification import TextClassificationDataset
 from knlp.nn.bilstm_crf.inference_nn import InferenceNN
@@ -44,7 +44,6 @@ class InferenceTextClassification(InferenceNN):
         self.max_length = max_length
         self.tokenizer = tokenizer
         self.preprocess_fn = preprocess_fn
-        self.softmax = nn.Softmax(dim=1)
         super().__init__(model_path=model_path, model=model, device=device)
 
     def load_word2idx(self, word2idx_path: str):
@@ -98,7 +97,7 @@ class InferenceTextClassification(InferenceNN):
         seqs = [TextClassificationDataset.process_text(seq, self.max_length, tokenizer=self.tokenizer,
                                                        preprocess_fn=self.preprocess_fn) for seq in seqs]
         seqs_idx = TextClassificationDataset.seq2idx_function(seqs, self.word2idx)
-        labels_prob = self.softmax(self.model(seqs_idx))
+        labels_prob = F.softmax(self.model(seqs_idx), dim=1)
         # 返回概率
         if not return_label:
             return labels_prob.tolist()

@@ -1,10 +1,10 @@
 # !/usr/bin/python
 # -*- coding:UTF-8 -*-
 # -----------------------------------------------------------------------#
-# File Name: inference_textcnn
+# File Name: inference_textrnn
 # Author: Gong Chen
 # Mail: cgg_1996@163.com
-# Created Time: 2022-04-28
+# Created Time: 2022-05-04
 # Description:
 # -----------------------------------------------------------------------#
 
@@ -12,9 +12,9 @@ from knlp.nn.textcnn.inference_text_classification import InferenceTextClassific
 import torch
 
 
-class InferenceTextCNN(InferenceTextClassification):
+class InferenceTextRCNN(InferenceTextClassification):
     """
-    用于TextCNN推理
+    用于TextRCNN推理
     """
 
     def __init__(self, model_path: str = "", model: torch.nn.Module = None, word2idx_path: str = "",
@@ -42,18 +42,16 @@ if __name__ == "__main__":
     import jieba
 
     kwargs = {
-        "model_path": KNLP_PATH + "/knlp/nn/textcnn/model_textcnn/weibo_model_textcnn.pkl",
-        "word2idx_path": KNLP_PATH + "/knlp/nn/textcnn/model_textcnn/weibo_word2idx.json",
-        "label2idx_path": KNLP_PATH + "/knlp/nn/textcnn/model_textcnn/weibo_label2idx.json",
+        "model_path": KNLP_PATH + "/knlp/nn/textrcnn/model_textrcnn/weibo_model_textrcnn.pkl",
+        "word2idx_path": KNLP_PATH + "/knlp/nn/textrcnn/model_textrcnn/weibo_word2idx.json",
+        "label2idx_path": KNLP_PATH + "/knlp/nn/textrcnn/model_textrcnn/weibo_label2idx.json",
         "max_length": 150,
         "tokenizer": jieba.lcut
     }
-    inference = InferenceTextCNN(**kwargs)
+    inference = InferenceTextRCNN(**kwargs)
 
     print(inference(["大吉大利，今晚吃鸡"]))
     print(inference(["大吉大利，今晚吃鸡"], return_label=True))
-    print(inference(["我好伤心", "上海疫情快要结束了，坚持就是胜利。"]))
-    print(inference(["我好伤心", "上海疫情快要结束了，坚持就是胜利。"], return_label=True))
     print(inference(["[怒]", "郁闷"]))
     print(inference(["开心", "好[害怕]呀"]))
-    print(inference(["[担心担忧]", "[怎么办]"]))
+    print(inference(["[担忧]", "[怎么办]"]))

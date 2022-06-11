@@ -10,6 +10,7 @@
 
 from knlp.common.constant import KNLP_PATH
 from knlp.nn.textcnn.inference_textcnn import InferenceTextCNN
+from knlp.nn.textrnn.inference_textrnn import InferenceTextRNN
 import jieba
 
 
@@ -34,6 +35,16 @@ class EmotionInference:
                     "tokenizer": jieba.lcut
                 },
                 "Inference": InferenceTextCNN
+            },
+            "TextRNN_2_class": {
+                "kwargs": {
+                    "model_path": KNLP_PATH + "/knlp/nn/textrnn/model_textrnn/weibo_model_textrnn.pkl",
+                    "word2idx_path": KNLP_PATH + "/knlp/nn/textrnn/model_textrnn/weibo_word2idx.json",
+                    "label2idx_path": KNLP_PATH + "/knlp/nn/textrnn/model_textrnn/weibo_label2idx.json",
+                    "max_length": 150,
+                    "tokenizer": jieba.lcut
+                },
+                "Inference": InferenceTextRNN
             }
         }
         self.select_inference(model)
