@@ -194,7 +194,7 @@ class TextRank4Sentence(TextRank4Keyword):
 
 
 if __name__ == '__main__':
-    with open("knlp/data/pytest_data.txt") as f:
+    with open("knlp/data/pytest_data.txt", encoding='utf-8') as f:
         text = f.read()
 
     tr4s = TextRank4Sentence()

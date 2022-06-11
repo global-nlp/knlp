@@ -23,6 +23,7 @@ def seg(sentence, function_name="jieba_cut"):
     Returns: list of word
 
     """
+
     words = []
     seg = Segmentor()
     word_list = seg.segment(text=sentence, function_name=function_name)
@@ -32,6 +33,7 @@ def seg(sentence, function_name="jieba_cut"):
         if not word:
             continue
         words.append(word)
+
     return words
 
 
