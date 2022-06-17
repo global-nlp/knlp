@@ -2,7 +2,7 @@
 import json
 import math
 
-from knlp.common.constant import KNLP_PATH, MODEL_DIR
+from knlp.common.constant import KNLP_PATH, GIT_MODEL_URL
 from knlp.seq_labeling.crf.crf import CRFModel
 from knlp.utils.util import get_model_crf_pinyin_file, check_file
 
@@ -26,7 +26,7 @@ class Inference:
             with open(file_path) as f:
                 return json.load(f)
 
-        check_file(KNLP_PATH + "/knlp/model/hmm/pinyin_input_data", MODEL_DIR)
+        check_file(KNLP_PATH + "/knlp/model/hmm/pinyin_input_data", GIT_MODEL_URL)
         self.pinyin_hanzi = helper(KNLP_PATH + '/knlp/model/hmm/pinyin_input_data/pinyin_hanzi.json')
         self.start_state = helper(KNLP_PATH + '/knlp/model/hmm/pinyin_input_data/start_state.json')
         self.emission_pro = helper(KNLP_PATH + '/knlp/model/hmm/pinyin_input_data/emission_pro.json')

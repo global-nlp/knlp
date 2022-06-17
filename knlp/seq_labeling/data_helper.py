@@ -99,11 +99,11 @@ class DataHelper:
 
 
 if __name__ == '__main__':
-    from knlp.common.constant import KNLP_PATH, DATA_DIR
+    from knlp.common.constant import KNLP_PATH, GIT_MODEL_URL
 
     # make pku training data
     # input_file = KNLP_PATH + "/knlp/data/seg_data/icwb2-data/training/pku_training.utf8"
-    # check_file(KNLP_PATH + "/knlp/data/seg_data/train", DATA_DIR)
+    # check_file(KNLP_PATH + "/knlp/data/seg_data/train", GIT_DATA_URL)
     # output_file = KNLP_PATH + "/knlp/data/seg_data/train/pku_hmm_training_data.txt"
     # DataHelper.make_smbe_data(input_file, output_file)
     #

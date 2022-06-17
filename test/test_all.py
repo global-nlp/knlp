@@ -13,7 +13,7 @@ from knlp.utils.util import Trie, get_pytest_data_file, get_model_crf_pinyin_fil
 from knlp import get_keyword, get_key_sentences, seg, ner, evaluation_seg_files, evaluation_seg, sentiment
 from knlp.seq_labeling.trie_seg.inference import TrieInference
 from knlp.seq_labeling.pinyin_input_method import inference
-from knlp.common.constant import DATA_DIR
+from knlp.common.constant import GIT_DATA_URL
 from knlp.seq_labeling.crf.crf import CRFModel
 
 import time
@@ -86,7 +86,7 @@ def test_file_evaluation():
 
 def test_check_file():
     start = time.time()
-    util.check_file("../knlp/data", DATA_DIR)
+    util.check_file("../knlp/data", GIT_DATA_URL)
     print(time.time() - start)
 
 

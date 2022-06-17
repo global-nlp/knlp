@@ -2,7 +2,7 @@
 
 import sys
 from collections import defaultdict
-from knlp.common.constant import KNLP_PATH, MODEL_DIR
+from knlp.common.constant import KNLP_PATH, GIT_MODEL_URL
 from knlp.seq_labeling.crf.train import Train
 from knlp.utils.util import get_pku_hmm_train_file, check_file, get_train_tag_file, get_train_out_file, \
     get_train_pin_hanzi_file
@@ -185,7 +185,7 @@ class PinYinTrain(Train):
 
         Returns:
         """
-        check_file(KNLP_PATH + "/knlp/model/hmm", MODEL_DIR)
+        check_file(KNLP_PATH + "/knlp/model/hmm", GIT_MODEL_URL)
         state_set = KNLP_PATH + "/knlp/model/hmm/pin_state_set.json" if not state_set_save_path else state_set_save_path + "/pin_state_set.json"
         transition_pro = KNLP_PATH + "/knlp/model/hmm/pin_transition_pro.json" if not transition_pro_save_path else transition_pro_save_path + "/pin_transition_pro.json"
         emission_pro = KNLP_PATH + "/knlp/model/hmm/pin_emission_pro.json" if not emission_pro_save_path else emission_pro_save_path + "/pin_emission_pro.json"

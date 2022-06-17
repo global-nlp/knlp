@@ -68,7 +68,7 @@ import json
 import sys
 from collections import defaultdict
 
-from knlp.common.constant import KNLP_PATH, MODEL_DIR
+from knlp.common.constant import KNLP_PATH, GIT_MODEL_URL
 from knlp.utils.util import get_pku_vocab_train_file, get_pku_hmm_train_file, check_file
 
 
@@ -226,7 +226,7 @@ class Train:
 
         Returns:
         """
-        check_file(KNLP_PATH + "/knlp/model/hmm/seg", MODEL_DIR)
+        check_file(KNLP_PATH + "/knlp/model/hmm/seg", GIT_MODEL_URL)
         state_set = KNLP_PATH + "/knlp/model/hmm/seg/state_set.json" if not state_set_save_path else state_set_save_path + "/state_set.json"
         transition_pro = KNLP_PATH + "/knlp/model/hmm/seg/transition_pro.json" if not transition_pro_save_path else transition_pro_save_path + "/transition_pro.json"
         emission_pro = KNLP_PATH + "/knlp/model/hmm/seg/emission_pro.json" if not emission_pro_save_path else emission_pro_save_path + "/emission_pro.json"
