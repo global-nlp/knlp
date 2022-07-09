@@ -1,13 +1,3 @@
-# !/usr/bin/python
-# -*- coding:UTF-8 -*-
-# -----------------------------------------------------------------------#
-# File Name: inference_seg
-# Author: Ziyang Miao
-# Mail: 1838040569@qq.com
-# Created Time: 2022-06-30
-# Description:生成ner的标签文件
-# -----------------------------------------------------------------------#
-
 import json
 f = open('../../data/ner_data/cluener_training_data.txt',encoding='utf-8')
 tag_set = set()

@@ -73,6 +73,7 @@ class SeqLabelDataset(Dataset):
                 line = line.split('\t')
                 seq.append(line[0])
                 tag.append(line[1])
+
             # 句末且句子不为空:存储
             elif seq:
                 seqs.append(seq)
@@ -138,7 +139,7 @@ class SeqLabelDataset(Dataset):
         Returns:
 
         """
-        with open(path) as f:
+        with open(path,encoding='utf-8') as f:
             return f.readlines()
 
     @staticmethod

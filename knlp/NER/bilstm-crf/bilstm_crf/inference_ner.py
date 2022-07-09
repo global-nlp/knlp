@@ -2,10 +2,10 @@
 # -*- coding:UTF-8 -*-
 # -----------------------------------------------------------------------#
 # File Name: inference_seg
-# Author: Ziyang Miao
-# Mail: 1838040569@qq.com
-# Created Time: 2022-06-30
-# Description:bilstm的命名实体识别
+# Author: Gong Chen
+# Mail: cgg_1996@163.com
+# Created Time: 2022-04-08
+# Description:
 # -----------------------------------------------------------------------#
 
 from knlp.common.constant import KNLP_PATH
@@ -14,7 +14,7 @@ from knlp.nn.bilstm_crf.inference_bilstm_crf import InferenceBiLSTMCRF
 
 class NerInference:
     """
-    命名实体识别推理
+    分词推理
     """
 
     def __init__(self, model: str = "BiLSTM_CRF"):

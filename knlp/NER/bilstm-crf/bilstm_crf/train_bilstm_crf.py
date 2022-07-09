@@ -55,7 +55,7 @@ if __name__ == "__main__":
     kwargs = {
         "dataset_hyperparameters": {
             "vocab_set_path": KNLP_PATH + "/knlp/data/seg_data/train/pku_vocab.txt",
-            "training_data_path": KNLP_PATH + "/knlp/data/seg_data/train/pku_hmm_training_data.txt",
+            "training_data_path": KNLP_PATH + "/knlp/data/ner_data/cluener_training_data.txt",
             "batch_size": 64,
             "shuffle": True
         },
@@ -70,10 +70,10 @@ if __name__ == "__main__":
         }
     }
     save_kwargs = {
-        "model_path": KNLP_PATH + "/knlp/nn/bilstm_crf/model_bilstm_crf/bilstm_crf_seg.pkl",
+        "model_path": KNLP_PATH + "/knlp/nn/bilstm_crf/model_bilstm_crf/bilstm_crf_ner.pkl",
         "word2idx_path": KNLP_PATH + "/knlp/nn/bilstm_crf/model_bilstm_crf/word2idx.json",
-        "tag2idx_path": KNLP_PATH + "/knlp/nn/bilstm_crf/model_bilstm_crf/tag2idx.json"
+        "tag2idx_path": KNLP_PATH + "/knlp/nn/bilstm_crf/model_bilstm_crf/tag_json.json"
     }
     train = TrainBiLSTMCRF(**kwargs)
-    train.train(5)
+    train.train(20)
     train.save(**save_kwargs)
