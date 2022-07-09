@@ -2,20 +2,19 @@
 # -*- coding:UTF-8 -*-
 # -----------------------------------------------------------------------#
 # File Name: inference_seg
-# Author: Gong Chen
-# Mail: cgg_1996@163.com
-# Created Time: 2022-04-08
-# Description:
+# Author: Ziyang Miao
+# Mail: 1838040569@qq.com
+# Created Time: 2022-06-30
+# Description:bilstm的命名实体识别
 # -----------------------------------------------------------------------#
 
 from knlp.common.constant import KNLP_PATH
-# from knlp.nn.bilstm_crf.inference_bilstm_crf import InferenceBiLSTMCRF
 from knlp.nn.bilstm_crf.inference_bilstm_crf import InferenceBiLSTMCRF
 
 
-class SegInference:
+class NerInference:
     """
-    分词推理
+    命名实体识别推理
     """
 
     def __init__(self, model: str = "BiLSTM_CRF"):
@@ -27,9 +26,9 @@ class SegInference:
         self.model_infos = {
             "BiLSTM_CRF": {
                 "kwargs": {
-                    "model_path": KNLP_PATH + "/knlp/nn/bilstm_crf/model_bilstm_crf/bilstm_crf_seg.pkl",
+                    "model_path": KNLP_PATH + "/knlp/nn/bilstm_crf/model_bilstm_crf/bilstm_crf_ner.pkl",
                     "word2idx_path": KNLP_PATH + "/knlp/nn/bilstm_crf/model_bilstm_crf/word2idx.json",
-                    "tag2idx_path": KNLP_PATH + "/knlp/nn/bilstm_crf/model_bilstm_crf/tag2idx.json"
+                    "tag2idx_path": KNLP_PATH + "/knlp/nn/bilstm_crf/model_bilstm_crf/tag_json.json"
                 },
                 "Inference": InferenceBiLSTMCRF
             }
@@ -51,7 +50,7 @@ class SegInference:
 
     def cut(self, sentence1, sentence2):
         """
-        按照BEMS标签做中文分词，切割句子。
+        按照BIO标签做中文分词，切割句子。
         Args:
             sentence1: 文本序列
             sentence2: 标注序列
@@ -62,17 +61,23 @@ class SegInference:
         out_sent = []
         begin = 0
         for idx in range(len(sentence1)):
-            if sentence2[idx] == 'B':
+            # print(sentence1[idx], sentence2[idx])
+            if sentence2[idx][0] == 'B':
                 begin = idx
-            elif sentence2[idx] == 'S':
-                str = sentence1[idx]
-                out_sent.append(str)
-                begin = idx + 1
-            elif sentence2[idx] == 'E':
-                next = idx + 1
-                str = "".join(sentence1[begin:next])
-                out_sent.append(str)
-                begin = next
+            elif sentence2[idx][0] == 'I':
+                idx += 1
+                if idx == len(sentence1):
+                    str = "".join(sentence1[begin:idx])
+                    out_sent.append(str)
+                    return out_sent
+                elif sentence2[idx][0] == 'O':
+                    str = "".join(sentence1[begin:idx])
+                    out_sent.append(str)
+                    begin = idx
+            elif sentence2[idx][0] == 'O':
+                out_sent.append(sentence1[idx])
+
+
         return out_sent
 
     def forward(self, seqs):
@@ -95,7 +100,7 @@ class SegInference:
 
 
 if __name__ == "__main__":
-    inference = SegInference()
-    print(inference("你好，吃晚饭了吗"))
+    inference = NerInference()
+    print(inference(["中南大学计算机学院"]))
     print(inference(["冬天到了，春天还会远吗？", "天安门前太阳升"]))
     print(inference(["冬天到了，春天还会远吗？", "今天晚上我们一起去吃大餐好不好？", "你好，吃晚饭了吗"]))
