@@ -11,14 +11,16 @@
 # 2. 函数运行进度条
 # 3. 计算函数运行时间的装饰器
 # -----------------------------------------------------------------------#
+import datetime
 import os
+import re
+import shutil
 import sys
 import time
-import shutil
 import zipfile
-import requests
 from functools import wraps
 
+import requests
 from knlp.common.constant import KNLP_PATH
 
 
@@ -212,3 +214,178 @@ class ShowProcess:
         print('')
         print(words)
         self.i = 0
+
+
+class CommonUtil(object):
+    _emoji_pattern_cfg = re.compile(u'('
+                                    u'\ud83c[\udf00-\udfff]|'
+                                    u'\ud83d[\udc00-\ude4f\ude80-\udeff]|'
+                                    u'[\u2600-\u2B55])+', flags=re.UNICODE)
+
+    _replace_pattern_cfg = {
+        'float_t': re.compile('\d+\.\d+'),
+        'phone_t': re.compile(
+            r'1[0-9\*]{10}|\d{3}[-\s]\d{4}[-\s]\d{4}|\+861[0-9]{10}|[0-9]{3}-[0-9]{3}-[0-9]{4}|[0-9]{4}-[0-9]{7,8}|[8|6][0-9]{7}'),
+        'email_t': re.compile(r'[^@|\s]+@[^@]+\.[^@|\s]+'),
+    }
+
+    replace_patterns = [
+        ('', re.compile(r'\[.*\]'))
+    ]
+
+    punc = '!"#$%&\'()*＊+。,-./:;<=>?@，。?★、…【】《》？“”‘’！[\\]^_`{|}~}'
+    replace_symbol = (r'[{}]+'.format(punc))
+    _replace_symbol_cfg = re.compile(replace_symbol)
+
+    _illegal_char_set = set([])
+
+    @classmethod
+    def keep_alphabate(cls, line):
+        cop = re.compile("[^a-z^A-Z]")
+        return cop.sub('', line)
+
+    @classmethod
+    def keep_meaning_thing(cls, line):
+        cop = re.compile(
+            "[^\u4e00-\u9fa5^.^a-z^A-Z^0-9^.^\u3002\uff1b\uff0c\uff1a\u201c\u201d\uff08\uff09\u3001\uff1f\u300a\u300b”]")
+        return cop.sub('', line)
+
+    @classmethod
+    def keep_Chinese(cls, line):
+        cop = re.compile("[^\u4e00-\u9fa5”]")
+        return cop.sub('', line)
+
+    @classmethod
+    def keep_Chinese_number(cls, line):
+        cop = re.compile("[^\u4e00-\u9fa5^.^0-9”]")
+        return cop.sub('', line)
+
+    @classmethod
+    def rm_replace_symbol(cls, line):
+        res = cls._replace_symbol_cfg.sub('', line)
+        return res
+
+    @classmethod
+    def remove_emoji_char(cls, text_unicode):
+        res = cls._emoji_pattern_cfg.sub('', text_unicode)
+        return res
+
+    @classmethod
+    def rm_html(cls, line):
+        pat = re.compile('>(.*?)<')
+        return ''.join(pat.findall(line))
+
+    # 时间函数相关
+    @classmethod
+    def timestamp2ymd(cls, timestamp, format='%Y-%m-%d %H:%M:%S'):
+        # timestamp: 1494474258
+        # format:
+        #     - '%Y-%m-%d %H:%M:%S'
+        #     - '%Y-%m-%d'
+        #     - '%Y%m%d'
+        x = time.localtime(timestamp)
+        return time.strftime(format, x)
+
+    @classmethod
+    def ymd2timestamp(cls, Ymd, format='%Y-%m-%d %H:%M:%S'):
+
+        # Ymd: 2017-04-13 00:00:00
+        # format:
+        # 	- '%Y-%m-%d %H:%M:%S'
+        # 	- '%Y-%m-%d'
+        # 	- '%Y%m%d'
+        # return 1494474258
+
+        return time.mktime(time.strptime(Ymd, format))
+
+    @classmethod
+    def get_timestamp(cls, now_flag=1, days=0):
+        # now_flag: 是否获取当前时间戳，精确到秒
+        # days: 某天开始时间戳
+        if now_flag == 1:
+            return time.time()
+        else:
+            today = datetime.date.today()
+            # 今天-num天时间戳
+            TimeStamp = today + datetime.timedelta(days=days)
+            return TimeStamp
+
+    def _get_charyype(cls, character):
+        # Input:
+        #   unicode of a character
+        # Return:
+        #   0-number, 1-alpha, 2-Chinese, 3-others
+        char = character
+        if len(char) != 1:
+            return -1
+        if char in '1234567890':
+            return 0  # number
+        if (char >= 'a' and char <= 'z') or (char >= 'A' and char <= 'Z'):
+            return 1
+        if re.match(u'[\u4E00-\u9FA5]', char):
+            return 2
+        return 3
+
+    @classmethod
+    def get_char_typenum(cls, text):
+        # Input:
+        #   unicode of text
+        # Return:
+        #   [#number, #alpha, #Chinese, #Others]
+        fNumOfNum, fNumOfAlpha, fNumOfChn, fNumOfOther = 0, 0, 0, 0
+        for char in text:
+            charType = cls._get_charyype(char)
+            if 0 == charType:
+                fNumOfNum += 1
+            elif 1 == charType:
+                fNumOfAlpha += 1
+            elif 2 == charType:
+                fNumOfChn += 1
+            elif 3 == charType:
+                fNumOfOther += 1
+        return fNumOfNum, fNumOfAlpha, fNumOfChn, fNumOfOther
+
+    @classmethod
+    def is_chinese(cls, uchar):
+        if uchar >= u'\u4e00' and uchar <= u'\u9fa5':
+            return True
+        else:
+            return False
+
+    @classmethod
+    def is_alphabet(cls, uchar):
+        if (uchar >= u'\u0041' and uchar <= u'\u005a') or \
+                (uchar >= u'\u0061' and uchar <= u'\u007a'):
+            return True
+        else:
+            return False
+
+    @classmethod
+    def is_number(cls, uchar):
+        if uchar >= u'\u0030' and uchar <= u'\u0039':
+            return True
+        else:
+            return False
+
+    @classmethod
+    def q2b(cls, uchar):
+        """全角转半角"""
+        inside_code = ord(uchar)
+        if inside_code == 0x3000:
+            inside_code = 0x0020
+        else:
+            inside_code -= 0xfee0
+        if inside_code < 0x0020 or inside_code > 0x7e:  # 转完之后不是半角字符返回原来的字符
+            return uchar
+        return unichr(inside_code)
+
+    @classmethod
+    def str_q2b(cls, sequence):
+        """把字符串全角转半角"""
+        sequence = sequence.decode('utf-8')
+        return "".join([cls.q2b(uchar) for uchar in sequence]).encode('utf-8').strip()
+
+    @classmethod
+    def str_q2b_u2l(cls, sequence):
+        """格式化字符串，完成全角转半角，大写转小写的工作"""
+        return cls.str_q2b(sequence).lower().strip()
