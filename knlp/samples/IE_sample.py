@@ -10,6 +10,7 @@
 
 
 from knlp.information_extract.keywords_extraction import TextRank4Keyword, TextRank4Sentence
+from knlp.utils.util import get_pytest_data_file
 
 
 def get_keyword(text, window=5, num=20, word_min_len=2, need_key_phrase=True):
@@ -80,7 +81,7 @@ def get_key_sentences_by_keyword(text):
 
 
 if __name__ == '__main__':
-    with open("knlp/data/pytest_data.txt", encoding='utf-8') as f:
+    with open(get_pytest_data_file(), encoding='utf-8') as f:
         text = f.read()
     print(get_key_sentences(text))
     print(get_key_sentences_by_keyword(text))

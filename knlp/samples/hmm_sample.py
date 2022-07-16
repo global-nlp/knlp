@@ -10,6 +10,7 @@
 from knlp.common.constant import KNLP_PATH
 from knlp.seq_labeling.hmm.inference import Inference
 from knlp.seq_labeling.hmm.train import Train
+from knlp.utils.util import get_pku_vocab_train_file, get_pku_hmm_train_file
 
 # init trainer and inferencer
 hmm_inferencer = Inference()
@@ -67,9 +68,7 @@ def test_inference(sentence):
 
 
 if __name__ == '__main__':
-    vocab_set_path = KNLP_PATH + "/knlp/data/seg_data/train/pku_vocab.txt"
-    training_data_path = KNLP_PATH + "/knlp/data/seg_data/train/pku_hmm_training_data_sample.txt"
     model_save_path = KNLP_PATH + "/knlp/model/hmm/"
-    hmm_train(vocab_set_path=vocab_set_path, training_data_path=training_data_path, model_save_path=model_save_path)
+    hmm_train(vocab_set_path=get_pku_vocab_train_file(), training_data_path=get_pku_hmm_train_file(), model_save_path=model_save_path)
     hmm_inference_load_model(model_save_path=model_save_path)
     print(test_inference("大家好，我是你们的好朋友"))

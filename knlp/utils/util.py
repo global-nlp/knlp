@@ -22,16 +22,82 @@ from functools import wraps
 from knlp.common.constant import KNLP_PATH
 
 
+def get_model_crf_hanzi_file():
+    file_name = KNLP_PATH + "/knlp/model/crf/hanzi_segment.pkl"
+    check_file(file_name, "https://raw.githubusercontent.com/global-nlp/knlp_model/main/model/crf/hanzi_segment.pkl")
+    return file_name
+
+
+def get_model_crf_pinyin_file():
+    file_name = KNLP_PATH + "/knlp/model/crf/pinyin.pkl"
+    check_file(file_name, "https://raw.githubusercontent.com/global-nlp/knlp_model/main/model/crf/pinyin.pkl")
+    return file_name
+
+
+def get_train_out_file():
+    file_name = KNLP_PATH + "/knlp/data/seg_data/train/out3.txt"
+    check_file(file_name, "https://raw.githubusercontent.com/global-nlp/knlp_data/main/data/seg_data/train/out3.txt")
+    return file_name
+
+
+def get_train_pin_hanzi_file():
+    file_name = KNLP_PATH + "/knlp/data/seg_data/train/pin_hanzi.txt"
+    check_file(file_name, "https://raw.githubusercontent.com/global-nlp/knlp_data/main/data/seg_data/train/pin_hanzi.txt")
+    return file_name
+
+
+def get_train_tag_file():
+    file_name = KNLP_PATH + "/knlp/data/seg_data/train/tag.txt"
+    check_file(file_name, "https://raw.githubusercontent.com/global-nlp/knlp_data/main/data/seg_data/train/tag.txt")
+    return file_name
+
+
+def get_pku_hmm_train_file():
+    file_name = KNLP_PATH + "/knlp/data/seg_data/train/pku_hmm_training_data_sample.txt"
+    check_file(file_name, "https://raw.githubusercontent.com/global-nlp/knlp_data/main/data/seg_data/train/pku_hmm_training_data_sample.txt")
+    return file_name
+
+
+def get_pku_vocab_train_file():
+    file_name = KNLP_PATH + "/knlp/data/seg_data/train/pku_vocab.txt"
+    check_file(file_name, "https://raw.githubusercontent.com/global-nlp/knlp_data/main/data/seg_data/train/pku_vocab.txt")
+    return file_name
+
+
+def get_data_pinyin_segment_file():
+    file_name = KNLP_PATH + "/knlp/data/pinyin_segment.txt"
+    check_file(file_name, "https://raw.githubusercontent.com/global-nlp/knlp_data/main/data/pinyin_segment.txt")
+    return file_name
+
+
+def get_data_hanzi_segment_file():
+    file_name = KNLP_PATH + "/knlp/data/hanzi_segment.txt"
+    check_file(file_name, "https://raw.githubusercontent.com/global-nlp/knlp_data/main/data/hanzi_segment.txt")
+    return file_name
+
+
+def get_pytest_data_file():
+    file_name = KNLP_PATH + "/knlp/data/pytest_data.txt"
+    check_file(file_name, "https://raw.githubusercontent.com/global-nlp/knlp_data/main/data/pytest_data.txt")
+    return file_name
+
+
 def get_jieba_dict_file():
-    return KNLP_PATH + "/knlp/data/jieba_dict.txt"
+    file_name = KNLP_PATH + "/knlp/data/jieba_dict.txt"
+    check_file(file_name, "https://raw.githubusercontent.com/global-nlp/knlp_data/main/data/jieba_dict.txt")
+    return file_name
 
 
 def get_wait_to_cut_file():
-    return KNLP_PATH + "/knlp/data/wait_to_cut.txt"
+    file_name = KNLP_PATH + "/knlp/data/wait_to_cut.txt"
+    check_file(file_name, "https://raw.githubusercontent.com/global-nlp/knlp_data/main/data/wait_to_cut.txt")
+    return file_name
 
 
 def get_default_stop_words_file():
-    return KNLP_PATH + "/knlp/data/stopwords.txt"
+    file_name = KNLP_PATH + "/knlp/data/stopwords.txt"
+    check_file(file_name, "https://raw.githubusercontent.com/global-nlp/knlp_data/main/data/stopwords.txt")
+    return file_name
 
 
 class Trie:
@@ -105,10 +171,11 @@ class Trie:
         return current_node['freq'] if 'freq' in current_node else None
 
 
-def check_file(file_path):
+def init_data_file(file_path, git_url):
     """
     检测数据文件是否存在，不存在则进行下载。
-    目前用于测试，将knlp/data数据文件上传到 https://github.com/Kevin1906721262/knlp-file ，
+    目前用于测试，将knlp/data数据文件上传到 https://github.com/global-nlp/knlp_data ，
+    model : https://github.com/global-nlp/knlp_model
     利用github的zip下载形式，下载到本地，并解压到对应位置。
     暂未实现多个模块下的数据文件检测(也可实现,统一下载，解压后移动到不同模块下即可)
 
@@ -117,30 +184,79 @@ def check_file(file_path):
 
     Args:
         file_path: string, 待检测文件夹路径
-
+        git_url: string, 存放数据的git项目地址
     Returns:
 
     """
-    if not os.path.exists(file_path):  # "../knlp/data"
-        origin_file_url = "https://github.com/Kevin1906721262/knlp-file" \
-                          "/archive/refs/heads/main.zip "
-        if not os.path.exists("../tmp"):
-            os.mkdir("../tmp")
-        temp_file_path = "../tmp/main.zip"
+    if not os.path.exists(file_path):
+        os.chdir(KNLP_PATH)
+        tmp_dir = "tmp"
+        if os.path.exists(tmp_dir):
+            for i in range(100):
+                if os.path.exists(tmp_dir + str(i)):
+                    continue
+                else:
+                    os.mkdir(tmp_dir + str(i))
+                    tmp_dir = tmp_dir + str(i)
+                    break
+        else:
+            os.mkdir(tmp_dir)
+        temp_file_path = tmp_dir + "/main.zip"
         try:
-            f = requests.get(origin_file_url)
+            print(file_path, "is not exist, init data file, downing...")
+            f = requests.get(git_url)
+            print("data file down finished")
         except Exception as e:
             print(e)
-            print("网络异常，数据文件下载失败")
+            raise e
         else:
             with open(temp_file_path, "wb") as code:
                 code.write(f.content)
             z = zipfile.ZipFile(temp_file_path, 'r')
-            z.extractall(path="../tmp/")
+            z.extractall(path=tmp_dir + "/")
             z.close()
+            target_dir = "knlp/data"
+            if file_path.__contains__(target_dir):  # 文件路径中包含data说明是data的文件
+                if os.path.exists(target_dir):
+                    shutil.rmtree(target_dir)
+                shutil.move(tmp_dir + "/knlp_data-main/data", "knlp/")
+                shutil.rmtree(tmp_dir)
+            target_dir = "knlp/model"
+            if file_path.__contains__(target_dir):  # 文件路径中包含data说明是data的文件
+                if os.path.exists(target_dir):
+                    shutil.rmtree(target_dir)
+                shutil.move(tmp_dir + "/knlp_model-main/model", "knlp/")
+                shutil.rmtree(tmp_dir)
 
-            shutil.move("../tmp/knlp-file-main/data", "../knlp/data")
-            shutil.rmtree("../tmp")
+
+def check_file(file_path, git_url):
+    """
+        检测file_path文件是否存在，如果不存在则根据git_url进行下载
+
+    Args:
+        file_path: string, 待检测文件路径(绝对路径)
+        git_url: string, 对应文件的git地址
+    Returns:
+
+    """
+    if os.path.exists(file_path):
+        return
+
+    dir_name = os.path.dirname(file_path)
+    file_base_name = os.path.basename(file_path)
+    if not os.path.exists(dir_name):
+        os.makedirs(dir_name)
+        os.chdir(dir_name)
+    try:
+        print(file_path, "is not exist, downing...")
+        f = requests.get(git_url)
+        with open(file_base_name, "wb") as code:
+            code.write(f.content)
+        print("data file down finished")
+    except Exception as e:
+        print(e)
+        print("if download always fails, please try to init data file.")
+        raise e
 
 
 class AttrDict(dict):

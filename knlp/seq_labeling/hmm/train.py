@@ -68,7 +68,8 @@ import json
 import sys
 from collections import defaultdict
 
-from knlp.common.constant import KNLP_PATH
+from knlp.common.constant import KNLP_PATH, GIT_MODEL_URL
+from knlp.utils.util import get_pku_vocab_train_file, get_pku_hmm_train_file, check_file
 
 
 class Train:
@@ -99,8 +100,8 @@ class Train:
                                test_data_path=test_data_path)
 
     def init_variable(self, vocab_set_path=None, training_data_path=None, test_data_path=None):
-        self.vocab_set_path = KNLP_PATH + "/knlp/data/seg_data/train/pku_vocab.txt" if not vocab_set_path else vocab_set_path
-        self.training_data_path = KNLP_PATH + "/knlp/data/seg_data/train/pku_hmm_training_data.txt" if not training_data_path else training_data_path
+        self.vocab_set_path = get_pku_vocab_train_file() if not vocab_set_path else vocab_set_path
+        self.training_data_path = get_pku_hmm_train_file() if not training_data_path else training_data_path
         # self.test_data_path = KNLP_PATH + "/knlp/data/seg_data/train/pku_hmm_test_data.txt" if not test_data_path else test_data_path
         with open(self.vocab_set_path, encoding='utf-8') as f:
             self.vocab_data = f.readlines()
@@ -225,6 +226,7 @@ class Train:
 
         Returns:
         """
+        check_file(KNLP_PATH + "/knlp/model/hmm/seg", GIT_MODEL_URL)
         state_set = KNLP_PATH + "/knlp/model/hmm/seg/state_set.json" if not state_set_save_path else state_set_save_path + "/state_set.json"
         transition_pro = KNLP_PATH + "/knlp/model/hmm/seg/transition_pro.json" if not transition_pro_save_path else transition_pro_save_path + "/transition_pro.json"
         emission_pro = KNLP_PATH + "/knlp/model/hmm/seg/emission_pro.json" if not emission_pro_save_path else emission_pro_save_path + "/emission_pro.json"

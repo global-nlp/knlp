@@ -2,7 +2,7 @@
 import re
 
 from knlp.seq_labeling.crf.crf import CRFModel
-from knlp.common.constant import KNLP_PATH
+from knlp.utils.util import get_model_crf_hanzi_file
 
 
 class Inference:
@@ -62,11 +62,10 @@ class Inference:
 
 if __name__ == "__main__":
     test = Inference()
-    CRF_MODEL_PATH = KNLP_PATH + "/knlp/model/crf/hanzi_segment.pkl"
 
     print("读取数据...")
     to_be_pred = "冬天到了，春天还会远吗？"
 
-    test.spilt_predict(to_be_pred, CRF_MODEL_PATH)
+    test.spilt_predict(to_be_pred, get_model_crf_hanzi_file())
     print("POS结果：" + str(test.label_prediction))
     print("模型预测结果：" + str(test.out_sentence))

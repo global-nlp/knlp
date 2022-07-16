@@ -14,7 +14,7 @@ import numpy as np
 
 from knlp.common.constant import sentence_delimiters, allow_speech_tags
 from knlp.information_extract.keywords_extraction.textrank_keyword import TextRank4Keyword
-from knlp.utils.util import AttrDict, get_default_stop_words_file
+from knlp.utils.util import AttrDict, get_default_stop_words_file, get_pytest_data_file
 
 
 class TextRank4Sentence(TextRank4Keyword):
@@ -194,7 +194,7 @@ class TextRank4Sentence(TextRank4Keyword):
 
 
 if __name__ == '__main__':
-    with open("knlp/data/pytest_data.txt", encoding='utf-8') as f:
+    with open(get_pytest_data_file(), encoding='utf-8') as f:
         text = f.read()
 
     tr4s = TextRank4Sentence()
