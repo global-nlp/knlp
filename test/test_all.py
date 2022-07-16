@@ -7,17 +7,17 @@
 # Created Time: 2021-01-27
 # Description:
 # -----------------------------------------------------------------------#
+import os
+import time
+import shutil
 
 from knlp import Knlp
-from knlp.utils.util import Trie, get_pytest_data_file, get_model_crf_pinyin_file
+from knlp.utils.util import Trie, get_pytest_data_file, get_model_crf_pinyin_file, init_data_file
 from knlp import get_keyword, get_key_sentences, seg, ner, evaluation_seg_files, evaluation_seg, sentiment
 from knlp.seq_labeling.trie_seg.inference import TrieInference
 from knlp.seq_labeling.pinyin_input_method import inference
-from knlp.common.constant import GIT_DATA_URL
+from knlp.common.constant import GIT_DATA_URL, GIT_MODEL_URL
 from knlp.seq_labeling.crf.crf import CRFModel
-
-import time
-from knlp.utils import util
 
 TEST_SINGLE_SENTENCE = "KNLP是一个NLP工具包，主要支持中文的各种NLP基础操作"
 
@@ -86,7 +86,7 @@ def test_file_evaluation():
 
 def test_check_file():
     start = time.time()
-    util.check_file("../knlp/data", GIT_DATA_URL)
+    init_data_file("../knlp/data", GIT_DATA_URL)
     print(time.time() - start)
 
 
@@ -137,6 +137,31 @@ def test_pinyin_inference():
     print("按照两个字一组划分后的预测结果：" + str(out))
 
 
+def test_init_data_file(dir_path):
+    """
+        初始化data或model数据文件
+    Args:
+        dir_path: knlp/data 或 knlp/model
+    Returns:
+
+    """
+    if "".__eq__(dir_path):
+        return
+    if dir_path.__contains__("data"):
+        git_url = GIT_DATA_URL
+    elif dir_path.__contains__("model"):
+        git_url = GIT_MODEL_URL
+    else:
+        print("dir_path error")
+        return
+    if os.path.exists(dir_path):
+        if 0 == len(os.listdir(dir_path)):  # 文件夹下没有文件
+            shutil.rmtree(dir_path)
+            init_data_file(dir_path, git_url)
+        else:
+            print(dir_path, "already exist")
+
+
 def test_all():
     test_knlp()
     test_seg()
@@ -149,6 +174,7 @@ def test_all():
     test_cut_by_knlp()
     test_pinyin_inference()
     test_check_file()
+    test_init_data_file("../knlp/model")
 
 
 if __name__ == '__main__':

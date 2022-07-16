@@ -20,84 +20,83 @@ import requests
 from functools import wraps
 
 from knlp.common.constant import KNLP_PATH
-from knlp.common.constant import GIT_DATA_URL, GIT_MODEL_URL
 
 
 def get_model_crf_hanzi_file():
     file_name = KNLP_PATH + "/knlp/model/crf/hanzi_segment.pkl"
-    check_file(file_name, GIT_MODEL_URL)
+    check_file(file_name, "https://raw.githubusercontent.com/global-nlp/knlp_model/main/model/crf/hanzi_segment.pkl")
     return file_name
 
 
 def get_model_crf_pinyin_file():
     file_name = KNLP_PATH + "/knlp/model/crf/pinyin.pkl"
-    check_file(file_name, GIT_MODEL_URL)
-    return file_name
-
-
-def get_data_pinyin_segment_file():
-    file_name = KNLP_PATH + "/knlp/data/pinyin_segment.txt"
-    check_file(file_name, GIT_DATA_URL)
-    return file_name
-
-
-def get_data_hanzi_segment_file():
-    file_name = KNLP_PATH + "/knlp/data/hanzi_segment.txt"
-    check_file(file_name, GIT_DATA_URL)
+    check_file(file_name, "https://raw.githubusercontent.com/global-nlp/knlp_model/main/model/crf/pinyin.pkl")
     return file_name
 
 
 def get_train_out_file():
     file_name = KNLP_PATH + "/knlp/data/seg_data/train/out3.txt"
-    check_file(file_name, GIT_DATA_URL)
+    check_file(file_name, "https://raw.githubusercontent.com/global-nlp/knlp_data/main/data/seg_data/train/out3.txt")
     return file_name
 
 
 def get_train_pin_hanzi_file():
     file_name = KNLP_PATH + "/knlp/data/seg_data/train/pin_hanzi.txt"
-    check_file(file_name, GIT_DATA_URL)
+    check_file(file_name, "https://raw.githubusercontent.com/global-nlp/knlp_data/main/data/seg_data/train/pin_hanzi.txt")
     return file_name
 
 
 def get_train_tag_file():
     file_name = KNLP_PATH + "/knlp/data/seg_data/train/tag.txt"
-    check_file(file_name, GIT_DATA_URL)
+    check_file(file_name, "https://raw.githubusercontent.com/global-nlp/knlp_data/main/data/seg_data/train/tag.txt")
     return file_name
 
 
 def get_pku_hmm_train_file():
     file_name = KNLP_PATH + "/knlp/data/seg_data/train/pku_hmm_training_data_sample.txt"
-    check_file(file_name, GIT_DATA_URL)
+    check_file(file_name, "https://raw.githubusercontent.com/global-nlp/knlp_data/main/data/seg_data/train/pku_hmm_training_data_sample.txt")
     return file_name
 
 
 def get_pku_vocab_train_file():
     file_name = KNLP_PATH + "/knlp/data/seg_data/train/pku_vocab.txt"
-    check_file(file_name, GIT_DATA_URL)
+    check_file(file_name, "https://raw.githubusercontent.com/global-nlp/knlp_data/main/data/seg_data/train/pku_vocab.txt")
+    return file_name
+
+
+def get_data_pinyin_segment_file():
+    file_name = KNLP_PATH + "/knlp/data/pinyin_segment.txt"
+    check_file(file_name, "https://raw.githubusercontent.com/global-nlp/knlp_data/main/data/pinyin_segment.txt")
+    return file_name
+
+
+def get_data_hanzi_segment_file():
+    file_name = KNLP_PATH + "/knlp/data/hanzi_segment.txt"
+    check_file(file_name, "https://raw.githubusercontent.com/global-nlp/knlp_data/main/data/hanzi_segment.txt")
     return file_name
 
 
 def get_pytest_data_file():
     file_name = KNLP_PATH + "/knlp/data/pytest_data.txt"
-    check_file(file_name, GIT_DATA_URL)
+    check_file(file_name, "https://raw.githubusercontent.com/global-nlp/knlp_data/main/data/pytest_data.txt")
     return file_name
 
 
 def get_jieba_dict_file():
     file_name = KNLP_PATH + "/knlp/data/jieba_dict.txt"
-    check_file(file_name, GIT_DATA_URL)
+    check_file(file_name, "https://raw.githubusercontent.com/global-nlp/knlp_data/main/data/jieba_dict.txt")
     return file_name
 
 
 def get_wait_to_cut_file():
     file_name = KNLP_PATH + "/knlp/data/wait_to_cut.txt"
-    check_file(file_name, GIT_DATA_URL)
+    check_file(file_name, "https://raw.githubusercontent.com/global-nlp/knlp_data/main/data/wait_to_cut.txt")
     return file_name
 
 
 def get_default_stop_words_file():
     file_name = KNLP_PATH + "/knlp/data/stopwords.txt"
-    check_file(file_name, GIT_DATA_URL)
+    check_file(file_name, "https://raw.githubusercontent.com/global-nlp/knlp_data/main/data/stopwords.txt")
     return file_name
 
 
@@ -172,7 +171,7 @@ class Trie:
         return current_node['freq'] if 'freq' in current_node else None
 
 
-def check_file(file_path, git_url):
+def init_data_file(file_path, git_url):
     """
     检测数据文件是否存在，不存在则进行下载。
     目前用于测试，将knlp/data数据文件上传到 https://github.com/global-nlp/knlp_data ，
@@ -228,6 +227,36 @@ def check_file(file_path, git_url):
                     shutil.rmtree(target_dir)
                 shutil.move(tmp_dir + "/knlp_model-main/model", "knlp/")
                 shutil.rmtree(tmp_dir)
+
+
+def check_file(file_path, git_url):
+    """
+        检测file_path文件是否存在，如果不存在则根据git_url进行下载
+
+    Args:
+        file_path: string, 待检测文件路径(绝对路径)
+        git_url: string, 对应文件的git地址
+    Returns:
+
+    """
+    if os.path.exists(file_path):
+        return
+
+    dir_name = os.path.dirname(file_path)
+    file_base_name = os.path.basename(file_path)
+    if not os.path.exists(dir_name):
+        os.makedirs(dir_name)
+        os.chdir(dir_name)
+    try:
+        print(file_path, "is not exist, downing...")
+        f = requests.get(git_url)
+        with open(file_base_name, "wb") as code:
+            code.write(f.content)
+        print("data file down finished")
+    except Exception as e:
+        print(e)
+        print("if download always fails, please try to init data file.")
+        raise e
 
 
 class AttrDict(dict):
