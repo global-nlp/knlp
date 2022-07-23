@@ -9,6 +9,7 @@
 # -----------------------------------------------------------------------#
 
 from knlp.common.constant import KNLP_PATH
+# from knlp.nn.bilstm_crf.inference_bilstm_crf import InferenceBiLSTMCRF
 from knlp.nn.bilstm_crf.inference_bilstm_crf import InferenceBiLSTMCRF
 
 
