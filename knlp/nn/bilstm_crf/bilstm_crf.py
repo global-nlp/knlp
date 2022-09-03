@@ -18,7 +18,7 @@ from TorchCRF import CRF
 class BiLSTM_CRF(BaseNNModel):
 
     def __init__(self, vocab_size: int, tagset_size: int, embedding_dim: int = 64, hidden_dim: int = 64,
-                 num_layers: int = 1, seed: int = 2022, device=torch.device("cpu")):
+                 num_layers: int = 1, device=torch.device("cpu")):
         """
         初始化BiLSTM_CRF模型
         Args:
@@ -27,10 +27,9 @@ class BiLSTM_CRF(BaseNNModel):
             embedding_dim: 词向量的维度
             hidden_dim: 隐藏层的维度
             num_layers: BiLSTM层数
-            seed: 随机数种子
             device: 计算设备
         """
-        super().__init__(seed=seed, device=device)
+        super().__init__(device=device)
         # embedding层,将索引转换为词向量的层。
         self.word_embeds = nn.Embedding(vocab_size, embedding_dim)
         # BiLSTM层，输入维度为embedding_dim，一个方向的隐藏层维度为hidden_dim // 2

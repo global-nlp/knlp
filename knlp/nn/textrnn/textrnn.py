@@ -17,7 +17,7 @@ class TextRNN(BaseNNModel):
 
     def __init__(self, vocab_size: int, label_size: int, pad_idx: int, embedding_dim: int = 64, hidden_dim: int = 64,
                  bi_rnn_num_layers: int = 1, uni_rnn_num_layers: int = 1, vectors: torch.tensor = None, fine_tune=False,
-                 dropout_1: float = 0.5, dropout_2: float = 0.5, seed: int = 2022, device=torch.device("cpu")):
+                 dropout_1: float = 0.5, dropout_2: float = 0.5, device=torch.device("cpu")):
         """
         初始化TextRNN模型
         Args:
@@ -32,11 +32,10 @@ class TextRNN(BaseNNModel):
             fine_tune: 是否微调预训练词向量,vectors!=None时有效
             dropout_1: 双向LSTM和单向LSTM之间的dropout比例
             dropout_2: softmax前fc的droupout
-            seed: 随机数种子
             device: 计算设备
         """
 
-        super().__init__(seed=seed, device=device)
+        super().__init__(device=device)
 
         # 预训练 embedding
         if vectors != None:
