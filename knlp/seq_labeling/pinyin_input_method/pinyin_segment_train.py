@@ -1,8 +1,8 @@
 # -*-coding:utf-8-*-
 import pickle
 
-from knlp.common.constant import KNLP_PATH
 from knlp.seq_labeling.crf.crf import CRFModel
+from knlp.utils.util import get_model_crf_pinyin_file, get_data_pinyin_segment_file
 
 
 class Train:
@@ -47,15 +47,13 @@ class Train:
 
 
 if __name__ == "__main__":
-    train_data_path = KNLP_PATH + "/knlp/data/pinyin_segment.txt"
-
     print("正在读入数据进行训练...")
 
-    CRF_trainer = Train(train_data_path)
+    CRF_trainer = Train(get_data_pinyin_segment_file())
     CRF_trainer.load_and_train()
 
     print("正在保存模型...")
 
-    CRF_trainer.save_model(KNLP_PATH + "/knlp/model/crf/pinyin.pkl")
+    CRF_trainer.save_model(get_model_crf_pinyin_file())
 
     print("训练完成。")

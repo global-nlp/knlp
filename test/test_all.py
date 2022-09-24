@@ -7,23 +7,23 @@
 # Created Time: 2021-01-27
 # Description:
 # -----------------------------------------------------------------------#
+import os
+import time
+import shutil
 
 from knlp import Knlp
-from knlp.utils.util import Trie
+from knlp.utils.util import Trie, get_pytest_data_file, get_model_crf_pinyin_file, init_data_file
 from knlp import get_keyword, get_key_sentences, seg, ner, evaluation_seg_files, evaluation_seg, sentiment
 from knlp.seq_labeling.trie_seg.inference import TrieInference
 from knlp.seq_labeling.pinyin_input_method import inference
-from knlp.common.constant import KNLP_PATH
+from knlp.common.constant import GIT_DATA_URL, GIT_MODEL_URL
 from knlp.seq_labeling.crf.crf import CRFModel
-
-# import time
-# from knlp.utils import util
 
 TEST_SINGLE_SENTENCE = "KNLP是一个NLP工具包，主要支持中文的各种NLP基础操作"
 
 
 def test_knlp():
-    with open("knlp/data/pytest_data.txt", encoding='utf-8') as f:
+    with open(get_pytest_data_file(), encoding='utf-8') as f:
         text = f.read()
     res = Knlp(text)
     print("seg_result is", res.seg_result)
@@ -84,10 +84,10 @@ def test_file_evaluation():
     print(res)
 
 
-# def test_check_file():
-#     start = time.time()
-#     util.check_file("../knlp/data")
-#     print(time.time() - start)
+def test_check_file():
+    start = time.time()
+    init_data_file("../knlp/data", GIT_DATA_URL)
+    print(time.time() - start)
 
 
 def test_Trie():
@@ -118,10 +118,9 @@ def test_pinyin_inference():
 
        """
     test = inference.Inference()
-    CRF = CRFModel()
-    CRF_MODEL_PATH = KNLP_PATH + "/knlp/model/crf/pinyin.pkl"
+    CRFModel()
     to_be_pred = "dongtianlailechuntianyejiangdaolai"
-    test.spilt_predict(to_be_pred, CRF_MODEL_PATH)
+    test.spilt_predict(to_be_pred, get_model_crf_pinyin_file())
     print("POS结果：" + str(test.label_prediction))
     print("拼音分割结果：" + str(test.out_sentence))
     observe = test.out_sentence
@@ -138,6 +137,31 @@ def test_pinyin_inference():
     print("按照两个字一组划分后的预测结果：" + str(out))
 
 
+def test_init_data_file(dir_path):
+    """
+        初始化data或model数据文件
+    Args:
+        dir_path: knlp/data 或 knlp/model
+    Returns:
+
+    """
+    if "".__eq__(dir_path):
+        return
+    if dir_path.__contains__("data"):
+        git_url = GIT_DATA_URL
+    elif dir_path.__contains__("model"):
+        git_url = GIT_MODEL_URL
+    else:
+        print("dir_path error")
+        return
+    if os.path.exists(dir_path):
+        if 0 == len(os.listdir(dir_path)):  # 文件夹下没有文件
+            shutil.rmtree(dir_path)
+            init_data_file(dir_path, git_url)
+        else:
+            print(dir_path, "already exist")
+
+
 def test_all():
     test_knlp()
     test_seg()
@@ -149,7 +173,8 @@ def test_all():
     test_Trie()
     test_cut_by_knlp()
     test_pinyin_inference()
-    # test_check_file()   # 文件check，暂时先不上线
+    test_check_file()
+    test_init_data_file("../knlp/model")
 
 
 if __name__ == '__main__':

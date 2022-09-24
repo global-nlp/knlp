@@ -7,7 +7,7 @@
 # Created Time: 2021-03-20
 # Description:
 # -----------------------------------------------------------------------#
-from knlp.utils.util import funtion_time_cost
+from knlp.utils.util import funtion_time_cost, get_pku_vocab_train_file, check_file
 
 
 class DataHelper:
@@ -99,10 +99,11 @@ class DataHelper:
 
 
 if __name__ == '__main__':
-    from knlp.common.constant import KNLP_PATH
+    from knlp.common.constant import KNLP_PATH, GIT_MODEL_URL
 
     # make pku training data
     # input_file = KNLP_PATH + "/knlp/data/seg_data/icwb2-data/training/pku_training.utf8"
+    # check_file(KNLP_PATH + "/knlp/data/seg_data/train", GIT_DATA_URL)
     # output_file = KNLP_PATH + "/knlp/data/seg_data/train/pku_hmm_training_data.txt"
     # DataHelper.make_smbe_data(input_file, output_file)
     #
@@ -113,5 +114,4 @@ if __name__ == '__main__':
 
     # make pku vocab data
     input_file = KNLP_PATH + "/knlp/data/seg_data/icwb2-data/testing/pku_test.utf8"
-    output_file = KNLP_PATH + "/knlp/data/seg_data/train/pku_vocab.txt"
-    DataHelper.generate_vocab(input_file, output_file)
+    DataHelper.generate_vocab(input_file, get_pku_vocab_train_file())
