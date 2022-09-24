@@ -11,6 +11,7 @@ import os
 import random
 import torch
 import torch.nn as nn
+from knlp.common.constant import SEED
 
 
 class BaseNNModel(nn.Module):
@@ -19,11 +20,10 @@ class BaseNNModel(nn.Module):
 
     """
 
-    def __init__(self, seed: int = 2022, device: str = torch.device("cpu")):
-
+    def __init__(self, device: str = torch.device("cpu")):
         super(BaseNNModel, self).__init__()
         self.device = device
-        self.set_seed(seed)
+        self.set_seed(SEED)
 
     def set_seed(self, seed: int):
         """

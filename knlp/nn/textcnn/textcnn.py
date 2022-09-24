@@ -18,7 +18,7 @@ class TextCNN(BaseNNModel):
     def __init__(self, vocab_size: int, label_size: int, n_filters: int, filter_sizes: list, embedding_dim: int = 64,
                  pad_idx: int = None, static_pad_idx: int = None, non_static_pad_idx: int = None,
                  static_vectors: torch.tensor = None, non_static_vectors: torch.tensor = None, dropout: float = 0.5,
-                 seed: int = 2022, device=torch.device("cpu")):
+                 device=torch.device("cpu")):
         """
         初始化TextCNN模型
         Args:
@@ -33,10 +33,9 @@ class TextCNN(BaseNNModel):
             static_vectors: static预训练词向量
             non_static_vectors: non_static预训练词向量
             dropout: softmax前全连接的dropout比例
-            seed: 随机数种子
             device: 计算设备
         """
-        super().__init__(seed=seed, device=device)
+        super().__init__(device=device)
         assert (static_vectors != None and static_pad_idx) or \
                (non_static_vectors != None and non_static_pad_idx) or \
                (pad_idx and embedding_dim)

@@ -18,7 +18,7 @@ class TextRCNN(BaseNNModel):
 
     def __init__(self, vocab_size: int, label_size: int, pad_idx: int, embedding_dim: int = 64, hidden_dim: int = 64,
                  num_layers: int = 1, vectors: torch.tensor = None, fine_tune=False, dropout: float = 0.5,
-                 seed: int = 2022, device=torch.device("cpu")):
+                 device=torch.device("cpu")):
         """
         初始化TextRNN模型
         Args:
@@ -31,11 +31,10 @@ class TextRCNN(BaseNNModel):
             vectors: 预训练词向量
             fine_tune: 是否微调预训练词向量,vectors!=None时有效
             dropout: droupout
-            seed: 随机数种子
             device: 计算设备
         """
 
-        super().__init__(seed=seed, device=device)
+        super().__init__(device=device)
 
         # 预训练 embedding
         if vectors != None:
