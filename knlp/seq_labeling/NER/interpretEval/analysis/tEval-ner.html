@@ -1,0 +1,223 @@
+<html>
+  <head>
+  <link href="style.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+
+<script>
+$(document).ready(function(){
+  $('[data-toggle="tooltip"]').tooltip();
+});
+</script>
+
+
+
+<script type="text/javascript">
+function myFunction(elem) {
+  var x = document.getElementById(elem);
+  if (x.style.display === "none") {
+    x.style.display = "block";
+    //$("#"+elem+ " img").css({"width":"400px","height":"200px"})
+  } else {
+    x.style.display = "none";
+    //$("#"+elem+ " img").css({"width":"150px","height":"100px"})
+  }
+}
+</script>
+
+
+
+
+<script type="text/javascript">
+  $(function(){
+    $('img').mouseenter(function(){
+      var wValue=3 * $(this).width();
+      var hValue=3 * $(this).height();    
+      $(this).stop().animate({width: wValue,
+              height: hValue,
+              left:("-"+(0.5 * $(this).width())/2),
+              top:("-"+(0.5 * $(this).height())/2)}, 1000);
+    }).mouseleave(function(){
+      $(this).stop().animate({width:150,
+                     height: 130,
+                     left:"0px",
+                     top:"0px"}, 1000 );
+    });
+  });
+</script>
+
+
+    <h3>1. Holistic Result</h3>
+
+
+    <div class='table_self_diagnosis'>
+ <div class='tr_title'><div class='td'><a href="#" data-toggle="tooltip" title="different types of models">Model</a></div>
+<div class='td'><a href="#" data-toggle="tooltip" title="">clue</a></div>
+</div>
+ <div class='tr_plain'><div class='td'><a href="#" data-toggle="tooltip" title="">bilstm</a></div>
+<div class='td'><a href="#" data-toggle="tooltip" title="">87.41</a></div>
+</div>
+ <div class='tr_plain'><div class='td'><a href="#" data-toggle="tooltip" title="">bilstm</a></div>
+<div class='td'><a href="#" data-toggle="tooltip" title="">87.41</a></div>
+</div>
+</div>
+
+    <HR style="border:1 dashed #987cb9" width="100%" color="gray" SIZE=2>  
+    <!------------------------------------------------------------------------- -->
+
+    <h3>2. Break-down Performance</h3>
+
+    <div class='table_breakdown'>
+<li><b>Model Setting:</b> <i>bilstm</i></li>
+<h5> Dataset: <i> clue</i>
+<div class='table_breakdown'>
+ <div class='tr_title'><div class='td'><a href="#" data-toggle="tooltip" title="label consistency of entity">eCon</a></div>
+<div class='td'><a href="#" data-toggle="tooltip" title="label consistency of token">tCon</a></div>
+<div class='td'><a href="#" data-toggle="tooltip" title="entity frequency in training set">eFre</a></div>
+<div class='td'><a href="#" data-toggle="tooltip" title="token frequency in training set">tFre</a></div>
+<div class='td'><a href="#" data-toggle="tooltip" title="the length of entity">eLen</a></div>
+<div class='td'><a href="#" data-toggle="tooltip" title="the length of sentence">sLen</a></div>
+<div class='td'><a href="#" data-toggle="tooltip" title="entity density in a given sentence">eDen</a></div>
+<div class='td'><a href="#" data-toggle="tooltip" title="oov density in a given sentence">oDen</a></div>
+<div class='td'><a href="#" data-toggle="tooltip" title="span-level label">tag</a></div>
+</div>
+ <div class='tr'><div class='td'><img src=./ner-fig/bilstm-bilstm/clue-bilstm-breakdown-eCon.png alt="image" /><button onclick="myFunction(90368604)">Click Me</button>
+<div id="90368604" style="display: none;">0:(0,) 1:(0,0.5) 2:(0.5,0.999) 3:(1,)</div>
+</div>
+<div class='td'><img src=./ner-fig/bilstm-bilstm/clue-bilstm-breakdown-tCon.png alt="image" /><button onclick="myFunction(74078590)">Click Me</button>
+<div id="74078590" style="display: none;">0:(0,) 1:(0,0.5) 2:(0.5,0.999) 3:(1,)</div>
+</div>
+<div class='td'><img src=./ner-fig/bilstm-bilstm/clue-bilstm-breakdown-eFre.png alt="image" /><button onclick="myFunction(92801560)">Click Me</button>
+<div id="92801560" style="display: none;">0:(0,) 1:(0,0.012) 2:(0.012,0.07) 3:(0.07,0.88)</div>
+</div>
+<div class='td'><img src=./ner-fig/bilstm-bilstm/clue-bilstm-breakdown-tFre.png alt="image" /><button onclick="myFunction(86955196)">Click Me</button>
+<div id="86955196" style="display: none;">0:(0,) 1:(0,0.058) 2:(0.058,0.171) 3:(0.171,1)</div>
+</div>
+<div class='td'><img src=./ner-fig/bilstm-bilstm/clue-bilstm-breakdown-eLen.png alt="image" /><button onclick="myFunction(72807397)">Click Me</button>
+<div id="72807397" style="display: none;">0:(1,) 1:(2,) 2:(3,) 3:(3,19)</div>
+</div>
+<div class='td'><img src=./ner-fig/bilstm-bilstm/clue-bilstm-breakdown-sLen.png alt="image" /><button onclick="myFunction(22783368)">Click Me</button>
+<div id="22783368" style="display: none;">0:(15,40) 1:(40,57) 2:(57,82) 3:(82,587)</div>
+</div>
+<div class='td'><img src=./ner-fig/bilstm-bilstm/clue-bilstm-breakdown-eDen.png alt="image" /><button onclick="myFunction(24987385)">Click Me</button>
+<div id="24987385" style="display: none;">0:(0.0122,0.119) 1:(0.119,0.2) 2:(0.2,0.299) 3:(0.299,0.755)</div>
+</div>
+<div class='td'><img src=./ner-fig/bilstm-bilstm/clue-bilstm-breakdown-oDen.png alt="image" /><button onclick="myFunction(68218030)">Click Me</button>
+<div id="68218030" style="display: none;">0:(0,) 1:(0,0.0357) 2:(0.0357,0.0758) 3:(0.0758,0.462)</div>
+</div>
+<div class='td'><img src=./ner-fig/bilstm-bilstm/clue-bilstm-breakdown-tag.png alt="image" /><button onclick="myFunction(22472205)">Click Me</button>
+<div id="22472205" style="display: none;">0:('loc',) 1:('org',) 2:('per',)</div>
+</div>
+</div>
+</div></h5>
+<li><b>Model Setting:</b> <i>bilstm</i></li>
+<h5> Dataset: <i> clue</i>
+<div class='table_breakdown'>
+ <div class='tr_title'><div class='td'><a href="#" data-toggle="tooltip" title="label consistency of entity">eCon</a></div>
+<div class='td'><a href="#" data-toggle="tooltip" title="label consistency of token">tCon</a></div>
+<div class='td'><a href="#" data-toggle="tooltip" title="entity frequency in training set">eFre</a></div>
+<div class='td'><a href="#" data-toggle="tooltip" title="token frequency in training set">tFre</a></div>
+<div class='td'><a href="#" data-toggle="tooltip" title="the length of entity">eLen</a></div>
+<div class='td'><a href="#" data-toggle="tooltip" title="the length of sentence">sLen</a></div>
+<div class='td'><a href="#" data-toggle="tooltip" title="entity density in a given sentence">eDen</a></div>
+<div class='td'><a href="#" data-toggle="tooltip" title="oov density in a given sentence">oDen</a></div>
+<div class='td'><a href="#" data-toggle="tooltip" title="span-level label">tag</a></div>
+</div>
+ <div class='tr'><div class='td'><img src=./ner-fig/bilstm-bilstm/clue-bilstm-breakdown-eCon.png alt="image" /><button onclick="myFunction(51173533)">Click Me</button>
+<div id="51173533" style="display: none;">0:(0,) 1:(0,0.5) 2:(0.5,0.999) 3:(1,)</div>
+</div>
+<div class='td'><img src=./ner-fig/bilstm-bilstm/clue-bilstm-breakdown-tCon.png alt="image" /><button onclick="myFunction(71690617)">Click Me</button>
+<div id="71690617" style="display: none;">0:(0,) 1:(0,0.5) 2:(0.5,0.999) 3:(1,)</div>
+</div>
+<div class='td'><img src=./ner-fig/bilstm-bilstm/clue-bilstm-breakdown-eFre.png alt="image" /><button onclick="myFunction(75635813)">Click Me</button>
+<div id="75635813" style="display: none;">0:(0,) 1:(0,0.012) 2:(0.012,0.07) 3:(0.07,0.88)</div>
+</div>
+<div class='td'><img src=./ner-fig/bilstm-bilstm/clue-bilstm-breakdown-tFre.png alt="image" /><button onclick="myFunction(13914737)">Click Me</button>
+<div id="13914737" style="display: none;">0:(0,) 1:(0,0.058) 2:(0.058,0.171) 3:(0.171,1)</div>
+</div>
+<div class='td'><img src=./ner-fig/bilstm-bilstm/clue-bilstm-breakdown-eLen.png alt="image" /><button onclick="myFunction(75957677)">Click Me</button>
+<div id="75957677" style="display: none;">0:(1,) 1:(2,) 2:(3,) 3:(3,19)</div>
+</div>
+<div class='td'><img src=./ner-fig/bilstm-bilstm/clue-bilstm-breakdown-sLen.png alt="image" /><button onclick="myFunction(20836534)">Click Me</button>
+<div id="20836534" style="display: none;">0:(15,40) 1:(40,57) 2:(57,82) 3:(82,587)</div>
+</div>
+<div class='td'><img src=./ner-fig/bilstm-bilstm/clue-bilstm-breakdown-eDen.png alt="image" /><button onclick="myFunction(88048007)">Click Me</button>
+<div id="88048007" style="display: none;">0:(0.0122,0.119) 1:(0.119,0.2) 2:(0.2,0.299) 3:(0.299,0.755)</div>
+</div>
+<div class='td'><img src=./ner-fig/bilstm-bilstm/clue-bilstm-breakdown-oDen.png alt="image" /><button onclick="myFunction(46451824)">Click Me</button>
+<div id="46451824" style="display: none;">0:(0,) 1:(0,0.0357) 2:(0.0357,0.0758) 3:(0.0758,0.462)</div>
+</div>
+<div class='td'><img src=./ner-fig/bilstm-bilstm/clue-bilstm-breakdown-tag.png alt="image" /><button onclick="myFunction(89752138)">Click Me</button>
+<div id="89752138" style="display: none;">0:('loc',) 1:('org',) 2:('per',)</div>
+</div>
+</div>
+</div>
+
+
+
+
+    <HR style="border:1 dashed #987cb9" width="100%" color="gray" SIZE=2>  
+    <!------------------------------------------------------------------------- -->
+
+    <!------------------------------------------------------------------------- -->
+    <h3>3. Self-diagnosis </h3>
+
+    <li><b>Model Setting:</b> <i>bilstm</i></li>
+<div class='table_self_diagnosis'>
+ <div class='tr_title'><div class='td'><a href="#" data-toggle="tooltip" title="">clue</a></div>
+</div>
+ <div class='tr'><div class='td'><a href="#" data-toggle="tooltip" title=""><img src=./ner-fig/bilstm-bilstm/clue-bilstm-selfdiag.png alt="image" /></a></div>
+</div>
+</div>
+<br></br><li><b>Model Setting:</b> <i>bilstm</i></li>
+<div class='table_self_diagnosis'>
+ <div class='tr_title'><div class='td'><a href="#" data-toggle="tooltip" title="">clue</a></div>
+</div>
+ <div class='tr'><div class='td'><a href="#" data-toggle="tooltip" title=""><img src=./ner-fig/bilstm-bilstm/clue-bilstm-selfdiag.png alt="image" /></a></div>
+</div>
+</div>
+
+
+
+    <HR style="border:1 dashed #987cb9" width="100%" color="gray" SIZE=2>  
+    <!------------------------------------------------------------------------- -->
+
+
+    <h3>4. Aided-diagnosis </h3>
+    <li><b>Model Setting:</b> <i>bilstm - bilstm</i></li>
+    <div class='table_aided_diagnosis'>
+ <div class='tr_title'><div class='td'><a href="#" data-toggle="tooltip" title="">clue</a></div>
+</div>
+ <div class='tr'><div class='td'><a href="#" data-toggle="tooltip" title=""><img src=./ner-fig/bilstm-bilstm/clue-bilstm_bilstm-aideddiag.png alt="image" /></a></div>
+</div>
+</div>
+
+
+    <HR style="border:1 dashed #987cb9" width="100%" color="gray" SIZE=2>  
+    <!------------------------------------------------------------------------- -->
+
+    <h3>5. Heatmap </h3>
+    <li><b>Model Setting:</b> <i>bilstm - bilstm</i></li>
+    <div class='table_aided_diagnosis'>
+ <div class='tr_title'><div class='td'><a href="#" data-toggle="tooltip" title="">clue</a></div>
+</div>
+ <div class='tr'><div class='td'><a href="#" data-toggle="tooltip" title=""><img src=./ner-fig/bilstm-bilstm/clue-bilstm_bilstm-heatmap.png alt="image" /></a></div>
+</div>
+</div>
+
+
+
+
+
+  </body>
+</html>
+
+
+
+
+

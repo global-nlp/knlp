@@ -1,0 +1,5 @@
+# information
+corpus type: clue
+model_name1: hmm
+model_name2: hmm
+# holistic results 

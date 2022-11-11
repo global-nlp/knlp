@@ -70,7 +70,7 @@ class SeqLabelDataset(Dataset):
             line = line.strip()
             # 句中
             if line:
-                line = line.split('\t')
+                line = line.split(' ')
                 seq.append(line[0])
                 tag.append(line[1])
             # 句末且句子不为空:存储

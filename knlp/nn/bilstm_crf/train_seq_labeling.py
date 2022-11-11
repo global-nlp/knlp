@@ -61,6 +61,8 @@ class TrainSeqLabel(TrainNN):
         """
         self.model.train()
         for _ in range(epoch):
+            print("#######" * 10)
+            print("EPOCH: ", str(_))
             loss_list = []
             for index, (seqs_idx, tags_idx, lengths) in enumerate(self.train_data_loader):
                 self.model.zero_grad()
