@@ -3,6 +3,8 @@ import json
 import torch
 from transformers import BertTokenizer
 
+from knlp.common.constant import delimiter
+
 
 class DataProcessor(object):
     """Base class for data converters for sequence classification data sets."""
@@ -88,7 +90,7 @@ class DataProcessor(object):
                     words.clear()
                     labels.clear()
                     continue
-                token, tag = line.strip().split(' ')
+                token, tag = line.strip().split(delimiter)
                 words.append(token)
                 labels.append(tag)
         return lines

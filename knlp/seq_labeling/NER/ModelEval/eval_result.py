@@ -1,6 +1,6 @@
 from tqdm import tqdm
 
-from knlp.common.constant import KNLP_PATH
+from knlp.common.constant import KNLP_PATH, delimiter
 from knlp.seq_labeling.NER.bert.ner_inference import BertInference
 from knlp.seq_labeling.NER.bert_mrc.predict import MRCNER_Inference
 from knlp.seq_labeling.NER.bilstm_crf.inference_ner import BilstmInference
@@ -36,7 +36,7 @@ def construct_sent(dev):
     str = ''
     for line in f.readlines():
         if line != '\n':
-            text, label = line.strip('\n').split(' ')
+            text, label = line.strip('\n').split(delimiter)
             str += text
         else:
             sents.append(str)

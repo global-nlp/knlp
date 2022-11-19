@@ -34,15 +34,14 @@ def model_compare(model_1, model_2):
 
 
 class Pipeline:
-    def __init__(self, type, input, model, data_sign=None, do_eval=True,
+    def __init__(self, model='all', data_sign=None, do_eval=False,
                  data_path=KNLP_PATH + '/knlp/data/msra_bios/train.bios',
                  vocab_path=KNLP_PATH + '/knlp/data/msra_bios/vocab.txt',
                  tagger_path=KNLP_PATH + '/knlp/data/msra_bios/', mrc_path=KNLP_PATH + '/knlp/data/msra_mrc',
-                 add_dict=KNLP_PATH + '/knlp/data/user_dict/texts_add.txt', del_dict=KNLP_PATH + '/knlp/data/user_dict/texts_del.txt',
+                 add_dict=KNLP_PATH + '/knlp/data/user_dict/texts_add.txt',
+                 del_dict=KNLP_PATH + '/knlp/data/user_dict/texts_del.txt',
                  from_user_txt=False):
         """
-        :param type: 判断模式，训练/评估/推理/全部
-        :param input: 用于推理的句子
         :param model: 选择模型库中的某个模型，或全部模型
         :param data_sign: 指明数据集名称，主要对于bert的mrc方法中识别标签描述文件（msra.json）
         :param do_eval: 是否进行模型自我评估
@@ -55,7 +54,6 @@ class Pipeline:
         self.from_user_txt = from_user_txt
         self.del_dict = del_dict
         self.add_dict = add_dict
-        self.type = type
         self.task = data_sign
 
         if data_path:
@@ -84,13 +82,12 @@ class Pipeline:
         # Bert-mrc 模型存储位置
         self.bert_mrc_save_path = KNLP_PATH + '/knlp/model/bert/mrc_ner'
 
-
-        if input:
-            self.words = input
+        # if input:
+        #     self.words = input
         self.data_path = ''
         self.model = model
-        self.model_path_bert_tagger = KNLP_PATH + '/knlp/model/bert/output_modelbert'
-        self.model_path_bert_mrc = KNLP_PATH + '/knlp/model/bert/mrc_ner/checkpoint-63000.bin'
+        # self.model_path_bert_tagger = KNLP_PATH + '/knlp/model/bert/output_modelbert'
+        # self.model_path_bert_mrc = KNLP_PATH + '/knlp/model/bert/mrc_ner/checkpoint-63000.bin'
         self.do_eval = False
         self.trie = Later_process_Trie()
 
@@ -98,40 +95,41 @@ class Pipeline:
             self.do_eval = True
             self.dev = KNLP_PATH + '/knlp/data/msra_bios/val.bios'
 
-        if self.type == 'inference':
-            self.inference(self.model)
-        elif self.type == 'train':
-            self.train()
-        elif self.type == 'eval':
-            self.do_eval = True
-            self.dev = KNLP_PATH + '/knlp/data/msra_bios/val.bios'
-        elif self.type == 'all':
-            self.do_eval = True
-            self.dev = KNLP_PATH + '/knlp/data/msra_bios/val.bios'
-            self.train()
-            self.inference(self.model)
-        else:
-            print('only support inference or train method')
+        # if self.type == 'inference':
+        #     self.inference(self.model)
+        # elif self.type == 'train':
+        #     self.train()
+        # elif self.type == 'eval':
+        #     self.do_eval = True
+        #     self.dev = KNLP_PATH + '/knlp/data/msra_bios/val.bios'
+        # elif self.type == 'all':
+        #     self.do_eval = True
+        #     self.dev = KNLP_PATH + '/knlp/data/msra_bios/val.bios'
+        #     self.train()
+        #     self.inference(self.model)
+        # else:
+        #     print('only support inference or train method')
 
-    def train(self):
+    def train(self, model):
         model_list = ['hmm', 'crf', 'trie', 'bilstm', 'bert_tagger', 'bert_mrc']
-        if self.model not in model_list and self.model != 'all':
+
+        if model not in model_list and model != 'all':
             print(f'only support model in {model_list}')
         else:
-            if self.model == 'hmm':
+            if model == 'hmm':
                 self.hmm_train(self.state_set_save_path, self.transition_pro_save_path, self.emission_pro_save_path,
                                self.init_state_set_save_path)
-            elif self.model == 'crf':
+            elif model == 'crf':
                 self.crf_train(save_path=self.crf_model_path)
-            elif self.model == 'trie':
+            elif model == 'trie':
                 self.trie_train()
-            elif self.model == 'bilstm':
+            elif model == 'bilstm':
                 self.bilstm_train()
-            elif self.model == 'bert_mrc':
+            elif model == 'bert_mrc':
                 self.bert_mrc_train()
-            elif self.model == 'bert_tagger':
+            elif model == 'bert_tagger':
                 self.bert_tagger_train()
-            elif self.model == 'all':
+            elif model == 'all':
                 self.hmm_train(self.state_set_save_path, self.transition_pro_save_path, self.emission_pro_save_path,
                                self.init_state_set_save_path)
                 self.crf_train(save_path=self.crf_model_path)
@@ -205,8 +203,12 @@ class Pipeline:
                             init_state_set_save_path)
         print('HMM训练结束')
 
-    def inference(self, model):
+    def inference(self, model, input, model_path_bert_tagger=None, model_path_bert_mrc=None):
         model_list = ['hmm', 'crf', 'trie', 'bilstm', 'bert_mrc', 'bert_tagger']
+
+        self.words = input
+        self.model_path_bert_tagger = model_path_bert_tagger if model_path_bert_tagger else KNLP_PATH + '/knlp/model/bert/output_modelbert'
+        self.model_path_bert_mrc = model_path_bert_mrc if model_path_bert_mrc else KNLP_PATH + '/knlp/model/bert/mrc_ner/checkpoint-63000.bin'
         if model not in model_list and model != 'all':
             print(f'only support model in {model_list}')
         else:
@@ -312,19 +314,20 @@ class Pipeline:
         self.later_process_by_trie(words, inference.get_tag(), inference.get_entity())
 
     def eval_interpret(self, model_1, model_2=None):
+        self.do_eval = True
         if self.do_eval:
             if not model_2:
                 model_2 = model_1
                 val_1 = ModelEval(self.dev, model=model_1, mrc_data_path=self.mrc_data_path,
-                                   tokenizer_vocab=self.vocab_set_path, data_sign=self.task,
-                                   tagger_path=self.model_path_bert_tagger, mrc_path=self.model_path_bert_mrc)
+                                  tokenizer_vocab=self.vocab_set_path, data_sign=self.task,
+                                  tagger_path=self.model_path_bert_tagger, mrc_path=self.model_path_bert_mrc)
                 val_1.evaluate()
             else:
                 val_1 = ModelEval(self.dev, model=model_1, mrc_data_path=self.mrc_data_path,
-                                   tokenizer_vocab=self.vocab_set_path, data_sign=self.task)
+                                  tokenizer_vocab=self.vocab_set_path, data_sign=self.task)
                 val_1.evaluate()
                 val_2 = ModelEval(self.dev, model=model_2, mrc_data_path=self.mrc_data_path,
-                                   tokenizer_vocab=self.vocab_set_path, data_sign=self.task)
+                                  tokenizer_vocab=self.vocab_set_path, data_sign=self.task)
                 val_2.evaluate()
             os.chdir(f"{KNLP_PATH}/knlp/seq_labeling/NER/interpretEval/")
             os.system(f"bash {KNLP_PATH}/knlp/seq_labeling/NER/interpretEval/run_task_ner.sh {model_1} {model_2}")
@@ -374,13 +377,13 @@ class Pipeline:
 
 if __name__ == '__main__':
     sentence = '毕业于北京大学的他，最爱读的书是《时间简史》。喜欢吃兰州拉面，曾任时间管理局局长。闲暇时喜欢玩csgo，对《星际穿越》赞叹有加。'
-    Pipeline(type='all', model='hmm', input=sentence, do_eval=False, data_sign='msra')
-    Pipeline(type='all', model='crf', input=sentence, do_eval=False, data_sign='msra', from_user_txt=True)
-    Pipeline(type='all', model='trie', input=sentence, do_eval=False, data_sign='msra')
-    Pipeline(type='all', model='bilstm', input=sentence, do_eval=False, data_sign='msra')
-    Pipeline(type='all', model='bert_tagger', input=sentence, do_eval=False, data_sign='msra')
-    Pipeline(type='all', model='bert_mrc', input=sentence, do_eval=True, data_sign='msra')
-    # 两两比对
-    for model_1 in model_list:
-        for model_2 in model_list:
-            model_compare(model_1, model_2)
+    # Pipeline(type='all', model='hmm', input=sentence, do_eval=False, data_sign='msra')
+    # Pipeline(type='all', model='crf', input=sentence, do_eval=False, data_sign='msra', from_user_txt=True)
+    # Pipeline(type='all', model='trie', input=sentence, do_eval=False, data_sign='msra')
+    # Pipeline(type='all', model='bilstm', input=sentence, do_eval=False, data_sign='msra')
+    # Pipeline(type='all', model='bert_tagger', input=sentence, do_eval=False, data_sign='msra')
+    # Pipeline(type='all', model='bert_mrc', input=sentence, do_eval=True, data_sign='msra')
+    # # 两两比对
+    # for model_1 in model_list:
+    #     for model_2 in model_list:
+    #         model_compare(model_1, model_2)

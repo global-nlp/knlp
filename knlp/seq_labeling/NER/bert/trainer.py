@@ -21,7 +21,7 @@ from knlp.seq_labeling.bert.processors.ner_seq import convert_examples_to_featur
 from knlp.seq_labeling.bert.tools.common import logger, init_logger
 from knlp.seq_labeling.bert.tools.common import seed_everything
 from knlp.utils.tokenization import BasicTokenizer
-from knlp.seq_labeling.bert.processors.ner_seq import SelectProcessor as processors
+from knlp.seq_labeling.bert.processors.ner_seq import select_processor as processors
 
 
 def get_argparse():

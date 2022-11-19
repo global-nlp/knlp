@@ -1,7 +1,7 @@
 import json
 from tqdm import tqdm
 
-from knlp.common.constant import KNLP_PATH
+from knlp.common.constant import KNLP_PATH, delimiter
 
 # -----------------------------------------------------------------------#
 # File Name: __init__.py
@@ -29,8 +29,8 @@ def preprocess_trie(data_path, output_path, state_path):
             nextline = train_data[idx + 1].split('\n')[0]
         if not line:
             continue
-        token = line.split(' ')[0]
-        label = line.split(' ')[1]
+        token = line.split(delimiter)[0]
+        label = line.split(delimiter)[1]
         # print(list(label))
         # print(nextline.split('	')[1].split('-')[0])
         # for i in label:
@@ -108,9 +108,9 @@ class DATAProcessor:
         tmp = ''
         res = []
         for index, d in enumerate(data):
-            d = d.strip().split(' ')
+            d = d.strip().split(delimiter)
             if index != len(data)-1:
-                next_d = data[index+1].strip().split(' ')
+                next_d = data[index+1].strip().split(delimiter)
             else:
                 next_d = '\n'
             if len(d) == 2:

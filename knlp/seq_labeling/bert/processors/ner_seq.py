@@ -202,6 +202,7 @@ class CluenerProcessor(DataProcessor):
             examples.append(InputExample(guid=guid, text_a=text_a, labels=labels))
         return examples
 
+
 class MsraProcessor(DataProcessor):
 
     def get_train_examples(self, data_dir):
@@ -231,10 +232,10 @@ class MsraProcessor(DataProcessor):
             examples.append(InputExample(guid=guid, text_a=text_a, labels=labels))
         return examples
 
-def SelectProcessor(task):
+
+def select_processor(task):
     task = task
     if task == 'msra':
         return MsraProcessor()
     if task == 'clue':
         return CluenerProcessor()
-
