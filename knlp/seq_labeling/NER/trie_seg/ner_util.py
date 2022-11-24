@@ -235,6 +235,11 @@ class Later_process_Trie(Trie):
         return result if len(result) != 0 else None
 
     def construct_text_dict(self, text, tag_list):
+        self.trie.clear()
+        self.text_dict.clear()
+        self.tag_list.clear()
+        self.entity_set.clear()
+        self.user_dict_index_with_feature.clear()
         flag = 0
         begin = 0
         for index, tag in enumerate(tag_list):

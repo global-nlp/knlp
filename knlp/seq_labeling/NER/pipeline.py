@@ -26,13 +26,6 @@ texts_del = [
     ('北大', 'ORG')
 ]
 
-
-def model_compare(model_1, model_2):
-    os.chdir(f"{KNLP_PATH}/knlp/seq_labeling/NER/interpretEval/")
-    os.system(f"bash {KNLP_PATH}/knlp/seq_labeling/NER/interpretEval/run_task_ner.sh {model_1} {model_2}")
-    os.chdir("./")
-
-
 class Pipeline:
     def __init__(self, model='all', data_sign=None, do_eval=False,
                  data_path=KNLP_PATH + '/knlp/data/msra_bios/train.bios',
@@ -315,6 +308,7 @@ class Pipeline:
 
     def eval_interpret(self, model_1, model_2=None):
         self.do_eval = True
+        self.dev = KNLP_PATH + '/knlp/data/msra_bios/val.bios'
         if self.do_eval:
             if not model_2:
                 model_2 = model_1
@@ -364,26 +358,19 @@ class Pipeline:
                 entity_set.remove(word_del)
         if not type:
             self.trie.later_soft_process(words, entity_set)
-            print(self.trie.get_entity())
+            print("软处理结果：" + str(self.trie.get_entity()))
             self.trie.later_hard_process(words, entity_set)
-            print(self.trie.get_entity())
+            print("硬处理结果：" +str(self.trie.get_entity()))
         if type == 'soft':
             self.trie.later_soft_process(words, entity_set)
-            print(self.trie.get_entity())
+            print("软处理结果：" + str(self.trie.get_entity()))
         elif type == 'hard':
             self.trie.later_hard_process(words, entity_set)
-            print(self.trie.get_entity())
+            print("硬处理结果：" + str(self.trie.get_entity()))
 
 
 if __name__ == '__main__':
     sentence = '毕业于北京大学的他，最爱读的书是《时间简史》。喜欢吃兰州拉面，曾任时间管理局局长。闲暇时喜欢玩csgo，对《星际穿越》赞叹有加。'
-    # Pipeline(type='all', model='hmm', input=sentence, do_eval=False, data_sign='msra')
-    # Pipeline(type='all', model='crf', input=sentence, do_eval=False, data_sign='msra', from_user_txt=True)
-    # Pipeline(type='all', model='trie', input=sentence, do_eval=False, data_sign='msra')
-    # Pipeline(type='all', model='bilstm', input=sentence, do_eval=False, data_sign='msra')
-    # Pipeline(type='all', model='bert_tagger', input=sentence, do_eval=False, data_sign='msra')
-    # Pipeline(type='all', model='bert_mrc', input=sentence, do_eval=True, data_sign='msra')
-    # # 两两比对
-    # for model_1 in model_list:
-    #     for model_2 in model_list:
-    #         model_compare(model_1, model_2)
+    pipe = Pipeline(data_sign='msra')
+    pipe.inference(model='all', input=sentence)
+    pipe.eval_interpret('hmm', 'crf')
