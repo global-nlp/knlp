@@ -167,7 +167,7 @@ class Trie:
             return None
 
 
-class Later_process_Trie(Trie):
+class PostProcessTrie(Trie):
     def __init__(self):
         super().__init__()
         self.text_dict = {}
@@ -272,7 +272,7 @@ class Later_process_Trie(Trie):
             self.insert(contain, self.text_dict[contain]['feature'], _from='pred')
         # print(self.trie)
 
-    def later_soft_process(self, sentence, entity_set):
+    def post_soft_process(self, sentence, entity_set):
         """
 
         :param entity_set:
@@ -293,7 +293,7 @@ class Later_process_Trie(Trie):
                     if self.get_from_dict(words, feature):
                         self.entity_set.add((words, feature))
 
-    def later_hard_process(self, sentence, entity_set):
+    def post_hard_process(self, sentence, entity_set):
         """
 
         :param entity_set:

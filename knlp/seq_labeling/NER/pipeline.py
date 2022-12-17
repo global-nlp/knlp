@@ -6,7 +6,7 @@ from knlp.seq_labeling.NER.crf.inference import CRFInference
 from knlp.seq_labeling.NER.bilstm_crf.inference_ner import BilstmInference
 from knlp.seq_labeling.NER.bert.ner_inference import BertInference
 from knlp.seq_labeling.NER.bert_mrc.predict import MRCNER_Inference
-from knlp.seq_labeling.NER.trie_seg.ner_util import Later_process_Trie
+from knlp.seq_labeling.NER.trie_seg.ner_util import PostProcessTrie
 from knlp.seq_labeling.bert.models.bert_for_ner import BertSoftmaxForNer
 from knlp.seq_labeling.NER.ModelEval.eval_result import ModelEval
 from knlp.seq_labeling.NER.bert.trainer import BERTTrain
@@ -26,11 +26,13 @@ texts_del = [
     ('北大', 'ORG')
 ]
 
+
 class Pipeline:
     def __init__(self, model='all', data_sign=None, do_eval=False,
-                 data_path=KNLP_PATH + '/knlp/data/msra_bios/train.bios',
-                 vocab_path=KNLP_PATH + '/knlp/data/msra_bios/vocab.txt',
-                 tagger_path=KNLP_PATH + '/knlp/data/msra_bios/', mrc_path=KNLP_PATH + '/knlp/data/msra_mrc',
+                 data_path=KNLP_PATH + '/knlp/data/bios_clue/train.bios',
+                 dev_path=KNLP_PATH + '/knlp/data/bios_clue/val.bios',
+                 vocab_path=KNLP_PATH + '/knlp/data/bios_clue/vocab.txt',
+                 tagger_path=KNLP_PATH + '/knlp/data/bios_clue/', mrc_path=KNLP_PATH + '/knlp/data/clue_mrc',
                  add_dict=KNLP_PATH + '/knlp/data/user_dict/texts_add.txt',
                  del_dict=KNLP_PATH + '/knlp/data/user_dict/texts_del.txt',
                  from_user_txt=False):
@@ -51,6 +53,8 @@ class Pipeline:
 
         if data_path:
             self.training_data_path = data_path
+        if dev_path:
+            self.dev_path = dev_path
         if vocab_path:
             self.vocab_set_path = vocab_path
         if tagger_path:
@@ -82,11 +86,11 @@ class Pipeline:
         # self.model_path_bert_tagger = KNLP_PATH + '/knlp/model/bert/output_modelbert'
         # self.model_path_bert_mrc = KNLP_PATH + '/knlp/model/bert/mrc_ner/checkpoint-63000.bin'
         self.do_eval = False
-        self.trie = Later_process_Trie()
+        self.trie = PostProcessTrie()
 
         if do_eval:
             self.do_eval = True
-            self.dev = KNLP_PATH + '/knlp/data/msra_bios/val.bios'
+            # self.dev = KNLP_PATH + '/knlp/data/msra_bios/val.bios'
 
         # if self.type == 'inference':
         #     self.inference(self.model)
@@ -105,7 +109,8 @@ class Pipeline:
 
     def train(self, model):
         model_list = ['hmm', 'crf', 'trie', 'bilstm', 'bert_tagger', 'bert_mrc']
-
+        if isinstance(model, list):
+            set(model).issubset(set(model_list))
         if model not in model_list and model != 'all':
             print(f'only support model in {model_list}')
         else:
@@ -236,7 +241,7 @@ class Pipeline:
 
         if self.do_eval:
             self.eval_interpret('hmm')
-        self.later_process_by_trie(words, sum(test.tag_list, []), test.get_entity())
+        self.post_process_by_trie(words, sum(test.tag_list, []), test.get_entity())
 
     def crf_inference(self, words):
         print("\n******** crf_result ********\n")
@@ -253,7 +258,7 @@ class Pipeline:
 
         if self.do_eval:
             self.eval_interpret('crf')
-        self.later_process_by_trie(words, sum(test.get_tag(), []), test.get_entity())
+        self.post_process_by_trie(words, sum(test.get_tag(), []), test.get_entity())
 
     def trie_inference(self, words):
         print("\n******** trie_result ********\n")
@@ -265,7 +270,7 @@ class Pipeline:
 
         if self.do_eval:
             self.eval_interpret('trie')
-        self.later_process_by_trie(words, trieTest.get_tag(), trieTest.get_entity())
+        self.post_process_by_trie(words, trieTest.get_tag(), trieTest.get_entity())
 
     def bilstm_inference(self, words):
         print("\n******** bilstm_result ********\n")
@@ -276,7 +281,7 @@ class Pipeline:
 
         if self.do_eval:
             self.eval_interpret('bilstm')
-        self.later_process_by_trie(words, sum(inference.get_tag(), []), inference.get_entity())
+        self.post_process_by_trie(words, sum(inference.get_tag(), []), inference.get_entity())
 
     def bert_tagger_inference(self, words, model_path):
         print("\n******** bert_result ********\n")
@@ -290,7 +295,7 @@ class Pipeline:
         # print(inference.run(words))
         if self.do_eval:
             self.eval_interpret('bert')
-        self.later_process_by_trie(words, inference.get_tag(), inference.get_entity())
+        self.post_process_by_trie(words, inference.get_tag(), inference.get_entity())
 
     def bert_mrc_inference(self, words, model_path):
         print("\n******** mrc_result ********\n")
@@ -304,23 +309,23 @@ class Pipeline:
 
         if self.do_eval:
             self.eval_interpret('mrc')
-        self.later_process_by_trie(words, inference.get_tag(), inference.get_entity())
+        self.post_process_by_trie(words, inference.get_tag(), inference.get_entity())
 
     def eval_interpret(self, model_1, model_2=None):
         self.do_eval = True
-        self.dev = KNLP_PATH + '/knlp/data/msra_bios/val.bios'
+        # self.dev = KNLP_PATH + '/knlp/data/msra_bios/val.bios'
         if self.do_eval:
             if not model_2:
                 model_2 = model_1
-                val_1 = ModelEval(self.dev, model=model_1, mrc_data_path=self.mrc_data_path,
+                val_1 = ModelEval(self.dev_path, model=model_1, mrc_data_path=self.mrc_data_path,
                                   tokenizer_vocab=self.vocab_set_path, data_sign=self.task,
                                   tagger_path=self.model_path_bert_tagger, mrc_path=self.model_path_bert_mrc)
                 val_1.evaluate()
             else:
-                val_1 = ModelEval(self.dev, model=model_1, mrc_data_path=self.mrc_data_path,
+                val_1 = ModelEval(self.dev_path, model=model_1, mrc_data_path=self.mrc_data_path,
                                   tokenizer_vocab=self.vocab_set_path, data_sign=self.task)
                 val_1.evaluate()
-                val_2 = ModelEval(self.dev, model=model_2, mrc_data_path=self.mrc_data_path,
+                val_2 = ModelEval(self.dev_path, model=model_2, mrc_data_path=self.mrc_data_path,
                                   tokenizer_vocab=self.vocab_set_path, data_sign=self.task)
                 val_2.evaluate()
             os.chdir(f"{KNLP_PATH}/knlp/seq_labeling/NER/interpretEval/")
@@ -329,7 +334,7 @@ class Pipeline:
         else:
             print("To evaluate, set do_eval to True.")
 
-    def later_process_by_trie(self, words, labels, entity_set, type=None):
+    def post_process_by_trie(self, words, labels, entity_set, type=None):
         """
         :param words: 推理用的句子
         :param labels: 预测得到的标签
@@ -357,15 +362,15 @@ class Pipeline:
             if word_del in entity_set:
                 entity_set.remove(word_del)
         if not type:
-            self.trie.later_soft_process(words, entity_set)
+            self.trie.post_soft_process(words, entity_set)
             print("软处理结果：" + str(self.trie.get_entity()))
-            self.trie.later_hard_process(words, entity_set)
-            print("硬处理结果：" +str(self.trie.get_entity()))
+            self.trie.post_hard_process(words, entity_set)
+            print("硬处理结果：" + str(self.trie.get_entity()))
         if type == 'soft':
-            self.trie.later_soft_process(words, entity_set)
+            self.trie.post_soft_process(words, entity_set)
             print("软处理结果：" + str(self.trie.get_entity()))
         elif type == 'hard':
-            self.trie.later_hard_process(words, entity_set)
+            self.trie.post_hard_process(words, entity_set)
             print("硬处理结果：" + str(self.trie.get_entity()))
 
 

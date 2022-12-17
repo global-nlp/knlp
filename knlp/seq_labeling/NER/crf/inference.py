@@ -1,6 +1,6 @@
 # -*-coding:utf-8-*-
 from knlp.seq_labeling.NER.Inference.Inference import Inference
-from knlp.seq_labeling.NER.trie_seg.ner_util import Later_process_Trie
+from knlp.seq_labeling.NER.trie_seg.ner_util import PostProcessTrie
 from knlp.seq_labeling.crf.crf import CRFModel
 from knlp.common.constant import KNLP_PATH
 
@@ -38,7 +38,7 @@ class CRFInference(Inference):
 
 if __name__ == "__main__":
     test = CRFInference()
-    trieTree = Later_process_Trie()
+    trieTree = PostProcessTrie()
     CRF_MODEL_PATH = KNLP_PATH + "/knlp/model/crf/ner.pkl"
 
     print("读取数据...")
@@ -53,7 +53,7 @@ if __name__ == "__main__":
     for word_tuples in texts:
         trieTree.insert(word_tuples[0], word_tuples[1], _from='dict')
 
-    trieTree.later_soft_process(to_be_pred, test.entity_set)
+    trieTree.post_soft_process(to_be_pred, test.entity_set)
     print(trieTree.get_entity())
-    trieTree.later_hard_process(to_be_pred, test.entity_set)
+    trieTree.post_hard_process(to_be_pred, test.entity_set)
     print(trieTree.get_entity())

@@ -21,7 +21,7 @@ from collections import defaultdict
 import requests
 from functools import wraps
 
-from knlp.common.constant import KNLP_PATH
+from knlp.common.constant import KNLP_PATH, delimiter
 
 
 def get_jieba_dict_file():
@@ -222,7 +222,7 @@ def dict_construct(data_path, type):
     f = open(data_path, 'r', encoding='utf-8')
     for line in f.readlines():
         if line != '\n':
-            text, entity = line.strip('\n').split(' ')
+            text, entity = line.strip('\n').split(delimiter)
             label_set.add(entity)
     if type == 'state':
         for label in label_set:
@@ -241,6 +241,6 @@ def label_list(data_path):
     f = open(data_path, 'r', encoding='utf-8')
     for line in f.readlines():
         if line != '\n':
-            text, entity = line.strip('\n').split(' ')
+            text, entity = line.strip('\n').split(delimiter)
             label_set.add(entity)
     return list(label_set)

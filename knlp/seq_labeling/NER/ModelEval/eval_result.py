@@ -107,12 +107,12 @@ class ModelEval:
         training_data_path = self.dev_path
         test = HMMInference(training_data_path)
         for sentence in tqdm(self.for_pred):
-            print(sentence)
+            # print(sentence)
             # print(sentence)
             test.bios(sentence)
             res = sum(test.get_tag(), [])
             self.pred_list.append(res)
-            print(res)
+            # print(res)
             test.tag_list.clear()
             self.pred_list.append(['\n'])
             # print(pred_list)
@@ -184,7 +184,7 @@ class ModelEval:
                     middle_tags = [('I' + '-' + label) for _ in range(end - begin)]
                     init_tag[begin + 1:end + 1] = middle_tags
 
-            print(len(init_tag), len(sentence))
+            # print(len(init_tag), len(sentence))
             # print(init_tag)
             self.pred_list.append(list(init_tag))
             self.pred_list.append(['\n'])

@@ -36,10 +36,10 @@ class HMMInference(Inference):
         """
         super().__init__()
         # clue:
-        # self._end_set = ("O", "I-movie", "I-organization", "I-address", "I-scene", "I-name", "I-position", "I-government", "I-game",
-        #     "I-book", "I-company")
+        self._end_set = ("O", "I-movie", "I-organization", "I-address", "I-scene", "I-name", "I-position", "I-government", "I-game",
+            "I-book", "I-company")
         # coll:
-        self._end_set = ("O", "I-PER", "I-ORG", "I-LOC")
+        # self._end_set = ("O", "I-PER", "I-ORG", "I-LOC")
         self._state_set = {}
         self._transition_pro = {}
         self._emission_pro = {}

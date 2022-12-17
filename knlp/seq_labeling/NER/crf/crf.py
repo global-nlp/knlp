@@ -80,10 +80,10 @@ class CRFModel(object):
     """
 
     def __init__(self):
-        self.model = CRF(algorithm='lbfgs',
-                         c1=0.1,
-                         c2=0.1,
-                         max_iterations=300,
+        self.model = CRF(algorithm='l2sgd',
+                         # c1=0.1,
+                         c2=1.0,
+                         max_iterations=5000,
                          all_possible_transitions=False,
                          verbose=True)
 
