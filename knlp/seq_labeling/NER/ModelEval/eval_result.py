@@ -11,6 +11,11 @@ from knlp.seq_labeling.bert.models.bert_for_ner import BertSoftmaxForNer
 
 
 def generate_file(dev, pred_list, output):
+    """
+    dev: 用于评估的文件
+    pred_list: 将用于评估的句子预测获得标签列表
+    output: 新产生的文件，一列是dev文件中的汉字，一列是预测的标签
+    """
     pred_all = sum(pred_list, [])
     f = open(dev, 'r', encoding='utf-8')
     out = open(output, 'w', encoding='utf-8')
@@ -31,6 +36,9 @@ def generate_file(dev, pred_list, output):
 
 
 def construct_sent(dev):
+    """
+    从dev文件生成用于预测的句子
+    """
     f = open(dev, 'r', encoding='utf-8')
     sents = []
     str = ''
@@ -45,6 +53,9 @@ def construct_sent(dev):
 
 
 def tab2blank(file1, file2):
+    """
+    将file1中的制表符分隔改为空格分隔（仅为了服务于interpret这个仓库，后续重构为自己的评估之后就不需要了）
+    """
     file = open(file1, 'r', encoding='utf-8')
     out = open(file2, 'w', encoding='utf-8')
     for line in file.readlines():
@@ -107,16 +118,11 @@ class ModelEval:
         training_data_path = self.dev_path
         test = HMMInference(training_data_path)
         for sentence in tqdm(self.for_pred):
-            # print(sentence)
-            # print(sentence)
             test.bios(sentence)
             res = sum(test.get_tag(), [])
             self.pred_list.append(res)
-            # print(res)
             test.tag_list.clear()
             self.pred_list.append(['\n'])
-            # print(pred_list)
-        # print(self.pred_list)
 
     def __crf(self):
         test = CRFInference()
@@ -124,7 +130,6 @@ class ModelEval:
         for sentence in tqdm(self.for_pred):
             test.spilt_predict(sentence, CRF_MODEL_PATH)
             res = sum(test.get_tag(), [])
-            # print(sentence)
             test.tag_list.clear()
             self.pred_list.append(res)
             self.pred_list.append(['\n'])
@@ -132,10 +137,8 @@ class ModelEval:
     def __trie(self):
         trieTest = TrieInference()
         for sentence in tqdm(self.for_pred):
-            # print(sentence)
             trieTest.knlp_seg(sentence)
             res = trieTest.get_tag()
-            # print(res)
             self.pred_list.append(list(res))
             self.pred_list.append(['\n'])
             trieTest.tag_list.clear()
@@ -157,12 +160,10 @@ class ModelEval:
         for sentence in tqdm(self.for_pred):
             inference.predict(sentence, model)
             result = inference.get_tag()
-            # print(result)
             self.pred_list.append(list(result))
             self.pred_list.append(['\n'])
 
     def __mrc(self):
-        # print(test.config)
         init_tag = []
         for sentence in tqdm(self.for_pred):
             test = MRCNER_Inference(mrc_data_path=self.mrc_data_path, tokenizer_vocab=self.vocab, data_sign=self.task)
@@ -172,23 +173,17 @@ class ModelEval:
             res = test.get_chunks()
             for contain in res:
                 for piece in contain:
-                    # print(piece[0])
                     union = ''.join(piece[0])
                     label = piece[2]
                     begin = sentence.lower().find(union)
-                    # print([s for s in union])
-                    # print(begin)
                     end = begin + len(union) - 1
-                    # print(init_tag)
                     init_tag[begin] = 'B' + '-' + label
                     middle_tags = [('I' + '-' + label) for _ in range(end - begin)]
                     init_tag[begin + 1:end + 1] = middle_tags
 
-            # print(len(init_tag), len(sentence))
-            # print(init_tag)
             self.pred_list.append(list(init_tag))
             self.pred_list.append(['\n'])
-            # print(pred_list)
+
             init_tag.clear()
 
     def __your_new_model_here(self):

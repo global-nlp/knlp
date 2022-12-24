@@ -1,7 +1,7 @@
 # -*-coding:utf-8-*-
 import pickle
 
-from knlp.common.constant import KNLP_PATH
+from knlp.common.constant import KNLP_PATH, delimiter
 from knlp.seq_labeling.crf.crf import CRFModel
 
 
@@ -29,7 +29,7 @@ class Train:
             tag_list = []
             for line in f:
                 if line != '\n':
-                    word, tag = line.strip('\n').split()
+                    word, tag = line.strip('\n').split(delimiter)
                     word_list.append(word)
                     tag_list.append(tag)
                 else:

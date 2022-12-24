@@ -28,7 +28,7 @@ texts_del = [
 
 
 class Pipeline:
-    def __init__(self, model='all', data_sign=None, do_eval=False,
+    def __init__(self, model='all', data_sign=None,
                  data_path=KNLP_PATH + '/knlp/data/bios_clue/train.bios',
                  dev_path=KNLP_PATH + '/knlp/data/bios_clue/val.bios',
                  vocab_path=KNLP_PATH + '/knlp/data/bios_clue/vocab.txt',
@@ -39,7 +39,6 @@ class Pipeline:
         """
         :param model: 选择模型库中的某个模型，或全部模型
         :param data_sign: 指明数据集名称，主要对于bert的mrc方法中识别标签描述文件（msra.json）
-        :param do_eval: 是否进行模型自我评估
         :param data_path: 数据集路径（具体到训练数据位置，用于hmm、crf、trie等等模型）
         :param vocab_path: 数据集vocab路径
         :param tagger_path: 用于bert序列标注的数据路径（到数据集目录位置即可，与data_path不同，不用具体到文件位置，上级文件夹即可）
@@ -79,33 +78,10 @@ class Pipeline:
         # Bert-mrc 模型存储位置
         self.bert_mrc_save_path = KNLP_PATH + '/knlp/model/bert/mrc_ner'
 
-        # if input:
-        #     self.words = input
         self.data_path = ''
         self.model = model
-        # self.model_path_bert_tagger = KNLP_PATH + '/knlp/model/bert/output_modelbert'
-        # self.model_path_bert_mrc = KNLP_PATH + '/knlp/model/bert/mrc_ner/checkpoint-63000.bin'
-        self.do_eval = False
+
         self.trie = PostProcessTrie()
-
-        if do_eval:
-            self.do_eval = True
-            # self.dev = KNLP_PATH + '/knlp/data/msra_bios/val.bios'
-
-        # if self.type == 'inference':
-        #     self.inference(self.model)
-        # elif self.type == 'train':
-        #     self.train()
-        # elif self.type == 'eval':
-        #     self.do_eval = True
-        #     self.dev = KNLP_PATH + '/knlp/data/msra_bios/val.bios'
-        # elif self.type == 'all':
-        #     self.do_eval = True
-        #     self.dev = KNLP_PATH + '/knlp/data/msra_bios/val.bios'
-        #     self.train()
-        #     self.inference(self.model)
-        # else:
-        #     print('only support inference or train method')
 
     def train(self, model):
         model_list = ['hmm', 'crf', 'trie', 'bilstm', 'bert_tagger', 'bert_mrc']
@@ -230,7 +206,7 @@ class Pipeline:
                 self.bert_tagger_inference(self.words, self.model_path_bert_tagger)
                 self.bert_mrc_inference(self.words, self.model_path_bert_mrc)
 
-    def hmm_inference(self, words):
+    def hmm_inference(self, words, eval_itself=False):
         print("\n******** hmm_result ********\n")
         training_data_path = self.training_data_path
         test = HMMInference(training_data_path=training_data_path)
@@ -239,11 +215,11 @@ class Pipeline:
         print("POS结果：" + str(test.tag_list))
         print("实体集合：" + str(test.get_entity()))
 
-        if self.do_eval:
+        if eval_itself:
             self.eval_interpret('hmm')
         self.post_process_by_trie(words, sum(test.tag_list, []), test.get_entity())
 
-    def crf_inference(self, words):
+    def crf_inference(self, words, eval_itself=False):
         print("\n******** crf_result ********\n")
         test = CRFInference()
         CRF_MODEL_PATH = KNLP_PATH + "/knlp/model/crf/ner.pkl"
@@ -256,11 +232,11 @@ class Pipeline:
         print("模型预测结果：" + str(test.get_sent()))
         print("实体集合：" + str(test.get_entity()))
 
-        if self.do_eval:
+        if eval_itself:
             self.eval_interpret('crf')
         self.post_process_by_trie(words, sum(test.get_tag(), []), test.get_entity())
 
-    def trie_inference(self, words):
+    def trie_inference(self, words, eval_itself=False):
         print("\n******** trie_result ********\n")
         trieTest = TrieInference()
         # use trie to finetune directly
@@ -268,22 +244,22 @@ class Pipeline:
         print(trieTest.knlp_seg(words))
         print("实体集合：" + str(trieTest.get_entity()))
 
-        if self.do_eval:
+        if eval_itself:
             self.eval_interpret('trie')
         self.post_process_by_trie(words, trieTest.get_tag(), trieTest.get_entity())
 
-    def bilstm_inference(self, words):
+    def bilstm_inference(self, words, eval_itself=False):
         print("\n******** bilstm_result ********\n")
         inference = BilstmInference()
         print("模型预测结果：" + str(inference(words)))
         print("POS结果：" + str(inference.get_tag()))
         print("实体集合：" + str(inference.get_entity()))
 
-        if self.do_eval:
+        if eval_itself:
             self.eval_interpret('bilstm')
         self.post_process_by_trie(words, sum(inference.get_tag(), []), inference.get_entity())
 
-    def bert_tagger_inference(self, words, model_path):
+    def bert_tagger_inference(self, words, model_path, eval_itself=False):
         print("\n******** bert_result ********\n")
         inference = BertInference(task=self.task, log=False)
         model = BertSoftmaxForNer.from_pretrained(model_path)
@@ -293,11 +269,11 @@ class Pipeline:
         print("POS结果：" + str(inference.get_tag()))
         print("实体集合：" + str(inference.get_entity()))
         # print(inference.run(words))
-        if self.do_eval:
+        if eval_itself:
             self.eval_interpret('bert')
         self.post_process_by_trie(words, inference.get_tag(), inference.get_entity())
 
-    def bert_mrc_inference(self, words, model_path):
+    def bert_mrc_inference(self, words, model_path, eval_itself=False):
         print("\n******** mrc_result ********\n")
         inference = MRCNER_Inference(mrc_data_path=self.mrc_data_path, tokenizer_vocab=self.vocab_set_path,
                                      data_sign=self.task, log=False)
@@ -307,32 +283,27 @@ class Pipeline:
         print("POS结果：" + str(inference.get_tag()))
         print("实体集合：" + str(inference.get_entity()))
 
-        if self.do_eval:
+        if eval_itself:
             self.eval_interpret('mrc')
         self.post_process_by_trie(words, inference.get_tag(), inference.get_entity())
 
     def eval_interpret(self, model_1, model_2=None):
-        self.do_eval = True
-        # self.dev = KNLP_PATH + '/knlp/data/msra_bios/val.bios'
-        if self.do_eval:
-            if not model_2:
-                model_2 = model_1
-                val_1 = ModelEval(self.dev_path, model=model_1, mrc_data_path=self.mrc_data_path,
-                                  tokenizer_vocab=self.vocab_set_path, data_sign=self.task,
-                                  tagger_path=self.model_path_bert_tagger, mrc_path=self.model_path_bert_mrc)
-                val_1.evaluate()
-            else:
-                val_1 = ModelEval(self.dev_path, model=model_1, mrc_data_path=self.mrc_data_path,
-                                  tokenizer_vocab=self.vocab_set_path, data_sign=self.task)
-                val_1.evaluate()
-                val_2 = ModelEval(self.dev_path, model=model_2, mrc_data_path=self.mrc_data_path,
-                                  tokenizer_vocab=self.vocab_set_path, data_sign=self.task)
-                val_2.evaluate()
-            os.chdir(f"{KNLP_PATH}/knlp/seq_labeling/NER/interpretEval/")
-            os.system(f"bash {KNLP_PATH}/knlp/seq_labeling/NER/interpretEval/run_task_ner.sh {model_1} {model_2}")
-            os.chdir("./")
+        if not model_2:
+            model_2 = model_1
+            val_1 = ModelEval(self.dev_path, model=model_1, mrc_data_path=self.mrc_data_path,
+                              tokenizer_vocab=self.vocab_set_path, data_sign=self.task,
+                              tagger_path=self.model_path_bert_tagger, mrc_path=self.model_path_bert_mrc)
+            val_1.evaluate()
         else:
-            print("To evaluate, set do_eval to True.")
+            val_1 = ModelEval(self.dev_path, model=model_1, mrc_data_path=self.mrc_data_path,
+                              tokenizer_vocab=self.vocab_set_path, data_sign=self.task)
+            val_1.evaluate()
+            val_2 = ModelEval(self.dev_path, model=model_2, mrc_data_path=self.mrc_data_path,
+                              tokenizer_vocab=self.vocab_set_path, data_sign=self.task)
+            val_2.evaluate()
+        os.chdir(f"{KNLP_PATH}/knlp/seq_labeling/NER/interpretEval/")
+        os.system(f"bash {KNLP_PATH}/knlp/seq_labeling/NER/interpretEval/run_task_ner.sh {model_1} {model_2}")
+        os.chdir("./")
 
     def post_process_by_trie(self, words, labels, entity_set, type=None):
         """

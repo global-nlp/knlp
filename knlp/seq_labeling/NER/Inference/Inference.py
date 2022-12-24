@@ -19,7 +19,7 @@ class Inference:
 
     def cut_bio(self, sentence1, sentence2):
         """
-        按照BIO标签做中文分词，切割句子。
+        按照BIO标签做切割。
         Args:
             sentence1: 文本序列
             sentence2: 标注序列
@@ -44,7 +44,6 @@ class Inference:
                     out_sent.append(str)
                     self.entity_set.add((str, sentence2[idx-1][2:]))
                     self.out_sent = out_sent
-                    # print(out_sent)
                 elif sentence2[idx][0] == 'O' or sentence2[idx][0] == 'B':
                     str = "".join(sentence1[begin:idx])
                     out_sent.append(str)
@@ -52,12 +51,11 @@ class Inference:
                     begin = idx
             elif sentence2[idx][0] == 'O':
                 out_sent.append(sentence1[idx])
-            # print(out_sent)
         self.out_sent = out_sent
 
     def cut_bmes(self, sentence1, sentence2):
         """
-        按照BIO标签做中文分词，切割句子。
+        按照BIO标签做切割。
         Args:
             sentence1: 文本序列
             sentence2: 标注序列
@@ -69,7 +67,6 @@ class Inference:
         begin = 0
         self.tag_list.append(sentence2)
         for idx in range(len(sentence1)):
-            #    print(sentence1[idx], sentence2[idx])
             if sentence2[idx][0] == 'B':
                 begin = idx
             elif sentence2[idx][0] == 'M':
@@ -77,7 +74,6 @@ class Inference:
                 if idx == len(sentence1):
                     str = "".join(sentence1[begin:idx])
                     out_sent.append(str)
-                    # print(out_sent)
                     self.out_sent = out_sent
                 elif sentence2[idx][0] == 'E':
                     str = "".join(sentence1[begin:idx + 1])
@@ -91,5 +87,4 @@ class Inference:
                 begin = idx + 1
             elif sentence2[idx][0] == 'O':
                 out_sent.append(sentence1[idx])
-        # print(out_sent)
         self.out_sent = out_sent

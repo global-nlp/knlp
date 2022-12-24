@@ -68,7 +68,7 @@ import json
 import sys
 from collections import defaultdict
 
-from knlp.common.constant import KNLP_PATH
+from knlp.common.constant import KNLP_PATH, delimiter
 
 
 class Train:
@@ -152,11 +152,11 @@ class Train:
             line = self.training_data[idx].strip()
             if not line:
                 continue
-            line = line.strip().split("\t")  # 获取到当前正在统计的那个标签
+            line = line.strip().split(delimiter)  # 获取到当前正在统计的那个标签
             next_line = self.training_data[idx + 1].strip()
             if not next_line:
                 continue
-            next_line = self.training_data[idx + 1].strip().split("\t")  # 获取下一个标签
+            next_line = self.training_data[idx + 1].strip().split(delimiter)  # 获取下一个标签
             count_dict[line[-1]][next_line[-1]] += 1
         for start_label, end_labels in count_dict.items():
 
@@ -181,7 +181,7 @@ class Train:
         for line in self.training_data:
             if not line.strip():
                 continue
-            line = line.strip().split("\t")
+            line = line.strip().split(delimiter)
             count_dict[line[-1]][line[0]] += 1
         for hidden_state, observation_states in count_dict.items():
             self._emission_pro[hidden_state] = {}
@@ -206,7 +206,7 @@ class Train:
         for line in self.training_data:
             if not line.strip():
                 continue
-            line = line.strip().split("\t")
+            line = line.strip().split(delimiter)
             count_dict[line[-1]] += 1
         cnt_sum = sum(list(count_dict.values()))
         for start_label, cnt in count_dict.items():
