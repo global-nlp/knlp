@@ -244,3 +244,11 @@ def label_list(data_path):
             text, entity = line.strip('\n').split(delimiter)
             label_set.add(entity)
     return list(label_set)
+
+
+def get_end_entity(label_set):
+    end_set = set()
+    for item in label_set:
+        if item[0] == 'O' or item[0] == 'I':
+            end_set.add(item)
+    return end_set

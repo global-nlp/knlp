@@ -8,10 +8,9 @@
 # Description:
 # -----------------------------------------------------------------------#
 import json
-import re
 
 from knlp.seq_labeling.NER.Inference.Inference import Inference
-from knlp.utils.util import label_list
+from knlp.utils.util import label_list, get_end_entity
 from knlp.common.constant import KNLP_PATH
 
 
@@ -36,8 +35,8 @@ class HMMInference(Inference):
         """
         super().__init__()
         # clue:
-        self._end_set = ("O", "I-movie", "I-organization", "I-address", "I-scene", "I-name", "I-position", "I-government", "I-game",
-            "I-book", "I-company")
+        # self._end_set = ("O", "I-movie", "I-organization", "I-address", "I-scene", "I-name", "I-position", "I-government", "I-game",
+        #     "I-book", "I-company")
         # coll:
         # self._end_set = ("O", "I-PER", "I-ORG", "I-LOC")
         self._state_set = {}
@@ -63,6 +62,7 @@ class HMMInference(Inference):
         init_state_set = KNLP_PATH + "/knlp/model/hmm/ner/init_state_set.json" if not init_state_set_save_path else init_state_set_save_path + "/init_state_set.json"
         self._state_set = helper(file_path=state_set)
         self._state_set["hidden_state"] = label_list(self.training_data_path)
+        self._end_set = get_end_entity(self._state_set["hidden_state"])
         self._hidden_state_set = self._state_set["hidden_state"]
         self._transition_pro = helper(file_path=transition_pro)
         self._emission_pro = helper(file_path=emission_pro)
