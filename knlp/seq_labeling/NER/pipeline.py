@@ -1,6 +1,6 @@
 import os
 from knlp.seq_labeling.NER.trie_seg.inference import TrieInference
-from knlp.common.constant import KNLP_PATH
+from knlp.common.constant import KNLP_PATH, model_list
 from knlp.seq_labeling.NER.hmm.inference import HMMInference
 from knlp.seq_labeling.NER.crf.inference import CRFInference
 from knlp.seq_labeling.NER.bilstm_crf.inference_ner import BilstmInference
@@ -14,8 +14,6 @@ from knlp.seq_labeling.NER.bert_mrc.train import MRCTrain
 from knlp.seq_labeling.NER.bilstm_crf.train_bilstm_crf import TrainBiLSTMCRF
 from knlp.seq_labeling.NER.hmm.train import HMMTrain
 from knlp.seq_labeling.NER.crf.train import CRFTrain
-
-model_list = ['hmm', 'crf', 'trie', 'bilstm', 'bert', 'mrc']
 
 texts_add = [
     ('北京大学', 'ORG'),
@@ -49,6 +47,7 @@ class Pipeline:
         self.del_dict = del_dict
         self.add_dict = add_dict
         self.task = data_sign
+        self.model_list = model_list
 
         if data_path:
             self.training_data_path = data_path
@@ -111,6 +110,16 @@ class Pipeline:
                 self.bilstm_train()
                 self.bert_mrc_train()
                 self.bert_tagger_train()
+
+    def your_model_train(self):
+        """
+        example:
+        print('your_model_name-序列标注训练开始')
+        YourModelTrainer = YourModelTrain(**params)
+        YourModelTrainer.run(**params)
+        print('your_model_name-序列标注训练结束')
+        """
+        pass
 
     def bert_tagger_train(self):
         print('Bert-序列标注训练开始')
@@ -178,13 +187,11 @@ class Pipeline:
         print('HMM训练结束')
 
     def inference(self, model, input, model_path_bert_tagger=None, model_path_bert_mrc=None):
-        model_list = ['hmm', 'crf', 'trie', 'bilstm', 'bert_mrc', 'bert_tagger']
-
         self.words = input
         self.model_path_bert_tagger = model_path_bert_tagger if model_path_bert_tagger else KNLP_PATH + '/knlp/model/bert/output_modelbert'
         self.model_path_bert_mrc = model_path_bert_mrc if model_path_bert_mrc else KNLP_PATH + '/knlp/model/bert/mrc_ner/checkpoint-63000.bin'
-        if model not in model_list and model != 'all':
-            print(f'only support model in {model_list}')
+        if model not in self.model_list and model != 'all':
+            print(f'only support model in {self.model_list}')
         else:
             if model == 'hmm':
                 self.hmm_inference(self.words)
@@ -205,6 +212,23 @@ class Pipeline:
                 self.bilstm_inference(self.words)
                 self.bert_tagger_inference(self.words, self.model_path_bert_tagger)
                 self.bert_mrc_inference(self.words, self.model_path_bert_mrc)
+
+    def your_model_inference(self, words, eval_itself=False):
+        """
+        example:
+        print("\n******** your_model_result ********\n")
+        training_data_path = self.training_data_path
+        test = YourModelInference(training_data_path=training_data_path)
+        test.bios(words) # 这里替换为你模型的推理方法
+        print("模型预测结果：" + str(test.out_sent))
+        print("POS结果：" + str(test.tag_list))
+        print("实体集合：" + str(test.get_entity()))
+
+        if eval_itself:
+            self.eval_interpret('your_model_name')
+        self.post_process_by_trie(words, sum(test.tag_list, []), test.get_entity())
+        """
+        pass
 
     def hmm_inference(self, words, eval_itself=False):
         print("\n******** hmm_result ********\n")

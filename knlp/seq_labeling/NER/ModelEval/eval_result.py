@@ -1,6 +1,6 @@
 from tqdm import tqdm
 
-from knlp.common.constant import KNLP_PATH, delimiter
+from knlp.common.constant import KNLP_PATH, delimiter, model_list
 from knlp.seq_labeling.NER.bert.ner_inference import BertInference
 from knlp.seq_labeling.NER.bert_mrc.predict import MRCNER_Inference
 from knlp.seq_labeling.NER.bilstm_crf.inference_ner import BilstmInference
@@ -27,7 +27,6 @@ def generate_file(dev, pred_list, output):
         else:
             devv.append(line)
     for index, piece in enumerate(devv):
-        # print(pred_all)
         if piece != '\n':
             str = piece + '\t' + pred_all[index] + '\n'
             out.write(str)
@@ -84,7 +83,7 @@ class ModelEval:
         self.task = data_sign
         self.model_path_bert_tagger = tagger_path
         self.model_path_bert_mrc = mrc_path
-        self.model_list = ['hmm', 'crf', 'trie', 'bilstm', 'bert', 'mrc']
+        self.model_list = model_list
         if model not in self.model_list:
             print("Model name required!")
         if not dev_path:

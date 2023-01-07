@@ -1,4 +1,4 @@
-from knlp.common.constant import KNLP_PATH
+from knlp.common.constant import KNLP_PATH, model_list
 from knlp.seq_labeling.NER.bert.trainer import BERTTrain
 from knlp.seq_labeling.NER.bert_mrc.train import MRCTrain
 from knlp.seq_labeling.NER.bilstm_crf.train_bilstm_crf import TrainBiLSTMCRF
@@ -27,15 +27,15 @@ class ModelTrainer:
         self.init_state_set_save_path = KNLP_PATH + "/knlp/model/hmm/ner"
         self.model = model
         self.task = data_sign
+        self.model_list = model_list
         if not data_path:
             self.training_data_path = KNLP_PATH + '/knlp/data/bios_clue'
         if not mrc_path:
             self.mrc_data_path = KNLP_PATH + '/knlp/data/mrc/clue_mrc'
 
     def train(self):
-        model_list = ['hmm', 'crf', 'trie', 'bilstm',  'bert_tagger', 'bert_mrc']
-        if self.model not in model_list and self.model != 'all':
-            print(f'only support model in {model_list}')
+        if self.model not in self.model_list and self.model != 'all':
+            print(f'only support model in {self.model_list}')
         else:
             if self.model == 'hmm':
                 self.hmm_train(self.state_set_save_path, self.transition_pro_save_path, self.emission_pro_save_path, self.init_state_set_save_path)
