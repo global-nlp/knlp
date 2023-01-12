@@ -8,7 +8,7 @@ from transformers import AutoTokenizer, AutoModelForTokenClassification, pipelin
 import torch.nn.functional as F
 
 from knlp.common.constant import KNLP_PATH
-from knlp.seq_labeling.NER.Inference.Inference import Inference
+from knlp.seq_labeling.NER.Inference.Inference import NERInference
 from knlp.seq_labeling.bert.processors.ner_seq import MsraProcessor as processors, logger, collate_fn, InputFeatures
 from knlp.seq_labeling.bert.models.bert_for_ner import BertSoftmaxForNer
 from knlp.utils.get_entity import get_entities
@@ -23,7 +23,7 @@ texts = [
 ]
 
 
-class BertInference(Inference):
+class BertInference(NERInference):
     def __init__(self, task, model_name=BERT_MODEL_PATH, log=False):
         super().__init__()
         self.task = task

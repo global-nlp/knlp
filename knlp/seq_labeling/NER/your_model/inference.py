@@ -1,8 +1,8 @@
 # -*-coding:utf-8-*-
-from knlp.seq_labeling.NER.Inference.Inference import Inference
+from knlp.seq_labeling.NER.Inference.Inference import NERInference
 
 
-class YourModelInference(Inference):
+class YourModelInference(NERInference):
     """
     自定义模型的推理类
     """

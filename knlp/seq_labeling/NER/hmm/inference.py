@@ -9,12 +9,12 @@
 # -----------------------------------------------------------------------#
 import json
 
-from knlp.seq_labeling.NER.Inference.Inference import Inference
+from knlp.seq_labeling.NER.Inference.Inference import NERInference
 from knlp.utils.util import label_list, get_end_entity
 from knlp.common.constant import KNLP_PATH
 
 
-class HMMInference(Inference):
+class HMMInference(NERInference):
     """
     hmm 的本质便是利用之前基于统计数据计算出来的几个概率，针对输入的sequence进行正向计算，以得到想要的结果
     应该具备的功能点

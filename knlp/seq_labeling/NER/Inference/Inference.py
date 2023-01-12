@@ -1,5 +1,9 @@
-class Inference:
+from knlp.Inference.inference import BaseInference
+
+
+class NERInference(BaseInference):
     def __init__(self):
+        super().__init__()
         self.out_sent = None
         self.tag_list = []
         self.entity_set = set()
@@ -55,7 +59,7 @@ class Inference:
 
     def cut_bmes(self, sentence1, sentence2):
         """
-        按照BIO标签做切割。
+        按照BMES标签做切割。
         Args:
             sentence1: 文本序列
             sentence2: 标注序列

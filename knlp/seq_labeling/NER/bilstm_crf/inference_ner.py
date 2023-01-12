@@ -10,10 +10,10 @@
 
 from knlp.common.constant import KNLP_PATH
 from knlp.nn.bilstm_crf.inference_bilstm_crf import InferenceBiLSTMCRF
-from knlp.seq_labeling.NER.Inference.Inference import Inference
+from knlp.seq_labeling.NER.Inference.Inference import NERInference
 
 
-class BilstmInference(Inference):
+class BilstmInference(NERInference):
     """
     分词推理
     """

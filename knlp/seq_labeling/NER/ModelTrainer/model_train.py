@@ -57,6 +57,16 @@ class ModelTrainer:
                 self.bert_mrc_train()
                 self.bert_tagger_train()
 
+    def your_model_train(self):
+        """
+        example:
+        print('your_model_name-序列标注训练开始')
+        YourModelTrainer = YourModelTrain(**params)
+        YourModelTrainer.run(**params)
+        print('your_model_name-序列标注训练结束')
+        """
+        pass
+
     def bert_tagger_train(self):
         print('Bert-序列标注训练开始')
         BERTtrainer = BERTTrain(data_path=self.tagger_data_path, tokenizer_vocab=self.vocab_set_path, data_sign=self.task)

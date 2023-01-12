@@ -14,6 +14,7 @@ from knlp.seq_labeling.NER.bert_mrc.train import MRCTrain
 from knlp.seq_labeling.NER.bilstm_crf.train_bilstm_crf import TrainBiLSTMCRF
 from knlp.seq_labeling.NER.hmm.train import HMMTrain
 from knlp.seq_labeling.NER.crf.train import CRFTrain
+from knlp.seq_labeling.NER.ModelTrainer.model_train import ModelTrainer
 
 texts_add = [
     ('北京大学', 'ORG'),
@@ -83,135 +84,63 @@ class Pipeline:
         self.trie = PostProcessTrie()
 
     def train(self, model):
-        model_list = ['hmm', 'crf', 'trie', 'bilstm', 'bert_tagger', 'bert_mrc']
-        if isinstance(model, list):
-            set(model).issubset(set(model_list))
-        if model not in model_list and model != 'all':
-            print(f'only support model in {model_list}')
+        if model not in self.model_list and model != 'all':
+            print(f'only support model in {self.model_list}')
         else:
+            trainer = ModelTrainer(data_path=self.training_data_path,
+                                   vocab_path=self.vocab_set_path,
+                                   mrc_path=self.mrc_data_path, model=model, data_sign=self.task,
+                                   tagger_path=self.tagger_data_path)
             if model == 'hmm':
-                self.hmm_train(self.state_set_save_path, self.transition_pro_save_path, self.emission_pro_save_path,
-                               self.init_state_set_save_path)
+                trainer.hmm_train(self.state_set_save_path, self.transition_pro_save_path, self.emission_pro_save_path,
+                                  self.init_state_set_save_path)
             elif model == 'crf':
-                self.crf_train(save_path=self.crf_model_path)
+                trainer.crf_train(save_path=self.crf_model_path)
             elif model == 'trie':
-                self.trie_train()
+                trainer.trie_train()
             elif model == 'bilstm':
-                self.bilstm_train()
+                trainer.bilstm_train()
             elif model == 'bert_mrc':
-                self.bert_mrc_train()
+                trainer.bert_mrc_train()
             elif model == 'bert_tagger':
-                self.bert_tagger_train()
+                trainer.bert_tagger_train()
             elif model == 'all':
-                self.hmm_train(self.state_set_save_path, self.transition_pro_save_path, self.emission_pro_save_path,
-                               self.init_state_set_save_path)
-                self.crf_train(save_path=self.crf_model_path)
-                self.trie_train()
-                self.bilstm_train()
-                self.bert_mrc_train()
-                self.bert_tagger_train()
-
-    def your_model_train(self):
-        """
-        example:
-        print('your_model_name-序列标注训练开始')
-        YourModelTrainer = YourModelTrain(**params)
-        YourModelTrainer.run(**params)
-        print('your_model_name-序列标注训练结束')
-        """
-        pass
-
-    def bert_tagger_train(self):
-        print('Bert-序列标注训练开始')
-        BERTtrainer = BERTTrain(data_path=self.tagger_data_path, tokenizer_vocab=self.vocab_set_path,
-                                data_sign=self.task, save_path=self.bert_tagger_save_path)
-        BERTtrainer.run()
-        print('Bert-序列标注训练结束')
-
-    def bert_mrc_train(self):
-        print('Bert-阅读理解训练开始')
-        MRCtrainer = MRCTrain(data_path=self.mrc_data_path, data_sign=self.task, save_path=self.bert_mrc_save_path)
-        MRCtrainer.run()
-        print('Bert-阅读理解训练结束')
-
-    def bilstm_train(self):
-        print('BiLSTM训练开始')
-        model_hyperparameters_dict = {
-            "embedding_dim": 64,
-            "hidden_dim": 64,
-            "num_layers": 1
-        }
-        optimizer_hyperparameters_dict = {
-            "lr": 0.01,
-            "weight_decay": 1e-4
-        }
-        dataset_hyperparameters_dict = {
-            "vocab_set_path": self.vocab_set_path,
-            "training_data_path": self.training_data_path,
-            "batch_size": 64,
-            "shuffle": True
-        }
-        train = TrainBiLSTMCRF(model_hyperparameters=model_hyperparameters_dict,
-                               optimizer_hyperparameters=optimizer_hyperparameters_dict,
-                               dataset_hyperparameters=dataset_hyperparameters_dict)
-        train.train(10)
-        train.save(model_path=self.model_path, word2idx_path=self.word2idx_path, tag2idx_path=self.tag2idx_path)
-        print('BiLSTM训练结束')
-
-    def trie_train(self):
-        print('Trie构建开始')
-        trieTrain = TrieInference()
-        print('Trie构建结束')
-
-    def crf_train(self, save_path):
-        print('CRF训练开始')
-        CRF_trainer = CRFTrain(data_path=self.training_data_path)
-        CRF_trainer.load_and_train()
-        CRF_trainer.save_model(save_path)
-        print('CRF训练结束')
-
-    def hmm_train(self, state_set, trans_pro, emission_pro, init_state):
-        print('HMM训练开始')
-        vocab_set_path = self.vocab_set_path
-        training_data_path = self.training_data_path
-
-        state_set_save_path = state_set
-        transition_pro_save_path = trans_pro
-        emission_pro_save_path = emission_pro
-        init_state_set_save_path = init_state
-
-        trainer = HMMTrain(vocab_set_path=vocab_set_path, training_data_path=training_data_path)
-        trainer.init_variable(vocab_set_path=vocab_set_path, training_data_path=training_data_path)
-        trainer.build_model(state_set_save_path, transition_pro_save_path, emission_pro_save_path,
-                            init_state_set_save_path)
-        print('HMM训练结束')
+                trainer.hmm_train(self.state_set_save_path, self.transition_pro_save_path, self.emission_pro_save_path,
+                                  self.init_state_set_save_path)
+                trainer.crf_train(save_path=self.crf_model_path)
+                trainer.trie_train()
+                trainer.bilstm_train()
+                trainer.bert_mrc_train()
+                trainer.bert_tagger_train()
 
     def inference(self, model, input, model_path_bert_tagger=None, model_path_bert_mrc=None):
-        self.words = input
-        self.model_path_bert_tagger = model_path_bert_tagger if model_path_bert_tagger else KNLP_PATH + '/knlp/model/bert/output_modelbert'
-        self.model_path_bert_mrc = model_path_bert_mrc if model_path_bert_mrc else KNLP_PATH + '/knlp/model/bert/mrc_ner/checkpoint-63000.bin'
+        words = input
+        model_bert_tagger = model_path_bert_tagger if model_path_bert_tagger else KNLP_PATH + '/knlp/model/bert' \
+                                                                                              '/output_modelbert '
+        model_bert_mrc = model_path_bert_mrc if model_path_bert_mrc else KNLP_PATH + '/knlp/model/bert/mrc_ner' \
+                                                                                     '/checkpoint-63000.bin '
         if model not in self.model_list and model != 'all':
             print(f'only support model in {self.model_list}')
         else:
             if model == 'hmm':
-                self.hmm_inference(self.words)
+                self.hmm_inference(words)
             elif model == 'crf':
-                self.crf_inference(self.words)
+                self.crf_inference(words)
             elif model == 'trie':
-                self.trie_inference(self.words)
+                self.trie_inference(words)
             elif model == 'bilstm':
-                self.bilstm_inference(self.words)
+                self.bilstm_inference(words)
             elif model == 'bert_mrc':
-                self.bert_mrc_inference(self.words, self.model_path_bert_mrc)
+                self.bert_mrc_inference(words, model_bert_mrc)
             elif model == 'bert_tagger':
-                self.bert_tagger_inference(self.words, self.model_path_bert_tagger)
+                self.bert_tagger_inference(words, model_bert_tagger)
             elif model == 'all':
-                self.hmm_inference(self.words)
-                self.crf_inference(self.words)
-                self.trie_inference(self.words)
-                self.bilstm_inference(self.words)
-                self.bert_tagger_inference(self.words, self.model_path_bert_tagger)
-                self.bert_mrc_inference(self.words, self.model_path_bert_mrc)
+                self.hmm_inference(words)
+                self.crf_inference(words)
+                self.trie_inference(words)
+                self.bilstm_inference(words)
+                self.bert_tagger_inference(words, model_bert_tagger)
+                self.bert_mrc_inference(words, model_bert_mrc)
 
     def your_model_inference(self, words, eval_itself=False):
         """
@@ -316,7 +245,7 @@ class Pipeline:
             model_2 = model_1
             val_1 = ModelEval(self.dev_path, model=model_1, mrc_data_path=self.mrc_data_path,
                               tokenizer_vocab=self.vocab_set_path, data_sign=self.task,
-                              tagger_path=self.model_path_bert_tagger, mrc_path=self.model_path_bert_mrc)
+                              tagger_path=self.model_bert_tagger, mrc_path=self.model_bert_mrc)
             val_1.evaluate()
         else:
             val_1 = ModelEval(self.dev_path, model=model_1, mrc_data_path=self.mrc_data_path,

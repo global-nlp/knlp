@@ -8,12 +8,13 @@ from torch.utils.data import TensorDataset, DataLoader
 from transformers import BertTokenizer, AdamW
 
 from knlp.seq_labeling.bert.models.bert_for_ner import BertQueryNER
-from knlp.seq_labeling.NER.Inference.Inference import Inference
+from knlp.seq_labeling.NER.Inference.Inference import NERInference
 from knlp.common.constant import KNLP_PATH
 from knlp.utils.metrics.functional.mrc_ner_evaluate import flat_ner_decode
 from knlp.utils.mrc_utils import InputExample, InputFeatures
 from knlp.utils.get_entity import get_entities
 from knlp.utils.tokenization import BasicTokenizer
+
 
 def get_argparse():
     parser = argparse.ArgumentParser()
@@ -36,7 +37,7 @@ def get_argparse():
     return parser
 
 
-class MRCNER_Inference(Inference):
+class MRCNER_Inference(NERInference):
     def __init__(self, mrc_data_path=None, tokenizer_vocab=None, data_sign=None, log=False):
         super().__init__()
         self.config = get_argparse().parse_args()

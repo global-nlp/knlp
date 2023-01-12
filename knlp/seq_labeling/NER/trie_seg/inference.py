@@ -9,11 +9,11 @@
 # -----------------------------------------------------------------------#
 from math import log
 
-from knlp.seq_labeling.NER.Inference.Inference import Inference
+from knlp.seq_labeling.NER.Inference.Inference import NERInference
 from knlp.seq_labeling.NER.trie_seg.ner_util import get_ner_dict_file, Trie
 
 
-class TrieInference(Inference):
+class TrieInference(NERInference):
 
     def __init__(self, dict_file=get_ner_dict_file()):
         """

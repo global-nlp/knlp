@@ -1,5 +1,5 @@
 # -*-coding:utf-8-*-
-from knlp.seq_labeling.NER.Inference.Inference import Inference
+from knlp.seq_labeling.NER.Inference.Inference import NERInference
 from knlp.seq_labeling.NER.trie_seg.ner_util import PostProcessTrie
 from knlp.seq_labeling.crf.crf import CRFModel
 from knlp.common.constant import KNLP_PATH
@@ -14,7 +14,7 @@ texts = [
 ]
 
 
-class CRFInference(Inference):
+class CRFInference(NERInference):
 
     def __init__(self):
         super().__init__()
