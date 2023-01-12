@@ -31,14 +31,9 @@ def preprocess_trie(data_path, output_path, state_path):
             continue
         token = line.split(delimiter)[0]
         label = line.split(delimiter)[1]
-        # print(list(label))
-        # print(nextline.split('	')[1].split('-')[0])
-        # for i in label:
-        #     print(i)
+
         if label != 'O':
-            # print(nextline)
             if nextline and nextline.split(' ')[1].split('-')[0] != 'B':
-                # print(nextline)
                 flag = 1
                 start = label.split('-')[0]
                 end = label.split('-')[1]
@@ -73,7 +68,6 @@ def preprocess_trie(data_path, output_path, state_path):
     f = open(KNLP_PATH + '/knlp/data/NER_data/dict.txt', encoding='utf-8')
     for line in tqdm(f.readlines()):
         token, label = line.split(' ')
-        # print(token, label)
         fo.write((token + ' ' + str(repeat_dict[token]) + ' ' + label).encode())
     f.close()
     fo.close()
@@ -147,15 +141,6 @@ class DATAProcessor:
                             end += 1
                             entity.append([tmp, e, start, end])
                             tmp = ''
-                # elif 'E-' in d[1]:
-                #     e = d[1].split('-')[-1]
-                #     tmp += d[0]
-                #     end += 1
-                #     entity.append([tmp, e, start, end])
-                #     tmp = ''
-                # elif 'S-' in d[1]:
-                #     e = d[1].split('-')[-1]
-                #     entity.append([d[0], e, i, i])
                 i += 1
             else:
                 res.append(

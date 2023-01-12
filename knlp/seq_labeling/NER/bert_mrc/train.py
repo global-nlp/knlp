@@ -20,8 +20,7 @@ from knlp.utils.metrics.functional.mrc_ner_evaluate import flat_ner_performance,
 
 def get_argparse():
     parser = argparse.ArgumentParser()
-    # start parser
-    # requires parameters
+
     parser.add_argument("--config_path", default=KNLP_PATH + "/knlp/model/bert/Chinese_wwm/bert_config.json", type=str)
     parser.add_argument("--bert_model", default=KNLP_PATH + "/knlp/model/bert/Chinese_wwm", type=str, )
     parser.add_argument("--output_dir", type=str, default=KNLP_PATH + "/knlp/model/bert/mrc")

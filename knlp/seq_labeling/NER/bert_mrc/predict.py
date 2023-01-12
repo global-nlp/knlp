@@ -18,8 +18,7 @@ from knlp.utils.tokenization import BasicTokenizer
 
 def get_argparse():
     parser = argparse.ArgumentParser()
-    # start parser
-    # requires parameters
+
     parser.add_argument("--bert_model", default=KNLP_PATH + "/knlp/model/bert/Chinese_wwm", type=str, )
     parser.add_argument("--data_dir", default=KNLP_PATH + "/knlp/data/mrc", type=str)
     parser.add_argument("--max_seq_length", default=256, type=int)
@@ -72,7 +71,7 @@ class MRCNER_Inference(NERInference):
         total = len(examples)
         contents = []
         for (example_idx, example) in enumerate(examples):
-            # print(example_idx + 1, total)
+
             basicTokenizer = BasicTokenizer(vocab_file=self.vocab,
                                             do_lower_case=True)
 

@@ -29,7 +29,6 @@ class BertInference(NERInference):
         self.task = task
         self.model = model_name
         self.token = []
-        # self.tokenizer
         if log:
             self.detailed_log()
 
@@ -73,7 +72,7 @@ class BertInference(NERInference):
         inputs = {"input_ids": all_input_ids, "attention_mask": all_input_mask, "labels": None}
 
         output = model(**inputs)
-        # print(output)
+
         logits = output[0]
         preds = logits.detach().cpu().numpy()
         preds = np.argmax(preds, axis=2).tolist()
@@ -86,7 +85,7 @@ class BertInference(NERInference):
 
         sentence = input_tokens[1:-1]
         tag_list = tags[:len(input_tokens) - 2]
-        # print("POS结果：" + str(tag_list))
+
         self.cut_bio(sentence, tag_list)
 
         self.tag_list = tag_list
