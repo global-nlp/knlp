@@ -9,11 +9,6 @@ from knlp.seq_labeling.NER.bert_mrc.predict import MRCNER_Inference
 from knlp.seq_labeling.NER.trie_seg.ner_util import PostProcessTrie
 from knlp.seq_labeling.bert.models.bert_for_ner import BertSoftmaxForNer
 from knlp.seq_labeling.NER.ModelEval.eval_result import ModelEval
-from knlp.seq_labeling.NER.bert.trainer import BERTTrain
-from knlp.seq_labeling.NER.bert_mrc.train import MRCTrain
-from knlp.seq_labeling.NER.bilstm_crf.train_bilstm_crf import TrainBiLSTMCRF
-from knlp.seq_labeling.NER.hmm.train import HMMTrain
-from knlp.seq_labeling.NER.crf.train import CRFTrain
 from knlp.seq_labeling.NER.ModelTrainer.model_train import ModelTrainer
 
 texts_add = [
@@ -26,8 +21,8 @@ texts_del = [
 ]
 
 
-class Pipeline:
-    def __init__(self, model='all', data_sign=None,
+class NERPipeline:
+    def __init__(self, data_sign=None,
                  data_path=KNLP_PATH + '/knlp/data/bios_clue/train.bios',
                  dev_path=KNLP_PATH + '/knlp/data/bios_clue/val.bios',
                  vocab_path=KNLP_PATH + '/knlp/data/bios_clue/vocab.txt',
@@ -36,7 +31,6 @@ class Pipeline:
                  del_dict=KNLP_PATH + '/knlp/data/user_dict/texts_del.txt',
                  from_user_txt=False):
         """
-        :param model: 选择模型库中的某个模型，或全部模型
         :param data_sign: 指明数据集名称，主要对于bert的mrc方法中识别标签描述文件（msra.json）
         :param data_path: 数据集路径（具体到训练数据位置，用于hmm、crf、trie等等模型）
         :param vocab_path: 数据集vocab路径
@@ -75,11 +69,12 @@ class Pipeline:
         # Trie 比较特殊，预处理时直接生成用于构建字典树的数据即可。预处理请看：knlp/seq_labeling/NER/preprocess.py
         # Bert-tagger 模型存储位置
         self.bert_tagger_save_path = KNLP_PATH + "/knlp/model/bert/tagger_"
+        self.model_bert_tagger = KNLP_PATH + '/knlp/model/bert/output_modelbert'
         # Bert-mrc 模型存储位置
         self.bert_mrc_save_path = KNLP_PATH + '/knlp/model/bert/mrc_ner'
+        self.model_bert_mrc = KNLP_PATH + '/knlp/model/bert/mrc_ner/checkpoint-63000.bin'
 
         self.data_path = ''
-        self.model = model
 
         self.trie = PostProcessTrie()
 
@@ -115,10 +110,8 @@ class Pipeline:
 
     def inference(self, model, input, model_path_bert_tagger=None, model_path_bert_mrc=None):
         words = input
-        model_bert_tagger = model_path_bert_tagger if model_path_bert_tagger else KNLP_PATH + '/knlp/model/bert' \
-                                                                                              '/output_modelbert '
-        model_bert_mrc = model_path_bert_mrc if model_path_bert_mrc else KNLP_PATH + '/knlp/model/bert/mrc_ner' \
-                                                                                     '/checkpoint-63000.bin '
+        model_bert_tagger = model_path_bert_tagger if model_path_bert_tagger else self.model_bert_tagger
+        model_bert_mrc = model_path_bert_mrc if model_path_bert_mrc else self.model_bert_mrc
         if model not in self.model_list and model != 'all':
             print(f'only support model in {self.model_list}')
         else:
@@ -300,6 +293,6 @@ class Pipeline:
 
 if __name__ == '__main__':
     sentence = '毕业于北京大学的他，最爱读的书是《时间简史》。喜欢吃兰州拉面，曾任时间管理局局长。闲暇时喜欢玩csgo，对《星际穿越》赞叹有加。'
-    pipe = Pipeline(data_sign='msra')
+    pipe = NERPipeline(data_sign='msra')
     pipe.inference(model='all', input=sentence)
     pipe.eval_interpret('hmm', 'crf')
