@@ -22,7 +22,6 @@ def preprocess_trie(data_path, output_path, state_path):
     sign = ''
     train_data = f.readlines()
     for idx in range(len(train_data)):
-        # print(line)
         line = train_data[idx].split('\n')[0]
         nextline = ''
         if idx != len(train_data) - 1:
