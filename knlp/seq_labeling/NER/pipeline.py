@@ -1,4 +1,6 @@
 import os
+
+from knlp.Pipeline.pipeline import Pipeline
 from knlp.seq_labeling.NER.trie_seg.inference import TrieInference
 from knlp.common.constant import KNLP_PATH, model_list
 from knlp.seq_labeling.NER.hmm.inference import HMMInference
@@ -21,15 +23,13 @@ texts_del = [
 ]
 
 
-class NERPipeline:
-    def __init__(self, data_sign=None,
-                 data_path=KNLP_PATH + '/knlp/data/bios_clue/train.bios',
+class NERPipeline(Pipeline):
+    def __init__(self, data_sign=None, data_path=KNLP_PATH + '/knlp/data/bios_clue/train.bios',
                  dev_path=KNLP_PATH + '/knlp/data/bios_clue/val.bios',
                  vocab_path=KNLP_PATH + '/knlp/data/bios_clue/vocab.txt',
                  tagger_path=KNLP_PATH + '/knlp/data/bios_clue/', mrc_path=KNLP_PATH + '/knlp/data/clue_mrc',
                  add_dict=KNLP_PATH + '/knlp/data/user_dict/texts_add.txt',
-                 del_dict=KNLP_PATH + '/knlp/data/user_dict/texts_del.txt',
-                 from_user_txt=False):
+                 del_dict=KNLP_PATH + '/knlp/data/user_dict/texts_del.txt', from_user_txt=False):
         """
         :param data_sign: 指明数据集名称，主要对于bert的mrc方法中识别标签描述文件（msra.json）
         :param data_path: 数据集路径（具体到训练数据位置，用于hmm、crf、trie等等模型）
@@ -38,6 +38,7 @@ class NERPipeline:
         :param mrc_path: 用于bert阅读理解的数据路径
         :param from_user_txt: 是否来自用户添加字典
         """
+        super().__init__()
         self.from_user_txt = from_user_txt
         self.del_dict = del_dict
         self.add_dict = add_dict

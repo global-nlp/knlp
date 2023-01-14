@@ -1,5 +1,6 @@
 from tqdm import tqdm
 
+from knlp.Pipeline.PipeEval import PipeEval
 from knlp.common.constant import KNLP_PATH, delimiter, model_list
 from knlp.seq_labeling.NER.bert.ner_inference import BertInference
 from knlp.seq_labeling.NER.bert_mrc.predict import MRCNER_Inference
@@ -65,8 +66,9 @@ def tab2blank(file1, file2):
             out.write(line)
 
 
-class ModelEval:
-    def __init__(self, dev_path, model, mrc_data_path=None, tokenizer_vocab=None, data_sign=None, tagger_path=None, mrc_path=None):
+class ModelEval(PipeEval):
+    def __init__(self, dev_path, model, mrc_data_path=None, tokenizer_vocab=None, data_sign=None, tagger_path=None,
+                 mrc_path=None):
         """
         :param dev_path: eval数据集路径
         :param model: 选择模型库中的某个模型，或全部模型
@@ -76,6 +78,7 @@ class ModelEval:
         :param tagger_path: 用于bert序列标注的数据路径（到数据集目录位置即可，与data_path不同，不用具体到文件位置，上级文件夹即可）
         :param mrc_path: 用于bert阅读理解的数据路径
         """
+        super().__init__()
         self.model = model
         self.dev_path = dev_path
         self.mrc_data_path = mrc_data_path

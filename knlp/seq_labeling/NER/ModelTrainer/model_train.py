@@ -1,3 +1,4 @@
+from knlp.Pipeline.PipeTrainer import PipeTrainer
 from knlp.common.constant import KNLP_PATH, model_list
 from knlp.seq_labeling.NER.bert.trainer import BERTTrain
 from knlp.seq_labeling.NER.bert_mrc.train import MRCTrain
@@ -7,7 +8,7 @@ from knlp.seq_labeling.NER.crf.train import CRFTrain
 from knlp.seq_labeling.NER.trie_seg.inference import TrieInference
 
 
-class ModelTrainer:
+class ModelTrainer(PipeTrainer):
     def __init__(self, data_path, vocab_path, tagger_path, mrc_path, model, data_sign):
         """
         :param data_path: 数据集路径（具体到训练数据位置，用于hmm、crf、trie等等模型）
@@ -17,6 +18,7 @@ class ModelTrainer:
         :param model: 选择模型库中的某个模型，或全部模型
         :param data_sign: 指明数据集名称，主要对于bert的mrc方法中识别标签描述文件（msra.json）
         """
+        super().__init__()
         self.training_data_path = data_path
         self.vocab_set_path = vocab_path
         self.tagger_data_path = tagger_path

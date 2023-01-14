@@ -1,4 +1,4 @@
-from knlp.common.constant import KNLP_PATH
+from knlp.common.constant import KNLP_PATH, model_list
 from knlp.seq_labeling.NER.pipeline import NERPipeline
 
 if __name__ == '__main__':
@@ -11,4 +11,9 @@ if __name__ == '__main__':
     # 测试推理，输入语句与指定模型进行推理。
     pipe.inference(input='毕业于北京大学的他，最爱读的书是《时间简史》。', model='all')
     # 测试评估，输入可以是对比两个模型，也可以是单一模型自我评估。
-    pipe.eval_interpret('bert_mrc', 'bert_tagger')
+    for model in model_list:
+        # 对单一模型评估
+        pipe.eval_interpret(model)
+        for __model in model_list:
+            # 两两评估
+            pipe.eval_interpret(model, __model)
