@@ -66,7 +66,7 @@ def tab2blank(file1, file2):
             out.write(line)
 
 
-class ModelEval(PipeEval):
+class ModelEvaluator(PipeEval):
     def __init__(self, dev_path, model, mrc_data_path=None, tokenizer_vocab=None, data_sign=None, tagger_path=None,
                  mrc_path=None):
         """

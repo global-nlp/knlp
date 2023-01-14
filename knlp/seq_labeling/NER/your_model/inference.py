@@ -9,7 +9,7 @@ class YourModelInference(NERInference):
     def __init__(self, training_data_path):
         super().__init__()
 
-    def predict(self):
+    def predict(self, input):
         """
         定义模型用于推理的方法，自行增加参数。
         将预测结果按照以下方式存储：

@@ -10,7 +10,7 @@ from knlp.seq_labeling.NER.bert.ner_inference import BertInference
 from knlp.seq_labeling.NER.bert_mrc.predict import MRCNER_Inference
 from knlp.seq_labeling.NER.trie_seg.ner_util import PostProcessTrie
 from knlp.seq_labeling.bert.models.bert_for_ner import BertSoftmaxForNer
-from knlp.seq_labeling.NER.ModelEval.eval_result import ModelEval
+from knlp.seq_labeling.NER.ModelEval.eval_result import ModelEvaluator
 from knlp.seq_labeling.NER.ModelTrainer.model_train import ModelTrainer
 
 texts_add = [
@@ -237,15 +237,15 @@ class NERPipeline(Pipeline):
     def eval_interpret(self, model_1, model_2=None):
         if not model_2:
             model_2 = model_1
-            val_1 = ModelEval(self.dev_path, model=model_1, mrc_data_path=self.mrc_data_path,
+            val_1 = ModelEvaluator(self.dev_path, model=model_1, mrc_data_path=self.mrc_data_path,
                               tokenizer_vocab=self.vocab_set_path, data_sign=self.task,
                               tagger_path=self.model_bert_tagger, mrc_path=self.model_bert_mrc)
             val_1.evaluate()
         else:
-            val_1 = ModelEval(self.dev_path, model=model_1, mrc_data_path=self.mrc_data_path,
+            val_1 = ModelEvaluator(self.dev_path, model=model_1, mrc_data_path=self.mrc_data_path,
                               tokenizer_vocab=self.vocab_set_path, data_sign=self.task)
             val_1.evaluate()
-            val_2 = ModelEval(self.dev_path, model=model_2, mrc_data_path=self.mrc_data_path,
+            val_2 = ModelEvaluator(self.dev_path, model=model_2, mrc_data_path=self.mrc_data_path,
                               tokenizer_vocab=self.vocab_set_path, data_sign=self.task)
             val_2.evaluate()
         os.chdir(f"{KNLP_PATH}/knlp/seq_labeling/NER/interpretEval/")
