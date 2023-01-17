@@ -75,8 +75,6 @@ class NERPipeline(Pipeline):
         self.bert_mrc_save_path = KNLP_PATH + '/knlp/model/bert/mrc_ner'
         self.model_bert_mrc = KNLP_PATH + '/knlp/model/bert/mrc_ner/checkpoint-63000.bin'
 
-        self.data_path = ''
-
         self.trie = PostProcessTrie()
 
     def train(self, model):

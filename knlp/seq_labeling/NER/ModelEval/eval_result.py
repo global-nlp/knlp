@@ -1,6 +1,6 @@
 from tqdm import tqdm
 
-from knlp.Pipeline.PipeEval import PipeEval
+from knlp.Pipeline.PipeEval import PipeEvaluator
 from knlp.common.constant import KNLP_PATH, delimiter, model_list
 from knlp.seq_labeling.NER.bert.ner_inference import BertInference
 from knlp.seq_labeling.NER.bert_mrc.predict import MRCNER_Inference
@@ -66,7 +66,7 @@ def tab2blank(file1, file2):
             out.write(line)
 
 
-class ModelEvaluator(PipeEval):
+class ModelEvaluator(PipeEvaluator):
     def __init__(self, dev_path, model, mrc_data_path=None, tokenizer_vocab=None, data_sign=None, tagger_path=None,
                  mrc_path=None):
         """
