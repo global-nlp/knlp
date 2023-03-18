@@ -8,7 +8,7 @@
 # Description:
 # -----------------------------------------------------------------------#
 
-from knlp.common.constant import UNK
+from knlp.common.constant import UNK, delimiter
 import torch
 from torch.nn.utils.rnn import pad_sequence
 from torch.utils.data import Dataset
@@ -70,7 +70,7 @@ class SeqLabelDataset(Dataset):
             line = line.strip()
             # 句中
             if line:
-                line = line.split('\t')
+                line = line.split(delimiter)
                 seq.append(line[0])
                 tag.append(line[1])
             # 句末且句子不为空:存储

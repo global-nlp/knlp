@@ -9,3 +9,4 @@ dev_log/
 data/
 model/
 .DS_Store
+knlp/seq_labeling/NER/interpretEval/analysis/ner-fig

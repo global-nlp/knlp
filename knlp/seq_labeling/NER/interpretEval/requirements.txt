@@ -1,0 +1,7 @@
+numpy
+jsonpickle
+scipy
+matplotlib
+scikit-learn
+
+

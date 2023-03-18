@@ -16,10 +16,12 @@ import sys
 import time
 import shutil
 import zipfile
+from collections import defaultdict
+
 import requests
 from functools import wraps
 
-from knlp.common.constant import KNLP_PATH
+from knlp.common.constant import KNLP_PATH, delimiter
 
 
 def get_jieba_dict_file():
@@ -212,3 +214,41 @@ class ShowProcess:
         print('')
         print(words)
         self.i = 0
+
+
+def dict_construct(data_path, type):
+    count_dict = {}
+    label_set = set()
+    f = open(data_path, 'r', encoding='utf-8')
+    for line in f.readlines():
+        if line != '\n':
+            text, entity = line.strip('\n').split(delimiter)
+            label_set.add(entity)
+    if type == 'state':
+        for label in label_set:
+            count_dict[label] = 0
+    elif type == 'trans':
+        for label in label_set:
+            count_dict[label] = defaultdict(int)
+    elif type == 'emission':
+        for label in label_set:
+            count_dict[label] = defaultdict(int)
+    return count_dict
+
+
+def label_list(data_path):
+    label_set = set()
+    f = open(data_path, 'r', encoding='utf-8')
+    for line in f.readlines():
+        if line != '\n':
+            text, entity = line.strip('\n').split(delimiter)
+            label_set.add(entity)
+    return list(label_set)
+
+
+def get_end_entity(label_set):
+    end_set = set()
+    for item in label_set:
+        if item[0] == 'O' or item[0] == 'I':
+            end_set.add(item)
+    return end_set
