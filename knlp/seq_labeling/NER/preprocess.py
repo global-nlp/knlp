@@ -12,8 +12,6 @@ from knlp.common.constant import KNLP_PATH, delimiter
 # -----------------------------------------------------------------------#
 from knlp.utils.tokenization import BasicTokenizer
 
-basicTokenizer = BasicTokenizer(vocab_file=KNLP_PATH + '/knlp/data/msra_bios/vocab.txt', do_lower_case=True)
-
 
 def preprocess_trie(data_path, output_path, state_path):
     f = open(data_path, encoding='utf-8')
@@ -204,7 +202,7 @@ class DATAProcessor:
     A unified MRC framework for named entity recognition提供的bios转mrc的脚本方法。
     """
 
-    def __init__(self, descrip_json):
+    def __init__(self, descrip_json, vocab_path):
         with open(descrip_json, 'r') as fp:
             labels = json.loads(fp.read())
         self.query2label = {}
@@ -214,6 +212,7 @@ class DATAProcessor:
             self.query2label[v] = k
             self.label2query[k] = v
         self.rlabel = labels['labels']
+        self.basicTokenizer = BasicTokenizer(vocab_file=vocab_path, do_lower_case=True)
 
     def get_mid_data(self, in_path, out_path):
         with open(in_path, 'r') as fp:
@@ -299,8 +298,8 @@ class DATAProcessor:
             entity.sort(key=lambda x: x[2])
             for e in entity:
                 left = text[:e[2]]
-                t_left = basicTokenizer.tokenize(left)
-                t_e = basicTokenizer.tokenize(e[0])
+                t_left = self.basicTokenizer.tokenize(left)
+                t_e = self.basicTokenizer.tokenize(e[0])
                 t_entity.append([e[0], e[1], len(t_left), len(t_left) + len(t_e) - 1])
             for rl in self.rlabel:
                 start_position = []
