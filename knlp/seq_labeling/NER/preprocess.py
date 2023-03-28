@@ -170,7 +170,7 @@ class VOCABProcessor:
 
     def gen_dict(self):
         for type in ['test', 'train', 'val']:
-            f = open(self.path + '{type}.bios', 'r')
+            f = open(self.path + f'{type}.bios', 'r')
             for line in f.readlines():
                 if line != '\n':
                     token, tag = line.strip().split(' ')
