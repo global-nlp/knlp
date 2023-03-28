@@ -13,9 +13,9 @@ from knlp.common.constant import KNLP_PATH, delimiter
 from knlp.utils.tokenization import BasicTokenizer
 
 
-def preprocess_trie(data_path, output_path, state_path):
+def preprocess_trie(data_path, mid_dict_path, output_path, state_path):
     f = open(data_path, encoding='utf-8')
-    out = open(KNLP_PATH + '/knlp/data/NER_data/dict.txt', 'wb')
+    out = open(mid_dict_path, 'wb')
     flag = 0
     sign = ''
     train_data = f.readlines()
@@ -51,7 +51,7 @@ def preprocess_trie(data_path, output_path, state_path):
     f.close()
     out.close()
 
-    f = open(KNLP_PATH + '/knlp/data/NER_data/dict.txt', encoding='utf-8')
+    f = open(mid_dict_path, encoding='utf-8')
     fo = open(output_path, 'wb')
     repeat_dict = {}
     for line in tqdm(f.readlines()):
@@ -62,7 +62,7 @@ def preprocess_trie(data_path, output_path, state_path):
         else:
             repeat_dict[token] += 1
     f.close()
-    f = open(KNLP_PATH + '/knlp/data/NER_data/dict.txt', encoding='utf-8')
+    f = open(mid_dict_path, encoding='utf-8')
     for line in tqdm(f.readlines()):
         token, label = line.split(' ')
         fo.write((token + ' ' + str(repeat_dict[token]) + ' ' + label).encode())
@@ -331,9 +331,10 @@ class DATAProcessor:
 
 if __name__ == '__main__':
     data_path = KNLP_PATH + '/knlp/data/msra_bios/train.bios'
-    out_path = KNLP_PATH + '/knlp/data/NER_data/ner_dict.txt'
-    state_path = KNLP_PATH + '/knlp/data/NER_data/state_dict.json'
-    preprocess_trie(data_path, out_path, state_path)
+    mid_dict_path = KNLP_PATH + '/knlp/data/msra_bios/dict.txt'
+    out_path = KNLP_PATH + '/knlp/data/msra_bios/ner_dict.txt'
+    state_path = KNLP_PATH + '/knlp/data/msra_bios/state_dict.json'
+    preprocess_trie(data_path, mid_dict_path, out_path, state_path)
 
     vocabprocessor = VOCABProcessor(KNLP_PATH + '/knlp/data/msra_bios/')
     vocabprocessor.gen_dict()
