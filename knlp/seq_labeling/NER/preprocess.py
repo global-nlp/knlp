@@ -8,7 +8,7 @@ from knlp.common.constant import KNLP_PATH, delimiter
 # Author: Ziyang Miao
 # Mail: 1838040569@qq.com
 # Created Time: 2022-05-25
-# Description: 用于trie数据预处理
+# Description: 数据预处理
 # -----------------------------------------------------------------------#
 from knlp.utils.tokenization import BasicTokenizer
 
@@ -77,7 +77,132 @@ def preprocess_trie(data_path, output_path, state_path):
     f.close()
 
 
+def bio2bmes(train_path, dev_path, test_path, new_train_path, new_dev_path, new_test_path):
+    train = open(train_path, 'r', encoding='utf-8')
+    dev = open(dev_path, 'r', encoding='utf-8')
+    test = open(test_path, 'r', encoding='utf-8')
+
+    train_out = open(new_train_path, 'w', encoding='utf-8')
+    dev_out = open(new_dev_path, 'w', encoding='utf-8')
+    test_out = open(new_test_path, 'w', encoding='utf-8')
+
+    outs = [train_out, dev_out, test_out]
+    for index, i in enumerate([train, dev, test]):
+        pre = i.readlines()
+        for index, line in enumerate(pre):
+            processed = line.replace('\n', '')
+            # print(index, processed)
+            if processed:
+                text, label = processed.split(' ')
+            else:
+                outs[index].write(line)
+                continue
+            # print(text, label)
+            if label[0] == 'I':
+                if pre[index + 1] == '\n':
+                    label = list(label)
+                    label[0] = 'E'
+                    label = ''.join(label)
+                    # label.replace('I', 'E')
+                    output = text + ' ' + label
+                    outs[index].write(output)
+                    outs[index].write('\n')
+                else:
+                    next_text, next_label = pre[index + 1].replace('\n', '').split(' ')
+                    # print(next_text, next_label)
+                    if next_label[0] == 'O' or next_label[0] == 'B':
+                        label = list(label)
+                        label[0] = 'E'
+                        label = ''.join(label)
+                        # label.replace('I', 'E')
+                        output = text + ' ' + label
+                        outs[index].write(output)
+                        outs[index].write('\n')
+                    else:
+                        label = list(label)
+                        label[0] = 'M'
+                        label = ''.join(label)
+                        output = text + ' ' + label
+                        outs[index].write(output)
+                        outs[index].write('\n')
+            else:
+                outs[index].write(processed)
+                outs[index].write('\n')
+
+
+def bmes2bio(train_path, dev_path, test_path, new_train_path, new_dev_path, new_test_path):
+    train = open(train_path, 'r', encoding='utf-8')
+    dev = open(dev_path, 'r', encoding='utf-8')
+    test = open(test_path, 'r', encoding='utf-8')
+
+    train_out = open(new_train_path, 'w', encoding='utf-8')
+    dev_out = open(new_dev_path, 'w', encoding='utf-8')
+    test_out = open(new_test_path, 'w', encoding='utf-8')
+
+    outs = [train_out, dev_out, test_out]
+    for index, i in enumerate([train, dev, test]):
+        for line in i.readlines():
+            # print(line)
+            if line != '\n':
+                text, label = line.strip().split('\t')
+                # print(label)
+                label_list = list(label)
+                if label_list[0] == 'M':
+                    label_list[0] = 'I'
+                elif label_list[0] == 'E':
+                    label_list[0] = 'I'
+                new_label = ''.join(label_list)
+                print(text)
+                print(new_label)
+                str = text + '\t' + new_label
+                outs[index].write(str)
+                outs[index].write('\n')
+            else:
+                outs[index].write(line)
+
+
+class VOCABProcessor:
+    """
+    该类为数据集生成vocab文件，并于bert模型的vocab文件比较，添加oov词汇到vocab中。
+    """
+    def __init__(self, custom_datadir):
+        self.wordset = set()
+        self.path = KNLP_PATH + custom_datadir
+
+    def gen_dict(self):
+        for type in ['test', 'train', 'val']:
+            f = open(self.path + '{type}.bios', 'r')
+            for line in f.readlines():
+                if line != '\n':
+                    token, tag = line.strip().split(' ')
+                    self.wordset.add(token)
+        voc = open(self.path + 'vocab.txt', 'w')
+        for item in self.wordset:
+            voc.write(item + '\n')
+
+    def merge_vocab(self):
+        model = open(KNLP_PATH + '/knlp/model/bert/Chinese_wwm/vocab.txt', 'r')
+        model_text = model.readlines()
+        count = []
+        for index, item in enumerate(self.wordset):
+            if item + '\n' not in model_text:
+                count.append(item)
+        print(count)
+
+    def add_vocab(self):
+        model = open(KNLP_PATH + '/knlp/model/bert/Chinese_wwm/vocab.txt', 'r')
+        voc = open(self.path + 'vocab.txt', 'a+')
+
+        model_text = model.readlines()
+        for index, item in enumerate(model_text):
+            voc.write(item)
+
+
 class DATAProcessor:
+    """
+    A unified MRC framework for named entity recognition提供的bios转mrc的脚本方法。
+    """
+
     def __init__(self, descrip_json):
         with open(descrip_json, 'r') as fp:
             labels = json.loads(fp.read())
@@ -102,8 +227,8 @@ class DATAProcessor:
         res = []
         for index, d in enumerate(data):
             d = d.strip().split(delimiter)
-            if index != len(data)-1:
-                next_d = data[index+1].strip().split(delimiter)
+            if index != len(data) - 1:
+                next_d = data[index + 1].strip().split(delimiter)
             else:
                 next_d = '\n'
             if len(d) == 2:
@@ -209,6 +334,11 @@ if __name__ == '__main__':
     out_path = KNLP_PATH + '/knlp/data/NER_data/ner_dict.txt'
     state_path = KNLP_PATH + '/knlp/data/NER_data/state_dict.json'
     preprocess_trie(data_path, out_path, state_path)
+
+    vocabprocessor = VOCABProcessor(KNLP_PATH + '/knlp/data/msra_bios/')
+    vocabprocessor.gen_dict()
+    vocabprocessor.merge_vocab()
+    vocabprocessor.add_vocab()
 
     description_json = KNLP_PATH + '/knlp/data/msra_mrc/msra.json'
     msraProcessor = DATAProcessor(description_json)

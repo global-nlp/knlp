@@ -24,10 +24,10 @@ texts_del = [
 
 
 class NERPipeline(Pipeline):
-    def __init__(self, data_sign=None, data_path=KNLP_PATH + '/knlp/data/bios_clue/train.bios',
-                 dev_path=KNLP_PATH + '/knlp/data/bios_clue/val.bios',
-                 vocab_path=KNLP_PATH + '/knlp/data/bios_clue/vocab.txt',
-                 tagger_path=KNLP_PATH + '/knlp/data/bios_clue/', mrc_path=KNLP_PATH + '/knlp/data/clue_mrc',
+    def __init__(self, data_sign=None, data_path=KNLP_PATH + '/knlp/data/msra_bios/train.bios',
+                 dev_path=KNLP_PATH + '/knlp/data/msra_bios/val.bios',
+                 vocab_path=KNLP_PATH + '/knlp/data/msra_bios/vocab.txt',
+                 tagger_path=KNLP_PATH + '/knlp/data/msra_bios/', mrc_path=KNLP_PATH + '/knlp/data/msra_mrc',
                  add_dict=KNLP_PATH + '/knlp/data/user_dict/texts_add.txt',
                  del_dict=KNLP_PATH + '/knlp/data/user_dict/texts_del.txt', from_user_txt=False):
         """
@@ -293,5 +293,8 @@ class NERPipeline(Pipeline):
 if __name__ == '__main__':
     sentence = '毕业于北京大学的他，最爱读的书是《时间简史》。喜欢吃兰州拉面，曾任时间管理局局长。闲暇时喜欢玩csgo，对《星际穿越》赞叹有加。'
     pipe = NERPipeline(data_sign='msra')
+    pipe.train('hmm')
+    pipe.train('crf')
+    pipe.train('trie')
     pipe.inference(model='all', input=sentence)
     pipe.eval_interpret('hmm', 'crf')
