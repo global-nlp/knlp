@@ -15,7 +15,7 @@ from knlp.utils.tokenization import BasicTokenizer
 
 def preprocess_trie(data_path, mid_dict_path, output_path, state_path):
     f = open(data_path, encoding='utf-8')
-    out = open(mid_dict_path, 'wb', encoding='utf-8')
+    out = open(mid_dict_path, 'wb')
     flag = 0
     sign = ''
     train_data = f.readlines()
