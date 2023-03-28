@@ -237,5 +237,7 @@ def select_processor(task):
     task = task
     if task == 'msra':
         return MsraProcessor()
-    if task == 'clue':
+    elif task == 'clue':
         return CluenerProcessor()
+    else:
+        print('请为您的数据集创建processor类，具体请看msra的处理类，只改变get_labels的内容即可。')
