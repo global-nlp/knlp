@@ -108,7 +108,7 @@ class TrainSeqLabel(TrainNN):
         Returns:
 
         """
-        with open(word2idx_path, "w") as f:
+        with open(word2idx_path, "w", encoding='utf-8') as f:
             json.dump(self.word2idx, f, indent=4, ensure_ascii=False)
 
     def save_tag2idx(self, tag2idx_path):
