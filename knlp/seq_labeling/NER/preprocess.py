@@ -65,7 +65,7 @@ def preprocess_trie(data_path, mid_dict_path, output_path, state_path):
     f = open(mid_dict_path, encoding='utf-8')
     for line in tqdm(f.readlines()):
         token, label = line.split(' ')
-        fo.write((token + ' ' + str(repeat_dict[token]) + ' ' + label).encode())
+        fo.write(token + ' ' + str(repeat_dict[token]) + ' ' + label)
     f.close()
     fo.close()
 
