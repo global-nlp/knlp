@@ -168,6 +168,7 @@ class VOCABProcessor:
     def __init__(self, custom_datadir):
         self.wordset = set()
         self.path = KNLP_PATH + custom_datadir
+        self.vocab_path = self.path + 'vocab.txt'
 
     def gen_dict(self):
         for type in ['test', 'train', 'val']:
@@ -176,7 +177,7 @@ class VOCABProcessor:
                 if line != '\n':
                     token, tag = line.strip().split(' ')
                     self.wordset.add(token)
-        voc = open(self.path + 'vocab.txt', 'w')
+        voc = open(self.vocab_path, 'w')
         for item in self.wordset:
             voc.write(item + '\n')
 
@@ -191,7 +192,7 @@ class VOCABProcessor:
 
     def add_vocab(self):
         model = open(KNLP_PATH + '/knlp/model/bert/Chinese_wwm/vocab.txt', 'r')
-        voc = open(self.path + 'vocab.txt', 'a+')
+        voc = open(self.vocab_path, 'a+')
 
         model_text = model.readlines()
         for index, item in enumerate(model_text):
