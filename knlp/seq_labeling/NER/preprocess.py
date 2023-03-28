@@ -15,7 +15,7 @@ from knlp.utils.tokenization import BasicTokenizer
 
 def preprocess_trie(data_path, mid_dict_path, output_path, state_path):
     f = open(data_path, encoding='utf-8')
-    out = open(mid_dict_path, 'wb')
+    out = open(mid_dict_path, 'w', encoding='utf-8')
     flag = 0
     sign = ''
     train_data = f.readlines()
@@ -34,18 +34,18 @@ def preprocess_trie(data_path, mid_dict_path, output_path, state_path):
                 flag = 1
                 start = label.split('-')[0]
                 end = label.split('-')[1]
-                out.write(token.encode())
+                out.write(token)
                 sign = end
             else:
                 start = label.split('-')[0]
                 end = label.split('-')[1]
-                out.write(token.encode())
+                out.write(token)
                 sign = end
-                out.write((' ' + sign + '\n').encode())
+                out.write(' ' + sign + '\n')
 
         elif label == 'O':
             if flag == 1:
-                out.write((' ' + sign + '\n').encode())
+                out.write(' ' + sign + '\n')
                 flag = 0
             sign = ''
     f.close()
