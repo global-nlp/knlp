@@ -15,7 +15,7 @@ from knlp.utils.tokenization import BasicTokenizer
 
 def preprocess_trie(data_path, mid_dict_path, output_path, state_path):
     f = open(data_path, encoding='utf-8')
-    out = open(mid_dict_path, 'wb')
+    out = open(mid_dict_path, 'wb', encoding='utf-8')
     flag = 0
     sign = ''
     train_data = f.readlines()
@@ -52,7 +52,7 @@ def preprocess_trie(data_path, mid_dict_path, output_path, state_path):
     out.close()
 
     f = open(mid_dict_path, encoding='utf-8')
-    fo = open(output_path, 'wb')
+    fo = open(output_path, 'wb', encoding='utf-8')
     repeat_dict = {}
     for line in tqdm(f.readlines()):
         token, label = line.split(' ')
@@ -70,7 +70,7 @@ def preprocess_trie(data_path, mid_dict_path, output_path, state_path):
     fo.close()
 
     dict_json = json.dumps(repeat_dict, indent=2)
-    f = open(state_path, "w")
+    f = open(state_path, "w", encoding='utf-8')
     f.write(dict_json)
     f.close()
 
@@ -170,17 +170,17 @@ class VOCABProcessor:
 
     def gen_dict(self):
         for type in ['test', 'train', 'val']:
-            f = open(self.path + f'{type}.bios', 'r')
+            f = open(self.path + f'{type}.bios', 'r', encoding='utf-8')
             for line in f.readlines():
                 if line != '\n':
                     token, tag = line.strip().split(' ')
                     self.wordset.add(token)
-        voc = open(self.vocab_path, 'w')
+        voc = open(self.vocab_path, 'w', encoding='utf-8')
         for item in self.wordset:
             voc.write(item + '\n')
 
     def merge_vocab(self):
-        model = open(KNLP_PATH + '/knlp/model/bert/Chinese_wwm/vocab.txt', 'r')
+        model = open(KNLP_PATH + '/knlp/model/bert/Chinese_wwm/vocab.txt', 'r', encoding='utf-8')
         model_text = model.readlines()
         count = []
         for index, item in enumerate(self.wordset):
@@ -189,8 +189,8 @@ class VOCABProcessor:
         print(count)
 
     def add_vocab(self):
-        model = open(KNLP_PATH + '/knlp/model/bert/Chinese_wwm/vocab.txt', 'r')
-        voc = open(self.vocab_path, 'a+')
+        model = open(KNLP_PATH + '/knlp/model/bert/Chinese_wwm/vocab.txt', 'r', encoding='utf-8')
+        voc = open(self.vocab_path, 'a+', encoding='utf-8')
 
         model_text = model.readlines()
         for index, item in enumerate(model_text):
@@ -203,7 +203,7 @@ class DATAProcessor:
     """
 
     def __init__(self, descrip_json, vocab_path):
-        with open(descrip_json, 'r') as fp:
+        with open(descrip_json, 'r', encoding='utf-8') as fp:
             labels = json.loads(fp.read())
         self.query2label = {}
         self.label2query = {}
@@ -215,7 +215,7 @@ class DATAProcessor:
         self.basicTokenizer = BasicTokenizer(vocab_file=vocab_path, do_lower_case=True)
 
     def get_mid_data(self, in_path, out_path):
-        with open(in_path, 'r') as fp:
+        with open(in_path, 'r', encoding='utf-8') as fp:
             data = fp.read()
         data = data.split('\n')
         text = ''
@@ -282,11 +282,11 @@ class DATAProcessor:
         else:
             i += 1
 
-        with open(out_path, 'w') as fp:
+        with open(out_path, 'w', encoding='utf-8') as fp:
             json.dump(res, fp, ensure_ascii=False)
 
     def get_mrc_data(self, in_path, out_path):
-        with open(in_path, 'r') as fp:
+        with open(in_path, 'r', encoding='utf-8') as fp:
             data = json.loads(fp.read())
         res = []
         for j, d in enumerate(data):
@@ -325,7 +325,7 @@ class DATAProcessor:
                         "end_position": end_position,
                     }
                 )
-        with open(out_path, 'w') as fp:
+        with open(out_path, 'w', encoding='utf-8') as fp:
             json.dump(res, fp, ensure_ascii=False)
 
 
