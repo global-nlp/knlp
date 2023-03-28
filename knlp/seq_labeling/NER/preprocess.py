@@ -165,7 +165,7 @@ class VOCABProcessor:
     """
     def __init__(self, custom_datadir):
         self.wordset = set()
-        self.path = KNLP_PATH + custom_datadir
+        self.path = custom_datadir
         self.vocab_path = self.path + 'vocab.txt'
 
     def gen_dict(self):
