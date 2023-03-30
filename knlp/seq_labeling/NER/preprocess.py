@@ -30,7 +30,7 @@ def preprocess_trie(data_path, mid_dict_path, output_path, state_path):
         label = line.split(delimiter)[1]
 
         if label != 'O':
-            if nextline and nextline.split(' ')[1].split('-')[0] != 'B':
+            if nextline and nextline.split(delimiter)[1].split('-')[0] != 'B':
                 flag = 1
                 start = label.split('-')[0]
                 end = label.split('-')[1]
@@ -91,7 +91,7 @@ def bio2bmes(train_path, dev_path, test_path, new_train_path, new_dev_path, new_
             processed = line.replace('\n', '')
             # print(index, processed)
             if processed:
-                text, label = processed.split(' ')
+                text, label = processed.split(delimiter)
             else:
                 outs[index].write(line)
                 continue
@@ -106,7 +106,7 @@ def bio2bmes(train_path, dev_path, test_path, new_train_path, new_dev_path, new_
                     outs[index].write(output)
                     outs[index].write('\n')
                 else:
-                    next_text, next_label = pre[index + 1].replace('\n', '').split(' ')
+                    next_text, next_label = pre[index + 1].replace('\n', '').split(delimiter)
                     # print(next_text, next_label)
                     if next_label[0] == 'O' or next_label[0] == 'B':
                         label = list(label)
@@ -142,7 +142,7 @@ def bmes2bio(train_path, dev_path, test_path, new_train_path, new_dev_path, new_
         for line in i.readlines():
             # print(line)
             if line != '\n':
-                text, label = line.strip().split('\t')
+                text, label = line.strip().split(delimiter)
                 # print(label)
                 label_list = list(label)
                 if label_list[0] == 'M':
@@ -173,7 +173,7 @@ class VOCABProcessor:
             f = open(self.path + f'{type}.bios', 'r', encoding='utf-8')
             for line in f.readlines():
                 if line != '\n':
-                    token, tag = line.strip().split(' ')
+                    token, tag = line.strip().split(delimiter)
                     self.wordset.add(token)
         voc = open(self.vocab_path, 'w', encoding='utf-8')
         for item in self.wordset:
@@ -329,31 +329,39 @@ class DATAProcessor:
             json.dump(res, fp, ensure_ascii=False)
 
 
-if __name__ == '__main__':
-    data_path = KNLP_PATH + '/knlp/data/msra_bios/train.bios'
-    mid_dict_path = KNLP_PATH + '/knlp/data/msra_bios/dict.txt'
-    out_path = KNLP_PATH + '/knlp/data/msra_bios/ner_dict.txt'
-    state_path = KNLP_PATH + '/knlp/data/msra_bios/state_dict.json'
-    preprocess_trie(data_path, mid_dict_path, out_path, state_path)
+# if __name__ == '__main__':
+    # tr = KNLP_PATH + '/knlp/data/ResumeNER/train.char.bmes'
+    # v = KNLP_PATH + '/knlp/data/ResumeNER/dev.char.bmes'
+    # te = KNLP_PATH + '/knlp/data/ResumeNER/test.char.bmes'
+    # ntr = KNLP_PATH + '/knlp/data/ResumeNER/train.bios'
+    # nv = KNLP_PATH + '/knlp/data/ResumeNER/dev.bios'
+    # nte = KNLP_PATH + '/knlp/data/ResumeNER/test.bios'
+    # bmes2bio(tr, v, te, ntr, nv, nte)
 
-    vocabprocessor = VOCABProcessor(KNLP_PATH + '/knlp/data/msra_bios/')
-    vocabprocessor.gen_dict()
-    vocabprocessor.merge_vocab()
-    vocabprocessor.add_vocab()
-
-    description_json = KNLP_PATH + '/knlp/data/msra_mrc/msra.json'
-    msraProcessor = DATAProcessor(description_json)
-    # 第一步：先生成中间文件和标签
-    msraProcessor.get_mid_data(KNLP_PATH + '/knlp/data/msra_bios/train.bios',
-                               KNLP_PATH + '/knlp/data/msra_bios/train.mid')
-    msraProcessor.get_mid_data(KNLP_PATH + '/knlp/data/msra_bios/val.bios',
-                               KNLP_PATH + '/knlp/data/msra_bios/dev.mid')
-    msraProcessor.get_mid_data(KNLP_PATH + '/knlp/data/msra_bios/test.bios',
-                               KNLP_PATH + '/knlp/data/msra_bios/test.mid')
-    # 第二步：生成MRC所需要的数据
-    msraProcessor.get_mrc_data(KNLP_PATH + '/knlp/data/msra_bios/train.mid',
-                               KNLP_PATH + '/knlp/data/msra_mrc/train.mrc')
-    msraProcessor.get_mrc_data(KNLP_PATH + '/knlp/data/msra_bios/dev.mid',
-                               KNLP_PATH + '/knlp/data/msra_mrc/dev.mrc')
-    msraProcessor.get_mrc_data(KNLP_PATH + '/knlp/data/msra_bios/test.mid',
-                               KNLP_PATH + '/knlp/data/msra_mrc/test.mrc')
+    # data_path = KNLP_PATH + '/knlp/data/msra_bios/train.bios'
+    # mid_dict_path = KNLP_PATH + '/knlp/data/msra_bios/dict.txt'
+    # out_path = KNLP_PATH + '/knlp/data/msra_bios/ner_dict.txt'
+    # state_path = KNLP_PATH + '/knlp/data/msra_bios/state_dict.json'
+    # preprocess_trie(data_path, mid_dict_path, out_path, state_path)
+    #
+    # vocabprocessor = VOCABProcessor(KNLP_PATH + '/knlp/data/msra_bios/')
+    # vocabprocessor.gen_dict()
+    # vocabprocessor.merge_vocab()
+    # vocabprocessor.add_vocab()
+    #
+    # description_json = KNLP_PATH + '/knlp/data/msra_mrc/msra.json'
+    # msraProcessor = DATAProcessor(description_json)
+    # # 第一步：先生成中间文件和标签
+    # msraProcessor.get_mid_data(KNLP_PATH + '/knlp/data/msra_bios/train.bios',
+    #                            KNLP_PATH + '/knlp/data/msra_bios/train.mid')
+    # msraProcessor.get_mid_data(KNLP_PATH + '/knlp/data/msra_bios/val.bios',
+    #                            KNLP_PATH + '/knlp/data/msra_bios/dev.mid')
+    # msraProcessor.get_mid_data(KNLP_PATH + '/knlp/data/msra_bios/test.bios',
+    #                            KNLP_PATH + '/knlp/data/msra_bios/test.mid')
+    # # 第二步：生成MRC所需要的数据
+    # msraProcessor.get_mrc_data(KNLP_PATH + '/knlp/data/msra_bios/train.mid',
+    #                            KNLP_PATH + '/knlp/data/msra_mrc/train.mrc')
+    # msraProcessor.get_mrc_data(KNLP_PATH + '/knlp/data/msra_bios/dev.mid',
+    #                            KNLP_PATH + '/knlp/data/msra_mrc/dev.mrc')
+    # msraProcessor.get_mrc_data(KNLP_PATH + '/knlp/data/msra_bios/test.mid',
+    #                            KNLP_PATH + '/knlp/data/msra_mrc/test.mrc')
