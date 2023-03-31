@@ -209,7 +209,7 @@ class NERPipeline(Pipeline):
         inference = BertInference(task=self.task, log=False)
         model = BertSoftmaxForNer.from_pretrained(model_path)
         model.to('cpu')
-        result = inference.predict(words, model)
+        result = inference.predict(words, model, self.vocab_set_path)
         print("模型预测结果：" + str(result))
         print("POS结果：" + str(inference.get_tag()))
         print("实体集合：" + str(inference.get_entity()))

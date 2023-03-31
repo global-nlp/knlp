@@ -77,7 +77,7 @@ class ModelTrainer(PipeTrainer):
 
     def bert_mrc_train(self):
         print('Bert-阅读理解训练开始')
-        MRCtrainer = MRCTrain(data_path=self.mrc_data_path, data_sign=self.task)
+        MRCtrainer = MRCTrain(data_path=self.mrc_data_path, vocab_path=self.vocab_set_path, data_sign=self.task)
         MRCtrainer.run()
         print('Bert-阅读理解训练结束')
 

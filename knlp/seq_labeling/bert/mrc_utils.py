@@ -7,8 +7,6 @@ import os
 from knlp.common.constant import KNLP_PATH
 from knlp.utils.tokenization import BasicTokenizer
 
-basicTokenizer = BasicTokenizer(vocab_file=KNLP_PATH + '/knlp/model/bert/Chinese_wwm/vocab.txt',do_lower_case=True)
-
 
 class InputExample(object):
     def __init__(self,
@@ -54,7 +52,7 @@ class InputFeatures(object):
         self.end_position = end_position
 
 
-def convert_examples_to_features(examples, tokenizer, label_lst, max_seq_length, pad_sign=True):
+def convert_examples_to_features(examples, tokenizer, label_lst, max_seq_length, vocab_path,  pad_sign=True):
     label_map = {tmp: idx for idx, tmp in enumerate(label_lst)}
     features = []
     total = len(examples)
@@ -62,6 +60,8 @@ def convert_examples_to_features(examples, tokenizer, label_lst, max_seq_length,
     for (example_idx, example) in enumerate(examples):
         # print(example_idx+1, total)
         query_tokens = tokenizer.tokenize(example.query_item)
+        basicTokenizer = BasicTokenizer(vocab_file=vocab_path,
+                                        do_lower_case=True)
         whitespace_doc = basicTokenizer.tokenize(example.context_item)
         # whitespace_doc = ''.join(example.context_item)
         max_tokens_for_doc = max_seq_length - len(query_tokens) - 3

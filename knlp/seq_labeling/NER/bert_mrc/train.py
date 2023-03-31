@@ -56,11 +56,12 @@ def get_argparse():
 
 
 class MRCTrain(TrainNN):
-    def __init__(self, device: str = "cuda", data_path=None, data_sign=None, save_path=None):
+    def __init__(self, device: str = "cuda", data_path=None, data_sign=None, vocab_path=None, save_path=None):
         super().__init__(device=device)
         self.training_data_path = KNLP_PATH + '/knlp/data/clue_mrc' if not data_path else data_path
         self.task = data_sign
         self.output_dir = save_path if save_path else KNLP_PATH + '/knlp/model/bert/mrc_ner'
+        self.vocab_path = vocab_path if vocab_path else KNLP_PATH + '/knlp/data/bios_clue/vocab.txt'
 
     def train(self, args, train_dataset, model, tokenizer, label_list):
         param_optimizer = list(model.named_parameters())
@@ -74,7 +75,7 @@ class MRCTrain(TrainNN):
         optimizer = AdamW(optimizer_grouped_parameters, lr=args.learning_rate, eps=10e-8)
         sheduler = None
 
-        dataset_loaders = MRCNERDataLoader(args, label_list, tokenizer, mode="train", )
+        dataset_loaders = MRCNERDataLoader(args, label_list, tokenizer, self.vocab_path, mode="train", )
 
         num_train_steps = dataset_loaders.get_num_train_epochs()
         tr_loss = 0.0
@@ -145,7 +146,7 @@ class MRCTrain(TrainNN):
     def evaluate(self, current_epoch, train_loss, model, tokenizer, args, label_list):
         device = self.device
 
-        dataset_loaders = MRCNERDataLoader(args, label_list, tokenizer, mode="train")
+        dataset_loaders = MRCNERDataLoader(args, label_list, tokenizer, vocab_path=self.vocab_path, mode="train")
         eval_dataset = dataset_loaders.get_dataloader(data_sign="dev")
         model.eval()
         eval_loss = 0
@@ -248,7 +249,7 @@ class MRCTrain(TrainNN):
                 label_list = json.loads(fp.read())['labels']
             label_list = label_list + ['O']
             tokenizer = BertTokenizer.from_pretrained(args.bert_model)
-            dataset_loaders = MRCNERDataLoader(args, label_list, tokenizer, mode="train", )
+            dataset_loaders = MRCNERDataLoader(args, label_list, tokenizer, self.vocab_path, mode="train", )
             train_dataset = dataset_loaders.get_dataloader(data_sign="train")
 
             self.train(args, train_dataset, model, tokenizer, label_list)

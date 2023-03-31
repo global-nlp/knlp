@@ -7,8 +7,6 @@ import os
 from knlp.common.constant import KNLP_PATH
 from knlp.utils.tokenization import BasicTokenizer
 
-basicTokenizer = BasicTokenizer(vocab_file=KNLP_PATH + '/knlp/model/bert/Chinese_wwm/vocab.txt',do_lower_case=True)
-
 
 class InputExample(object):
     def __init__(self,

@@ -35,11 +35,11 @@ class BertInference(NERInference):
     def token_predict(self):
         return self.token
 
-    def predict(self, text, model, mask_padding_with_zero=True, max_seq_length=256, sep_token="[SEP]",
+    def predict(self, text, model, vocab_path, mask_padding_with_zero=True, max_seq_length=256, sep_token="[SEP]",
                 sequence_a_segment_id=0, cls_token="[CLS]", cls_token_segment_id=1, pad_token=0,
                 pad_token_segment_id=0):
         features = []
-        basicTokenizer = BasicTokenizer(vocab_file=KNLP_PATH + '/knlp/data/msra_bios/vocab.txt', do_lower_case=True)
+        basicTokenizer = BasicTokenizer(vocab_file=vocab_path, do_lower_case=True)
         input_tokens = basicTokenizer.tokenize(text)
 
         special_tokens_count = 2
