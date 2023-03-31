@@ -9,7 +9,7 @@ if __name__ == '__main__':
     mid_path = KNLP_PATH + '/knlp/data/NER_data/dict.txt'
     out_path = KNLP_PATH + '/knlp/data/NER_data/ner_dict.txt'
     state_path = KNLP_PATH + '/knlp/data/NER_data/state_dict.json'
-    preprocess_trie(data_path, out_path, state_path)
+    preprocess_trie(data_path, mid_path, out_path, state_path)
     # 准备vocab，需提供语料数据文件夹路径
     vocabprocessor = VOCABProcessor(KNLP_PATH + '/knlp/data/msra_bios/')
     vocabprocessor.gen_dict()
