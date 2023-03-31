@@ -149,6 +149,8 @@ def bmes2bio(train_path, dev_path, test_path, new_train_path, new_dev_path, new_
                     label_list[0] = 'I'
                 elif label_list[0] == 'E':
                     label_list[0] = 'I'
+                elif label_list[0] == 'S':
+                    label_list[0] = 'B'
                 new_label = ''.join(label_list)
                 print(text)
                 print(new_label)
