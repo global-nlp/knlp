@@ -6,6 +6,7 @@ if __name__ == '__main__':
     # 进行数据准备
     # trie树准备，需提供训练语料路径
     data_path = KNLP_PATH + '/knlp/data/msra_bios/train.bios'
+    mid_path = KNLP_PATH + '/knlp/data/NER_data/dict.txt'
     out_path = KNLP_PATH + '/knlp/data/NER_data/ner_dict.txt'
     state_path = KNLP_PATH + '/knlp/data/NER_data/state_dict.json'
     preprocess_trie(data_path, out_path, state_path)
@@ -16,7 +17,7 @@ if __name__ == '__main__':
     vocabprocessor.add_vocab()
     # mrc准备，需提供实体描述json文件
     description_json = KNLP_PATH + '/knlp/data/msra_mrc/msra.json'
-    msraProcessor = DATAProcessor(description_json)
+    msraProcessor = DATAProcessor(description_json, KNLP_PATH + '/knlp/data/msra_bios/vocab.txt')
     # 第一步：先生成中间文件和标签
     msraProcessor.get_mid_data(KNLP_PATH + '/knlp/data/msra_bios/train.bios',
                                KNLP_PATH + '/knlp/data/msra_bios/train.mid')
