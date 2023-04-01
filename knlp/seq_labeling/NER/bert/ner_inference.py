@@ -9,7 +9,7 @@ import torch.nn.functional as F
 
 from knlp.common.constant import KNLP_PATH
 from knlp.seq_labeling.NER.Inference.Inference import NERInference
-from knlp.seq_labeling.bert.processors.ner_seq import MsraProcessor as processors, logger, collate_fn, InputFeatures
+from knlp.seq_labeling.bert.processors.ner_seq import select_processor as processors, logger, collate_fn, InputFeatures
 from knlp.seq_labeling.bert.models.bert_for_ner import BertSoftmaxForNer
 from knlp.utils.get_entity import get_entities
 from knlp.utils.tokenization import BasicTokenizer
@@ -77,8 +77,7 @@ class BertInference(NERInference):
         preds = logits.detach().cpu().numpy()
         preds = np.argmax(preds, axis=2).tolist()
         preds = preds[0][1:-1]
-
-        processor = processors()
+        processor = processors(self.task)
         label_list = processor.get_labels()
         id2label = {i: label for i, label in enumerate(label_list)}
         tags = [id2label[x] for x in preds]
