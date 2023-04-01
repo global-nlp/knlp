@@ -130,7 +130,7 @@ class MRCTrain(TrainNN):
                         if args.export_model:
                             model_to_save = model.module if hasattr(model, "module") else model
                             output_model_file = os.path.join(self.output_dir,
-                                                             "best_ckeckpoint.bin".format(nb_tr_steps))
+                                                             "best_checkpoint.bin".format(nb_tr_steps))
                             logger.info("Saving model checkpoint to %s", self.output_dir)
                             torch.save(model_to_save.state_dict(), output_model_file)
                             logger.info("Saving optimizer and scheduler states to %s", self.output_dir)
