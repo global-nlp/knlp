@@ -39,7 +39,7 @@ class NERPipeline(Pipeline):
         :param from_user_txt: 是否来自用户添加字典
         """
         super().__init__()
-        self.from_user_txt = from_user_txt
+        self.from_user_txt = from_user_txt  # 后处理字典是否为txt形式文件
         self.del_dict = del_dict
         self.add_dict = add_dict
         self.task = data_sign
@@ -73,7 +73,7 @@ class NERPipeline(Pipeline):
         self.model_bert_tagger = KNLP_PATH + '/knlp/model/bert/output_modelbert'
         # Bert-mrc 模型存储位置
         self.bert_mrc_save_path = KNLP_PATH + '/knlp/model/bert/mrc_ner'
-        self.model_bert_mrc = KNLP_PATH + '/knlp/model/bert/mrc_ner/checkpoint-63000.bin'
+        self.model_bert_mrc = KNLP_PATH + '/knlp/model/bert/mrc_ner/best_checkpoint.bin'
 
         self.trie = PostProcessTrie()
 
@@ -236,15 +236,15 @@ class NERPipeline(Pipeline):
         if not model_2:
             model_2 = model_1
             val_1 = ModelEvaluator(self.dev_path, model=model_1, mrc_data_path=self.mrc_data_path,
-                              tokenizer_vocab=self.vocab_set_path, data_sign=self.task,
-                              tagger_path=self.model_bert_tagger, mrc_path=self.model_bert_mrc)
+                                   tokenizer_vocab=self.vocab_set_path, data_sign=self.task,
+                                   tagger_path=self.model_bert_tagger, mrc_path=self.model_bert_mrc)
             val_1.evaluate()
         else:
             val_1 = ModelEvaluator(self.dev_path, model=model_1, mrc_data_path=self.mrc_data_path,
-                              tokenizer_vocab=self.vocab_set_path, data_sign=self.task)
+                                   tokenizer_vocab=self.vocab_set_path, data_sign=self.task)
             val_1.evaluate()
             val_2 = ModelEvaluator(self.dev_path, model=model_2, mrc_data_path=self.mrc_data_path,
-                              tokenizer_vocab=self.vocab_set_path, data_sign=self.task)
+                                   tokenizer_vocab=self.vocab_set_path, data_sign=self.task)
             val_2.evaluate()
         os.chdir(f"{KNLP_PATH}/knlp/seq_labeling/NER/interpretEval/")
         os.system(f"bash {KNLP_PATH}/knlp/seq_labeling/NER/interpretEval/run_task_ner.sh {model_1} {model_2}")

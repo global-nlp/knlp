@@ -3,6 +3,8 @@ from knlp.seq_labeling.NER.pipeline import NERPipeline
 from knlp.seq_labeling.NER.preprocess import preprocess_trie, VOCABProcessor, DATAProcessor
 
 if __name__ == '__main__':
+    # 使用流水线前，需提供您数据集的描述文件（参考knlp/data/clue_mrc/clue.json）才能正常运行阅读理解模型；
+    # 在knlp/seq_labeling/bert/processors/ner_seq.py中，新建您数据集的处理类，并在select_processor()方法中添加新的task分支。（参考msra或clue）
     # 进行数据准备
     # trie树准备，需提供训练语料路径
     data_path = KNLP_PATH + '/knlp/data/msra_bios/train.bios'
@@ -48,3 +50,8 @@ if __name__ == '__main__':
         for __model in model_list:
             # 两两评估
             pipe.eval_interpret(model, __model)
+
+    # 后处理
+    # 本流水线提供两种方式：
+    # 第一种是在knlp/seq_labeling/NER/pipeline.py中修改texts_add和texts_del列表内容
+    # 第二种是在knlp/data/user_dict/texts_add.txt与knlp/data/user_dict/texts_del.txt中加入内容，然后将pipeline的from_user_txt参数设置为True
