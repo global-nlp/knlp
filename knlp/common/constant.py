@@ -19,4 +19,5 @@ PAD = "[PAD]"
 SEP = "[SEP]"
 CLS = "[CLS]"
 MASK = "MASK"
-model_list = ['hmm', 'crf', 'trie', 'bilstm', 'bert_mrc', 'bert_tagger']    # ner pipeline中目前支持的模型列表
+model_list = ['hmm', 'crf', 'trie', 'bilstm', 'bert_mrc', 'bert_tagger']  # ner pipeline中目前支持的模型列表
+class_model_list = ['bert', 'textcnn', 'beyas']  # classification pipeline中目前支持的模型列表
