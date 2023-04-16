@@ -3,7 +3,7 @@ from collections import Counter
 from knlp.seq_labeling.bert.processors.utils_ner import get_entities
 
 class SeqEntityScore(object):
-    def __init__(self, id2label,markup='bios'):
+    def __init__(self, id2label, markup='bios'):
         self.id2label = id2label
         self.markup = markup
         self.reset()

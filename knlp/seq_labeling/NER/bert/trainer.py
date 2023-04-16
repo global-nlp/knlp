@@ -298,9 +298,9 @@ class BERTTrain(TrainNN):
         return results
 
     def load_and_cache_examples(self, args, task, tokenizer, data_type='train'):
-        # if args.local_rank not in [-1, 0] and not args.do_eval:
-        #     torch.distributed.barrier()  # Make sure only the first process in distributed training process the dataset, and the others will use the cache
-        # processor = processors[task]()
+        # if args.local_rank not in [-1, 0] and not args.do_eval: torch.distributed.barrier()  # Make sure only the
+        # first process in distributed training process the dataset, and the others will use the cache processor =
+        # processors[task]()
         processor = processors(self.task)
         if self.training_data_path:
             args.data_dir = self.training_data_path
@@ -378,15 +378,14 @@ class BERTTrain(TrainNN):
         args.label2id = {label: i for i, label in enumerate(label_list)}
         num_labels = len(label_list)
 
-        # # Load pretrained model and tokenizer
-        # if args.local_rank not in [-1, 0]:
-        #     torch.distributed.barrier()  # Make sure only the first process in distributed training will download model & vocab
+        # # Load pretrained model and tokenizer if args.local_rank not in [-1, 0]: torch.distributed.barrier()  #
+        # Make sure only the first process in distributed training will download model & vocab
         args.model_type = args.model_type.lower()
         config = BertConfig.from_pretrained(args.model_name_or_path, num_labels=num_labels)
         config.loss_type = args.loss_type
         model = BertSoftmaxForNer.from_pretrained(args.model_name_or_path, config=config)
-        # if args.local_rank == 0:
-        #     torch.distributed.barrier()  # Make sure only the first process in distributed training will download model & vocab
+        # if args.local_rank == 0: torch.distributed.barrier()  # Make sure only the first process in distributed
+        # training will download model & vocab
 
         model.to(args.device)
         logger.info("Training/evaluation parameters %s", args)
@@ -400,7 +399,7 @@ class BERTTrain(TrainNN):
             if not os.path.exists(self.output_dir):
                 os.makedirs(self.output_dir)
             logger.info("Saving model checkpoint to %s", self.output_dir)
-            # Save a trained model, configuration and tokenizer using `save_pretrained()`.
+            # Save a trained model, configuration and tokenizer using `saseve_pretrained()`.
             # They can then be reloaded using `from_pretrained()`
             model_to_save = (
                 model.module if hasattr(model, "module") else model
