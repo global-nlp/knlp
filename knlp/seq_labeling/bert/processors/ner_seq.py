@@ -98,7 +98,6 @@ def convert_examples_to_features(examples, label_list, max_seq_length, tokenizer
         if len(tokens) > max_seq_length - special_tokens_count:
             tokens = tokens[: (max_seq_length - special_tokens_count)]
             label_ids = label_ids[: (max_seq_length - special_tokens_count)]
-
         # The convention in BERT is:
         # (a) For sequence pairs:
         #  tokens:   [CLS] is this jack ##son ##ville ? [SEP] no it is not . [SEP]
@@ -233,11 +232,55 @@ class MsraProcessor(DataProcessor):
         return examples
 
 
+class BioProcessor(DataProcessor):
+
+    def get_train_examples(self, data_dir):
+        """See base class."""
+        return self._create_examples(self._read_txt(os.path.join(data_dir, "train.bios")), "train")
+
+    def get_dev_examples(self, data_dir):
+        """See base class."""
+        return self._create_examples(self._read_txt(os.path.join(data_dir, "val.bios")), "dev")
+
+    def get_test_examples(self, data_dir):
+        """See base class."""
+        return self._create_examples(self._read_txt(os.path.join(data_dir, "test.bios")), "test")
+
+    def get_labels(self):
+        """See base class."""
+        return ["X",
+                "B-protein",
+                "B-cell_line",
+                "B-DNA",
+                "I-DNA",
+                "B-RNA",
+                "I-protein",
+                "O",
+                "B-cell_type",
+                "I-RNA",
+                "I-cell_type",
+                "I-cell_line",
+                "[START]", "[END]"]
+
+    def _create_examples(self, lines, set_type):
+        """Creates examples for the training and dev sets."""
+        examples = []
+        for (i, line) in enumerate(lines):
+            guid = "%s-%s" % (set_type, i)
+            text_a = line['words']
+            # BIOS
+            labels = line['labels']
+            examples.append(InputExample(guid=guid, text_a=text_a, labels=labels))
+        return examples
+
+
 def select_processor(task):
     task = task
     if task == 'msra':
         return MsraProcessor()
     elif task == 'clue':
         return CluenerProcessor()
+    elif task == 'bio':
+        return BioProcessor()
     else:
         print('请为您的数据集创建processor类，具体请看msra的处理类，只改变get_labels的内容即可。')

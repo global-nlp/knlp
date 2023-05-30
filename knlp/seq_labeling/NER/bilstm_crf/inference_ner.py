@@ -7,6 +7,7 @@
 # Created Time: 2022-04-08
 # Description:
 # -----------------------------------------------------------------------#
+import re
 
 from knlp.common.constant import KNLP_PATH
 from knlp.nn.bilstm_crf.inference_bilstm_crf import InferenceBiLSTMCRF
@@ -59,6 +60,8 @@ class BilstmInference(NERInference):
         Returns:
 
         """
+        if not self.is_zh:
+            seqs = list(seqs.split())
         self.cut_bio(seqs, self.inference([seqs])[0])
         return self.get_sent()
 

@@ -1,4 +1,6 @@
 # -*-coding:utf-8-*-
+import re
+
 from knlp.seq_labeling.NER.Inference.Inference import NERInference
 from knlp.seq_labeling.NER.trie_seg.ner_util import PostProcessTrie
 from knlp.seq_labeling.crf.crf import CRFModel
@@ -28,6 +30,8 @@ class CRFInference(NERInference):
         self.entity_set.clear()
         crf_model = crf.load_model(file_path)
         blocking = list(in_put)
+        if not self.is_zh:
+            blocking = list(in_put.split())
         pred = [blocking]
         crf_pred = crf_model.test(pred)  # 预测
         pred = sum(pred, [])

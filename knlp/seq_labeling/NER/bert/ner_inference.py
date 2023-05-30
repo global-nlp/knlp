@@ -35,7 +35,7 @@ class BertInference(NERInference):
     def token_predict(self):
         return self.token
 
-    def predict(self, text, model, vocab_path, mask_padding_with_zero=True, max_seq_length=256, sep_token="[SEP]",
+    def predict(self, text, model, vocab_path, mask_padding_with_zero=True, max_seq_length=512, sep_token="[SEP]",
                 sequence_a_segment_id=0, cls_token="[CLS]", cls_token_segment_id=1, pad_token=0,
                 pad_token_segment_id=0):
         features = []

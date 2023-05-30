@@ -1,6 +1,6 @@
 # Task type
 task_type="ner"
-base_dir="data/"
+base_dir="./data/"
 
 
 # path of conf file
@@ -10,7 +10,7 @@ path_aspect_conf=$base_dir$task_type"/conf."$task_type"-attributes"
 # Part1: Dataset Name:  you should put your training and test set in the directory, for example, ./data/conll03/ and name them as train.txt, test.txt, like this:
 # ./data/ner/conll03/data/train.txt
 # ./data/ner/conll03/data/txt.txt
-datasets[0]="clue"
+datasets[0]="bio"
 
 echo model_1 = "$1"
 echo model_2 = "$2"

@@ -8,6 +8,7 @@
 # Description:
 # -----------------------------------------------------------------------#
 import json
+import re
 
 from knlp.seq_labeling.NER.Inference.Inference import NERInference
 from knlp.utils.util import label_list, get_end_entity
@@ -71,6 +72,8 @@ class HMMInference(NERInference):
     def viterbi(self, observe_seq, hidden_state_set=None, init_state_set=None, transition_pro=None, emission_pro=None,
                 min_prob=3.14e-200):
         zero_check = 0
+        if not self.is_zh:
+            observe_seq = list(observe_seq.split())
         if not hidden_state_set:
             hidden_state_set = self._hidden_state_set
         if not init_state_set:
@@ -106,7 +109,8 @@ class HMMInference(NERInference):
                     emission_pro[hidden_state].get(observe_seq[timestep], self.min_emission_pro), hidden_state0) for
                     hidden_state0 in hidden_state_set if
                     viterbi_matrix[timestep - 1][
-                        hidden_state0] > 0], default=(0.0, 'O'))  # 这个for循环 循环的是前一个timestep的所有hidden state. 使用min score 来应对未登录字
+                        hidden_state0] > 0],
+                    default=(0.0, 'O'))  # 这个for循环 循环的是前一个timestep的所有hidden state. 使用min score 来应对未登录字
                 viterbi_matrix[timestep][hidden_state] = max_prob  # 找到最大的之后，作为结果记录在viterbi矩阵中
                 # 把新节点（hidden_state）添加到到达这个路径最大的那个hidden state对应的路径中
                 new_path[hidden_state] = path[arg_max_prob_hidden_state] + [hidden_state]
@@ -131,6 +135,8 @@ class HMMInference(NERInference):
         prob, pos_list = self.viterbi(sentence, entity_list)
         # print("POS结果：" + str(pos_list))
         text_list = [s for s in sentence]
+        if not self.is_zh:
+            text_list = list(sentence.split())
         self.cut_bmes(text_list, pos_list)
 
     def bios(self, sentence):
@@ -139,6 +145,8 @@ class HMMInference(NERInference):
         prob, pos_list = self.viterbi(sentence, entity_list)
         # print("POS结果：" + str(pos_list))
         text_list = [s for s in sentence]
+        if not self.is_zh:
+            text_list = list(sentence.split())
         self.cut_bio(text_list, pos_list)
 
 

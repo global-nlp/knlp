@@ -1,4 +1,5 @@
 import os
+import re
 
 from knlp.Pipeline.pipeline import Pipeline
 from knlp.seq_labeling.NER.trie_seg.inference import TrieInference
@@ -29,7 +30,8 @@ class NERPipeline(Pipeline):
                  vocab_path=KNLP_PATH + '/knlp/data/msra_bios/vocab.txt',
                  tagger_path=KNLP_PATH + '/knlp/data/msra_bios/', mrc_path=KNLP_PATH + '/knlp/data/msra_mrc',
                  add_dict=KNLP_PATH + '/knlp/data/user_dict/texts_add.txt',
-                 del_dict=KNLP_PATH + '/knlp/data/user_dict/texts_del.txt', from_user_txt=False):
+                 del_dict=KNLP_PATH + '/knlp/data/user_dict/texts_del.txt', from_user_txt=False,
+                 is_zh=True):
         """
         :param data_sign: 指明数据集名称，主要对于bert的mrc方法中识别标签描述文件（msra.json）
         :param data_path: 数据集路径（具体到训练数据位置，用于hmm、crf、trie等等模型）
@@ -37,6 +39,7 @@ class NERPipeline(Pipeline):
         :param tagger_path: 用于bert序列标注的数据路径（到数据集目录位置即可，与data_path不同，不用具体到文件位置，上级文件夹即可）
         :param mrc_path: 用于bert阅读理解的数据路径
         :param from_user_txt: 是否来自用户添加字典
+        :param is_zh: 是否为中文语料（默认为True，本工具包主要面向中文，对于外文出现的bug请提issue！）
         """
         super().__init__()
         self.from_user_txt = from_user_txt  # 后处理字典是否为txt形式文件
@@ -44,6 +47,7 @@ class NERPipeline(Pipeline):
         self.add_dict = add_dict
         self.task = data_sign
         self.model_list = model_list
+        self.is_zh = is_zh
 
         if data_path:
             self.training_data_path = data_path
@@ -73,7 +77,7 @@ class NERPipeline(Pipeline):
         self.model_bert_tagger = KNLP_PATH + '/knlp/model/bert/output_modelbert'
         # Bert-mrc 模型存储位置
         self.bert_mrc_save_path = KNLP_PATH + '/knlp/model/bert/mrc_ner'
-        self.model_bert_mrc = KNLP_PATH + '/knlp/model/bert/mrc_ner/best_checkpoint.bin'
+        self.model_bert_mrc = KNLP_PATH + '/knlp/model/bert/mrc_ner/checkpoint-63000.bin'
 
         self.trie = PostProcessTrie()
 
@@ -155,6 +159,7 @@ class NERPipeline(Pipeline):
         print("\n******** hmm_result ********\n")
         training_data_path = self.training_data_path
         test = HMMInference(training_data_path=training_data_path)
+        test.is_zh = self.is_zh
         test.bios(words)
         print("模型预测结果：" + str(test.out_sent))
         print("POS结果：" + str(test.tag_list))
@@ -167,14 +172,15 @@ class NERPipeline(Pipeline):
     def crf_inference(self, words, eval_itself=False):
         print("\n******** crf_result ********\n")
         test = CRFInference()
+        test.is_zh = self.is_zh
         CRF_MODEL_PATH = KNLP_PATH + "/knlp/model/crf/ner.pkl"
 
         print("读取数据...")
         to_be_pred = words
 
         test.spilt_predict(to_be_pred, CRF_MODEL_PATH)
-        print("POS结果：" + str(sum([], test.get_tag())))
         print("模型预测结果：" + str(test.get_sent()))
+        print("POS结果：" + str(sum([], test.get_tag())))
         print("实体集合：" + str(test.get_entity()))
 
         if eval_itself:
@@ -184,6 +190,7 @@ class NERPipeline(Pipeline):
     def trie_inference(self, words, eval_itself=False):
         print("\n******** trie_result ********\n")
         trieTest = TrieInference()
+        trieTest.is_zh = self.is_zh
         # use trie to finetune directly
         print(trieTest.get_DAG(words, trieTest._trie))
         print(trieTest.knlp_seg(words))
@@ -196,6 +203,7 @@ class NERPipeline(Pipeline):
     def bilstm_inference(self, words, eval_itself=False):
         print("\n******** bilstm_result ********\n")
         inference = BilstmInference()
+        inference.is_zh = self.is_zh
         print("模型预测结果：" + str(inference(words)))
         print("POS结果：" + str(inference.get_tag()))
         print("实体集合：" + str(inference.get_entity()))
@@ -207,6 +215,7 @@ class NERPipeline(Pipeline):
     def bert_tagger_inference(self, words, model_path, eval_itself=False):
         print("\n******** bert_result ********\n")
         inference = BertInference(task=self.task, log=False)
+        inference.is_zh = self.is_zh
         model = BertSoftmaxForNer.from_pretrained(model_path)
         model.to('cpu')
         result = inference.predict(words, model, self.vocab_set_path)
@@ -222,6 +231,7 @@ class NERPipeline(Pipeline):
         print("\n******** mrc_result ********\n")
         inference = MRCNER_Inference(mrc_data_path=self.mrc_data_path, tokenizer_vocab=self.vocab_set_path,
                                      data_sign=self.task, log=False)
+        inference.is_zh = self.is_zh
         inference.config.saved_model = model_path
         inference.run(words)
 
@@ -237,14 +247,19 @@ class NERPipeline(Pipeline):
             model_2 = model_1
             val_1 = ModelEvaluator(self.dev_path, model=model_1, mrc_data_path=self.mrc_data_path,
                                    tokenizer_vocab=self.vocab_set_path, data_sign=self.task,
-                                   tagger_path=self.model_bert_tagger, mrc_path=self.model_bert_mrc)
+                                   tagger_path=self.model_bert_tagger, mrc_path=self.model_bert_mrc,
+                                   is_zh=self.is_zh)
             val_1.evaluate()
         else:
             val_1 = ModelEvaluator(self.dev_path, model=model_1, mrc_data_path=self.mrc_data_path,
-                                   tokenizer_vocab=self.vocab_set_path, data_sign=self.task)
+                                   tokenizer_vocab=self.vocab_set_path, data_sign=self.task,
+                                   tagger_path=self.model_bert_tagger, mrc_path=self.model_bert_mrc,
+                                   is_zh=self.is_zh)
             val_1.evaluate()
             val_2 = ModelEvaluator(self.dev_path, model=model_2, mrc_data_path=self.mrc_data_path,
-                                   tokenizer_vocab=self.vocab_set_path, data_sign=self.task)
+                                   tokenizer_vocab=self.vocab_set_path, data_sign=self.task,
+                                   tagger_path=self.model_bert_tagger, mrc_path=self.model_bert_mrc,
+                                   is_zh=self.is_zh)
             val_2.evaluate()
         os.chdir(f"{KNLP_PATH}/knlp/seq_labeling/NER/interpretEval/")
         os.system(f"bash {KNLP_PATH}/knlp/seq_labeling/NER/interpretEval/run_task_ner.sh {model_1} {model_2}")

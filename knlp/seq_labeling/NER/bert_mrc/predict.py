@@ -37,7 +37,7 @@ def get_argparse():
 
 
 class MRCNER_Inference(NERInference):
-    def __init__(self, mrc_data_path=None, tokenizer_vocab=None, data_sign=None, log=False):
+    def __init__(self, mrc_data_path=None, tokenizer_vocab=None, data_sign=None, log=False, max_lens=None):
         super().__init__()
         self.config = get_argparse().parse_args()
         self.config.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -45,6 +45,7 @@ class MRCNER_Inference(NERInference):
         self.sign = data_sign
         self.result = []
         self.vocab = KNLP_PATH + '/knlp/model/bert/Chinese_wwm/vocab.txt' if not tokenizer_vocab else tokenizer_vocab
+        self.max_len = self.config.max_seq_length if not max_lens else max_lens
         if log:
             self.detailed_log()
 
@@ -141,7 +142,7 @@ class MRCNER_Inference(NERInference):
         label_list = label_list + ['O']
         examples = self.get_examples(texts)
         features, contents = self.predict_convert_examples_to_features(
-            examples, tokenizer, label_list, self.config.max_seq_length
+            examples, tokenizer, label_list, self.max_len
         )
         input_ids = torch.tensor([f.input_ids for f in features], dtype=torch.long)
         input_mask = torch.tensor([f.input_mask for f in features], dtype=torch.long)

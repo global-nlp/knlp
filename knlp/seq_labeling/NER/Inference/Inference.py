@@ -7,6 +7,7 @@ class NERInference(BaseInference):
         self.out_sent = None
         self.tag_list = []
         self.entity_set = set()
+        self.is_zh = True
         self.log = False
 
     def get_tag(self):
@@ -35,6 +36,10 @@ class NERInference(BaseInference):
         begin = 0
         self.tag_list.append(sentence2)
         for idx in range(len(sentence1)):
+            if sentence2[idx][0] == 'B' and idx == len(sentence1)-1:
+                out_sent.append(sentence1[idx])
+                self.entity_set.add((sentence1[idx], sentence2[idx][2:]))
+                continue
             if sentence2[idx][0] == 'B' and sentence2[idx+1][0] == 'O':
                 out_sent.append(sentence1[idx])
                 self.entity_set.add((sentence1[idx], sentence2[idx][2:]))

@@ -83,7 +83,7 @@ class CRFModel(object):
         self.model = CRF(algorithm='l2sgd',
                          # c1=0.1,
                          c2=1.0,
-                         max_iterations=5000,
+                         max_iterations=1000,
                          all_possible_transitions=False,
                          verbose=True)
 

@@ -85,7 +85,7 @@ def bio2bmes(train_path, dev_path, test_path, new_train_path, new_dev_path, new_
     test_out = open(new_test_path, 'w', encoding='utf-8')
 
     outs = [train_out, dev_out, test_out]
-    for index, i in enumerate([train, dev, test]):
+    for idx, i in enumerate([train, dev, test]):
         pre = i.readlines()
         for index, line in enumerate(pre):
             processed = line.replace('\n', '')
@@ -93,7 +93,7 @@ def bio2bmes(train_path, dev_path, test_path, new_train_path, new_dev_path, new_
             if processed:
                 text, label = processed.split(delimiter)
             else:
-                outs[index].write(line)
+                outs[idx].write(line)
                 continue
             # print(text, label)
             if label[0] == 'I':
@@ -103,8 +103,8 @@ def bio2bmes(train_path, dev_path, test_path, new_train_path, new_dev_path, new_
                     label = ''.join(label)
                     # label.replace('I', 'E')
                     output = text + ' ' + label
-                    outs[index].write(output)
-                    outs[index].write('\n')
+                    outs[idx].write(output)
+                    outs[idx].write('\n')
                 else:
                     next_text, next_label = pre[index + 1].replace('\n', '').split(delimiter)
                     # print(next_text, next_label)
@@ -114,18 +114,18 @@ def bio2bmes(train_path, dev_path, test_path, new_train_path, new_dev_path, new_
                         label = ''.join(label)
                         # label.replace('I', 'E')
                         output = text + ' ' + label
-                        outs[index].write(output)
-                        outs[index].write('\n')
+                        outs[idx].write(output)
+                        outs[idx].write('\n')
                     else:
                         label = list(label)
                         label[0] = 'M'
                         label = ''.join(label)
                         output = text + ' ' + label
-                        outs[index].write(output)
-                        outs[index].write('\n')
+                        outs[idx].write(output)
+                        outs[idx].write('\n')
             else:
-                outs[index].write(processed)
-                outs[index].write('\n')
+                outs[idx].write(processed)
+                outs[idx].write('\n')
 
 
 def bmes2bio(train_path, dev_path, test_path, new_train_path, new_dev_path, new_test_path):
