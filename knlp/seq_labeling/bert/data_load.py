@@ -5,10 +5,11 @@ from knlp.seq_labeling.bert.mrc_utils import convert_examples_to_features, read_
 
 
 class MRCNERDataLoader(object):
-    def __init__(self, args, label_list, tokenizer, mode="train"):
+    def __init__(self, args, label_list, tokenizer, vocab_path, mode="train"):
 
         self.data_dir = args.data_dir
         self.max_seq_length = args.max_seq_length
+        self.vocab_path = vocab_path
 
         if mode == "train":
             self.train_batch_size = args.train_batch_size
@@ -48,7 +49,7 @@ class MRCNERDataLoader(object):
         if os.path.exists(cache_path) and self.data_cache:
             features = torch.load(cache_path)
         else:
-            features = convert_examples_to_features(examples, self.tokenizer, self.label_list, self.max_seq_length)
+            features = convert_examples_to_features(examples, self.tokenizer, self.label_list, self.max_seq_length, self.vocab_path)
             if self.data_cache:
                 torch.save(features, cache_path)
         return features

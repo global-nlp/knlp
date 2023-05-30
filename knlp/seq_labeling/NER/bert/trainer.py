@@ -353,7 +353,7 @@ class BERTTrain(TrainNN):
         self.output_dir = self.output_dir + '{}'.format(args.model_type)
         if not os.path.exists(self.output_dir):
             os.mkdir(self.output_dir)
-        time_ = time.strftime("%Y-%m-%d-%H:%M:%S", time.localtime())
+        time_ = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
         init_logger(log_file=self.output_dir + f'/{args.model_type}-{self.task}-{time_}.log')
         if os.path.exists(self.output_dir) and os.listdir(
                 self.output_dir) and args.do_train and not args.overwrite_output_dir:

@@ -77,15 +77,15 @@ class ModelTrainer(PipeTrainer):
 
     def bert_mrc_train(self):
         print('Bert-阅读理解训练开始')
-        MRCtrainer = MRCTrain(data_path=self.mrc_data_path, data_sign=self.task)
+        MRCtrainer = MRCTrain(data_path=self.mrc_data_path, vocab_path=self.vocab_set_path, data_sign=self.task)
         MRCtrainer.run()
         print('Bert-阅读理解训练结束')
 
     def bilstm_train(self):
         print('BiLSTM训练开始')
         model_hyperparameters_dict = {
-            "embedding_dim": 64,
-            "hidden_dim": 64,
+            "embedding_dim": 256,
+            "hidden_dim": 256,
             "num_layers": 1
         }
         optimizer_hyperparameters_dict = {
@@ -104,7 +104,7 @@ class ModelTrainer(PipeTrainer):
         train = TrainBiLSTMCRF(model_hyperparameters=model_hyperparameters_dict,
                                optimizer_hyperparameters=optimizer_hyperparameters_dict,
                                dataset_hyperparameters=dataset_hyperparameters_dict)
-        train.train(10)
+        train.train(20)
         train.save(model_path=model_path, word2idx_path=word2idx_path, tag2idx_path=tag2idx_path)
         print('BiLSTM训练结束')
 

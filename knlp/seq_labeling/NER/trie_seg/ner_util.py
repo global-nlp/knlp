@@ -174,19 +174,19 @@ class PostProcessTrie(Trie):
         self.tag_list = []
         self.entity_set = set()
         self.user_dict_index_with_feature = set()
-        self.convert_feature_dict = {
-            "com": "company",
-            "boo": "book",
-            "gam": "game",
-            "nam": "name",
-            "mov": "movie",
-            "org": "organization",
-            "pos": "position",
-            "add": "address",
-            "sce": "scene",
-            "gov": "government",
-            None: "O"
-        }
+        # self.convert_feature_dict = {
+        #     "com": "company",
+        #     "boo": "book",
+        #     "gam": "game",
+        #     "nam": "name",
+        #     "mov": "movie",
+        #     "org": "organization",
+        #     "pos": "position",
+        #     "add": "address",
+        #     "sce": "scene",
+        #     "gov": "government",
+        #     None: "O"
+        # }
 
     def get_entity(self):
         return self.entity_set

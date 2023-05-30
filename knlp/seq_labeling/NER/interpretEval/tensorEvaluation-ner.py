@@ -9,7 +9,7 @@ import argparse
 from ner_overall_f1 import evaluate, evaluate_chunk_level, evaluate_each_class, evaluate_each_class_listone
 import math
 import scipy.stats as statss
-
+from knlp.common.constant import delimiter as deli
 import random
 import matplotlib
 from sklearn.metrics import f1_score
@@ -239,12 +239,14 @@ def getPreComputed_eCon(train_word_sequences, tag_sequences_train, fnwrite_Golde
             # Determine if the same position in pred list giving a right prediction.
             entity_span_new = ' ' + entity_span + ' '
 
-            # print('entity_span_new', entity_span_new)
             # if '(' in entity_span_new and ')' not in entity_span_new:
             # 	entity_span_new = entity_span_new.replace('(', '')
             if '(' in entity_span_new or ')' in entity_span_new:
                 entity_span_new = entity_span_new.replace('(', '')
                 entity_span_new = entity_span_new.replace(')', '')
+            if '[' in entity_span_new or ']' in entity_span_new:
+                entity_span_new = entity_span_new.replace('[', '')
+                entity_span_new = entity_span_new.replace(']', '')
             if '*' in entity_span_new:
                 entity_span_new = entity_span_new.replace('*', '')
             if '+' in entity_span_new:
@@ -364,6 +366,9 @@ def getPreComputed_eFre(train_word_sequences, tag_sequences_train, fnwrite_Golde
             if '(' in entity_span_new or ')' in entity_span_new:
                 entity_span_new = entity_span_new.replace('(', '')
                 entity_span_new = entity_span_new.replace(')', '')
+            if '[' in entity_span_new or ']' in entity_span_new:
+                entity_span_new = entity_span_new.replace('[', '')
+                entity_span_new = entity_span_new.replace(']', '')
             if '*' in entity_span_new:
                 entity_span_new = entity_span_new.replace('*', '')
 
@@ -1344,10 +1349,11 @@ if __name__ == '__main__':
         fwrite_evaluate = open(fn_evaluate, 'w+')
         column_no = -1
         delimiter = " "
+        # delimiter = deli
         pos_column = 0
 
-        fn_train = path_data + task_type + "/" + corpus_type + '/data/train.txt'
-        fn_test = path_data + task_type + "/" + corpus_type + '/data/test.txt'
+        fn_train = path_data + task_type + "/" + corpus_type + '/data/train.bios'
+        fn_test = path_data + task_type + "/" + corpus_type + '/data/test.bios'
 
         # get preComputed paths from conf file
         dict_preComputed_path = {}

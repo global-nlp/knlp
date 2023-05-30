@@ -2,52 +2,48 @@
 # -*- coding: utf-8 -*- 
 
 
-
-# Author: Xiaoy LI 
+# Author: Xiaoy LI
 # Description:
 # mrc_utils.py 
 
 
 import json
-import numpy 
-import numpy as np 
-
+import numpy
+import numpy as np
 
 # from data_loader.bert_tokenizer import whitespace_tokenize
 from pytorch_pretrained_bert import BasicTokenizer
 
-
 basicTokenizer = BasicTokenizer()
 
-class InputExample(object):
-    def __init__(self, 
-        qas_id, 
-        query_item, 
-        context_item, 
-        doc_tokens = None, 
-        orig_answer_text=None, 
-        start_position=None, 
-        end_position=None,
-        span_position=None,
-        is_impossible=None, 
-        ner_cate=None):
 
+class InputExample(object):
+    def __init__(self,
+                 qas_id,
+                 query_item,
+                 context_item,
+                 doc_tokens=None,
+                 orig_answer_text=None,
+                 start_position=None,
+                 end_position=None,
+                 span_position=None,
+                 is_impossible=None,
+                 ner_cate=None):
         """
         Desc:
             is_impossible: bool, [True, False]
         """
 
-        self.qas_id = qas_id 
+        self.qas_id = qas_id
         self.query_item = query_item
-        self.context_item = context_item 
-        self.doc_tokens = doc_tokens 
-        self.orig_answer_text = orig_answer_text 
-        self.start_position = start_position 
+        self.context_item = context_item
+        self.doc_tokens = doc_tokens
+        self.orig_answer_text = orig_answer_text
+        self.start_position = start_position
         self.end_position = end_position
-        self.span_position = span_position  
-        self.is_impossible = is_impossible 
-        self.ner_cate = ner_cate 
-
+        self.span_position = span_position
+        self.is_impossible = is_impossible
+        self.ner_cate = ner_cate
 
 
 class InputFeatures(object):
@@ -58,32 +54,32 @@ class InputFeatures(object):
         start_pos: start position is a list of symbol 
         end_pos: end position is a list of symbol 
     """
-    def __init__(self, 
-        unique_id, 
-        tokens,  
-        input_ids, 
-        input_mask, 
-        segment_ids, 
-        ner_cate, 
-        start_position=None, 
-        end_position=None, 
-        span_position=None, 
-        is_impossible=None):
 
-        self.unique_id = unique_id 
-        self.tokens = tokens 
+    def __init__(self,
+                 unique_id,
+                 tokens,
+                 input_ids,
+                 input_mask,
+                 segment_ids,
+                 ner_cate,
+                 start_position=None,
+                 end_position=None,
+                 span_position=None,
+                 is_impossible=None):
+        self.unique_id = unique_id
+        self.tokens = tokens
         self.input_mask = input_mask
-        self.input_ids = input_ids 
-        self.ner_cate = ner_cate 
-        self.segment_ids = segment_ids 
-        self.start_position = start_position 
-        self.end_position = end_position 
-        self.span_position = span_position 
-        self.is_impossible = is_impossible 
+        self.input_ids = input_ids
+        self.ner_cate = ner_cate
+        self.segment_ids = segment_ids
+        self.start_position = start_position
+        self.end_position = end_position
+        self.span_position = span_position
+        self.is_impossible = is_impossible
 
 
-def convert_examples_to_features(examples, tokenizer, label_lst, max_seq_length, is_training=True, 
-    allow_impossible=True, pad_sign=True):
+def convert_examples_to_features(examples, tokenizer, label_lst, max_seq_length, is_training=True,
+                                 allow_impossible=True, pad_sign=True):
     print(label_lst)
     label_map = {tmp: idx for idx, tmp in enumerate(label_lst)}
     features = []
@@ -133,9 +129,9 @@ def convert_examples_to_features(examples, tokenizer, label_lst, max_seq_length,
                     offset_idx_dict[idx] = len(all_doc_tokens)
 
                     doc_start_pos.append(start_label)
-                    doc_start_pos.extend([0]*(len(tmp_subword_lst) - 1))
+                    doc_start_pos.extend([0] * (len(tmp_subword_lst) - 1))
 
-                    doc_end_pos.extend([0]*(len(tmp_subword_lst) - 1))
+                    doc_end_pos.extend([0] * (len(tmp_subword_lst) - 1))
                     doc_end_pos.append(end_label)
 
                     all_doc_tokens.extend(tmp_subword_lst)
@@ -143,7 +139,7 @@ def convert_examples_to_features(examples, tokenizer, label_lst, max_seq_length,
                     offset_idx_dict[idx] = len(all_doc_tokens)
                     doc_start_pos.append(start_label)
                     doc_end_pos.append(end_label)
-                    all_doc_tokens.extend(tmp_subword_lst) 
+                    all_doc_tokens.extend(tmp_subword_lst)
                 else:
                     raise ValueError("Please check the result of tokenizer !!! !!! ")
 
@@ -156,10 +152,9 @@ def convert_examples_to_features(examples, tokenizer, label_lst, max_seq_length,
             #     else:
             #         continue
 
-        assert len(all_doc_tokens) == len(doc_start_pos) 
-        assert len(all_doc_tokens) == len(doc_end_pos) 
-        assert len(doc_start_pos) == len(doc_end_pos) 
-
+        assert len(all_doc_tokens) == len(doc_start_pos)
+        assert len(all_doc_tokens) == len(doc_end_pos)
+        assert len(doc_start_pos) == len(doc_end_pos)
 
         if len(all_doc_tokens) >= max_tokens_for_doc:
             all_doc_tokens = all_doc_tokens[: max_tokens_for_doc]
@@ -181,60 +176,58 @@ def convert_examples_to_features(examples, tokenizer, label_lst, max_seq_length,
 
         input_tokens.append("[CLS]")
         segment_ids.append(0)
-        start_pos.append(0) 
+        start_pos.append(0)
         end_pos.append(0)
 
         for query_item in query_tokens:
             input_tokens.append(query_item)
-            segment_ids.append(0) 
+            segment_ids.append(0)
             start_pos.append(0)
             end_pos.append(0)
 
         input_tokens.append("[SEP]")
-        segment_ids.append(0) 
-        input_mask.append(1) 
-        start_pos.append(0) 
-        end_pos.append(0) 
+        segment_ids.append(0)
+        input_mask.append(1)
+        start_pos.append(0)
+        end_pos.append(0)
 
-        input_tokens.extend(all_doc_tokens) 
-        segment_ids.extend([1]* len(all_doc_tokens))
+        input_tokens.extend(all_doc_tokens)
+        segment_ids.extend([1] * len(all_doc_tokens))
         start_pos.extend(doc_start_pos)
-        end_pos.extend(doc_end_pos) 
+        end_pos.extend(doc_end_pos)
 
         input_tokens.append("[SEP]")
         segment_ids.append(1)
         start_pos.append(0)
-        end_pos.append(0)        
+        end_pos.append(0)
         input_mask = [1] * len(input_tokens)
-       
 
         input_ids = tokenizer.convert_tokens_to_ids(input_tokens)
 
         # zero-padding up to the sequence length 
         if len(input_ids) < max_seq_length and pad_sign:
-            padding = [0] * (max_seq_length - len(input_ids)) 
-            input_ids += padding 
-            input_mask += padding 
-            segment_ids += padding 
-            start_pos += padding 
-            end_pos += padding 
+            padding = [0] * (max_seq_length - len(input_ids))
+            input_ids += padding
+            input_mask += padding
+            segment_ids += padding
+            start_pos += padding
+            end_pos += padding
 
         features.append(
             InputFeatures(
-                unique_id=example.qas_id, 
-                tokens=input_tokens, 
-                input_ids=input_ids, 
-                input_mask=input_mask, 
-                segment_ids=segment_ids, 
-                start_position=start_pos, 
-                end_position=end_pos, 
+                unique_id=example.qas_id,
+                tokens=input_tokens,
+                input_ids=input_ids,
+                input_mask=input_mask,
+                segment_ids=segment_ids,
+                start_position=start_pos,
+                end_position=end_pos,
                 # span_position=doc_span_pos.tolist(),
-                is_impossible=example.is_impossible, 
+                is_impossible=example.is_impossible,
                 ner_cate=label_map[example.ner_cate]
-                ))
+            ))
 
-    return features 
-
+    return features
 
 
 def read_mrc_ner_examples(input_file, is_training=True, with_negative=True):
@@ -245,12 +238,13 @@ def read_mrc_ner_examples(input_file, is_training=True, with_negative=True):
 
     with open(input_file, "r", encoding='utf-8') as f:
         input_data = json.load(f)
+
     # input_data = input_data[:10]
 
     def is_whitespace(c):
         if c == " " or c == "\t" or c == "\r" or c == "\n" or ord(c) == 0x202F:
-            return True 
-        return False 
+            return True
+        return False
 
     examples = []
     for entry in input_data:
@@ -264,17 +258,13 @@ def read_mrc_ner_examples(input_file, is_training=True, with_negative=True):
         span_position = entry["span_position"]
 
         example = InputExample(qas_id=qas_id,
-            query_item=query_item, 
-            context_item=context_item,
-            start_position=start_position, 
-            end_position=end_position,
-            span_position=span_position,
-            is_impossible=is_impossible, 
-            ner_cate=ner_cate)
+                               query_item=query_item,
+                               context_item=context_item,
+                               start_position=start_position,
+                               end_position=end_position,
+                               span_position=span_position,
+                               is_impossible=is_impossible,
+                               ner_cate=ner_cate)
         examples.append(example)
     print(len(examples))
-    return examples  
-
-
-
-
+    return examples

@@ -65,6 +65,9 @@ python test/test_all.py
 - 信息提取（关键词、关键短语、摘要）
     - samples/IE_sample.py
 
+- 命名实体识别任务流水线
+  - samples/ner_pipeline_sample.py
+
 
 # 参考并致谢
 在实现过程中，调研了网络上很多已经开源的工具包，对他们致以深深的感谢。在coding过程中，参考学习了很多参考pkg中的编码方式，也有直接调用。如果作者感觉到被冒犯，请随时私信联系。
